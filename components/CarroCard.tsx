@@ -1,7 +1,7 @@
 import { Carro } from "@/types/car";
 
 type Props = {
-    carro: carro;
+    carro: Carro;
 };
 
 export default function CarroCard({ carro }: Props) {
