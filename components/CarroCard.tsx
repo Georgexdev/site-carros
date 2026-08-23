@@ -1,4 +1,5 @@
 import { Carro } from "@/types/car";
+import Link from "next/link";
 
 type Props = {
     carro: Carro;
@@ -8,7 +9,7 @@ export default function CarroCard({ carro }: Props) {
     const vendido = carro.status === "vendido";
 
     return (
-        <div className="relative border rounded-lg overflow-hidden shadow-md bg-white">
+        <Link href={`/carro/${carro.id}`} className="block relative border rounded-lg overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow">
             {vendido && (
                 <div className="absolute top-4 left-0 bg-red-600 text-white font-bold px-4 py-1 z-10 rotate-[-20deg] -translate-x-2">
                     VENDIDO
@@ -33,6 +34,6 @@ export default function CarroCard({ carro }: Props) {
                     {carro.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL"})}
                 </p>
             </div>
-        </div>
+        </Link>
     );
 }
