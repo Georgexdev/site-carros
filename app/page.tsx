@@ -1,20 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CarroCard from "@/components/CarroCard";
-import { carrosMock } from "@/data/carros";
+import { supabase } from "@/lib/supabase";
+import { Carro } from "@/types/car";
 
 export default function Home() {
   const [busca, setBusca] = useState("");
+  const [carros, setCarros] = useState<Carro[]>([]);
+  const [carregando, setCarregando] = useState(true);
 
-  const carrosOrdenados = [...carrosMock].sort((a, b) => {
+  useEffect(() => {
+    async function buscarCarros() {
+      const { data, error } = await supabase
+        .from("carros")
+        .select("*");
+
+      if (error) {
+        console.error("Erro ao buscar carros:", error);
+      } else if (data) {
+        setCarros(data as Carro[]);
+      }
+
+      setCarregando(false);
+    }
+
+    buscarCarros();
+  }, []);
+
+  const carrosOrdenados = [...carros].sort((a, b) => {
     if (a.status === b.status) return 0;
     return a.status === "vendido" ? 1 : -1;
   });
 
   const termo = busca.trim().toLowerCase();
 
-  const textoCompleto = (carro: (typeof carrosMock)[number]) =>
+  const textoCompleto = (carro: Carro) =>
     (carro.marca + " " + carro.modelo + " " + carro.versao).toLowerCase();
 
   const resultadosExatos = carrosOrdenados.filter((carro) =>
@@ -29,6 +50,14 @@ export default function Home() {
   });
 
   const mostrarSemelhantes = termo !== "" && resultadosExatos.length === 0;
+
+  if (carregando) {
+    return (
+      <main className="max-w-6xl mx-auto p-6">
+        <p className="text-gray-500">Carregando carros...</p>
+      </main>
+    );
+  }
 
   return (
     <main className="max-w-6xl mx-auto p-6">
