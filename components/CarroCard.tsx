@@ -1,5 +1,9 @@
+"use client";
+
 import { Carro } from "@/types/car";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Props = {
   carro: Carro;
@@ -7,7 +11,27 @@ type Props = {
 
 export default function CarroCard({ carro }: Props) {
   const vendido = carro.status === "vendido";
-  const imagemTemporaria = "https://placehold.co/600x400?text=" + carro.modelo;
+  const [foto, setFoto] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function buscarFoto() {
+      const { data } = await supabase
+        .from("fotos_carros")
+        .select("url")
+        .eq("carro_id", carro.id)
+        .order("ordem", { ascending: true })
+        .limit(1)
+        .single();
+
+      if (data) {
+        setFoto(data.url);
+      }
+    }
+
+    buscarFoto();
+  }, [carro.id]);
+
+  const imagemExibida = foto || "https://placehold.co/600x400?text=" + carro.modelo;
 
   return (
     <Link href={"/carro/" + carro.id} className="block relative border rounded-lg overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow">
@@ -18,7 +42,7 @@ export default function CarroCard({ carro }: Props) {
       )}
 
       <img
-        src={imagemTemporaria}
+        src={imagemExibida}
         alt={carro.marca + " " + carro.modelo}
         className={"w-full h-48 object-cover " + (vendido ? "grayscale opacity-70" : "")}
       />

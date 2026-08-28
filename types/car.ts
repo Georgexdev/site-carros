@@ -16,3 +16,10 @@ export type Carro = {
   chassi?: string;
   mostrar_placa_chassi: boolean;
 };
+
+export type FotoCarro = {
+  id: string;
+  carro_id: string;
+  url: string;
+  ordem: number;
+};

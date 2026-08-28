@@ -1,7 +1,8 @@
 import { supabase } from "@/lib/supabase";
-import { Carro } from "@/types/car";
+import { Carro, FotoCarro } from "@/types/car";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import CarrosselFotos from "@/components/CarrosselFotos";
 
 type Props = {
   params: Promise<{
@@ -24,7 +25,19 @@ export default async function DetalhesCarro({ params }: Props) {
 
   const carroTipado = carro as Carro;
   const vendido = carroTipado.status === "vendido";
-  const imagemTemporaria = "https://placehold.co/600x400?text=" + carroTipado.modelo;
+
+  const { data: fotos } = await supabase
+    .from("fotos_carros")
+    .select("*")
+    .eq("carro_id", id)
+    .order("ordem", { ascending: true });
+
+  const fotosTipadas = (fotos as FotoCarro[]) || [];
+  const temFotos = fotosTipadas.length > 0;
+
+  const fotosParaExibir = temFotos
+    ? fotosTipadas
+    : [{ id: "placeholder", carro_id: id, url: "https://placehold.co/600x400?text=" + carroTipado.modelo, ordem: 0 }];
 
   return (
     <main className="max-w-4xl mx-auto p-6">
@@ -39,10 +52,11 @@ export default async function DetalhesCarro({ params }: Props) {
               VENDIDO
             </div>
           )}
-          <img
-            src={imagemTemporaria}
-            alt={carroTipado.marca + " " + carroTipado.modelo}
-            className={"w-full h-80 object-cover " + (vendido ? "grayscale opacity-70" : "")}
+
+          <CarrosselFotos
+            fotos={fotosParaExibir}
+            vendido={vendido}
+            altText={carroTipado.marca + " " + carroTipado.modelo}
           />
         </div>
 
