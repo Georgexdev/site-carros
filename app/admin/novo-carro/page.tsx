@@ -4,232 +4,224 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import SeletorMarca from "@/components/SeletorMarca";
 
 export default function NovoCarro() {
-  const router = useRouter();
-  const [salvando, setSalvando] = useState(false);
-  const [erro, setErro] = useState("");
+    const router = useRouter();
+    const [salvando, setSalvando] = useState(false);
+    const [erro, setErro] = useState("");
 
-  const [marca, setMarca] = useState("");
-  const [modelo, setModelo] = useState("");
-  const [versao, setVersao] = useState("");
-  const [anoFabricacao, setAnoFabricacao] = useState("");
-  const [anoModelo, setAnoModelo] = useState("");
-  const [preco, setPreco] = useState("");
-  const [km, setKm] = useState("");
-  const [cor, setCor] = useState("");
-  const [combustivel, setCombustivel] = useState("");
-  const [cambio, setCambio] = useState("");
-  const [placa, setPlaca] = useState("");
-  const [chassi, setChassi] = useState("");
-  const [mostrarPlacaChassi, setMostrarPlacaChassi] = useState(false);
+    const [marca, setMarca] = useState("");
+    const [modelo, setModelo] = useState("");
+    const [versao, setVersao] = useState("");
+    const [anoFabricacao, setAnoFabricacao] = useState("");
+    const [anoModelo, setAnoModelo] = useState("");
+    const [preco, setPreco] = useState("");
+    const [km, setKm] = useState("");
+    const [cor, setCor] = useState("");
+    const [combustivel, setCombustivel] = useState("");
+    const [cambio, setCambio] = useState("");
+    const [placa, setPlaca] = useState("");
+    const [chassi, setChassi] = useState("");
+    const [mostrarPlacaChassi, setMostrarPlacaChassi] = useState(false);
 
-  async function handleSalvar(e: React.FormEvent) {
-    e.preventDefault();
-    setErro("");
-    setSalvando(true);
+    async function handleSalvar(e: React.FormEvent) {
+        e.preventDefault();
+        setErro("");
+        setSalvando(true);
 
-    const { data: sessao } = await supabase.auth.getSession();
-    if (!sessao.session) {
-      router.push("/login");
-      return;
+        const { data: sessao } = await supabase.auth.getSession();
+        if (!sessao.session) {
+            router.push("/login");
+            return;
+        }
+
+        const { error } = await supabase.from("carros").insert({
+            marca,
+            modelo,
+            versao,
+            ano_fabricacao: Number(anoFabricacao),
+            ano_modelo: Number(anoModelo),
+            preco: Number(preco),
+            km: Number(km),
+            cor,
+            combustivel,
+            cambio,
+            placa,
+            chassi,
+            mostrar_placa_chassi: mostrarPlacaChassi,
+            status: "disponivel",
+        });
+
+        setSalvando(false);
+
+        if (error) {
+            setErro("Erro ao salvar o carro. Tente novamente.");
+            console.error(error);
+        } else {
+            router.push("/admin");
+        }
     }
 
-    const { error } = await supabase.from("carros").insert({
-      marca,
-      modelo,
-      versao,
-      ano_fabricacao: Number(anoFabricacao),
-      ano_modelo: Number(anoModelo),
-      preco: Number(preco),
-      km: Number(km),
-      cor,
-      combustivel,
-      cambio,
-      placa,
-      chassi,
-      mostrar_placa_chassi: mostrarPlacaChassi,
-      status: "disponivel",
-    });
+    return (
+        <main className="max-w-2xl mx-auto p-6">
+            <Link href="/admin" className="text-blue-600 hover:underline">
+                ← Voltar ao painel
+            </Link>
 
-    setSalvando(false);
+            <h1 className="text-2xl font-bold mt-4 mb-6">Cadastrar Novo Carro</h1>
 
-    if (error) {
-      setErro("Erro ao salvar o carro. Tente novamente.");
-      console.error(error);
-    } else {
-      router.push("/admin");
-    }
-  }
+            <form onSubmit={handleSalvar} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                    <SeletorMarca valorSelecionado={marca} onSelecionar={setMarca} />
 
-  return (
-    <main className="max-w-2xl mx-auto p-6">
-      <Link href="/admin" className="text-blue-600 hover:underline">
-        ← Voltar ao painel
-      </Link>
+                    <div>
+  <label className="block text-sm text-gray-600 mb-1">Modelo</label>
+  <input
+    type="text"
+    value={modelo}
+    onChange={(e) => setModelo(e.target.value)}
+    required
+    className="w-full border rounded-lg px-4 py-2"
+  />
+</div>
+                </div>
 
-      <h1 className="text-2xl font-bold mt-4 mb-6">Cadastrar Novo Carro</h1>
+                <div>
+                    <label className="block text-sm text-gray-600 mb-1">Versão</label>
+                    <input
+                        type="text"
+                        value={versao}
+                        onChange={(e) => setVersao(e.target.value)}
+                        className="w-full border rounded-lg px-4 py-2"
+                    />
+                </div>
 
-      <form onSubmit={handleSalvar} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Marca</label>
-            <input
-              type="text"
-              value={marca}
-              onChange={(e) => setMarca(e.target.value)}
-              required
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm text-gray-600 mb-1">Ano de Fabricação</label>
+                        <input
+                            type="number"
+                            value={anoFabricacao}
+                            onChange={(e) => setAnoFabricacao(e.target.value)}
+                            required
+                            className="w-full border rounded-lg px-4 py-2"
+                        />
+                    </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Modelo</label>
-            <input
-              type="text"
-              value={modelo}
-              onChange={(e) => setModelo(e.target.value)}
-              required
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
-        </div>
+                    <div>
+                        <label className="block text-sm text-gray-600 mb-1">Ano do Modelo</label>
+                        <input
+                            type="number"
+                            value={anoModelo}
+                            onChange={(e) => setAnoModelo(e.target.value)}
+                            required
+                            className="w-full border rounded-lg px-4 py-2"
+                        />
+                    </div>
+                </div>
 
-        <div>
-          <label className="block text-sm text-gray-600 mb-1">Versão</label>
-          <input
-            type="text"
-            value={versao}
-            onChange={(e) => setVersao(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2"
-          />
-        </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm text-gray-600 mb-1">Preço (R$)</label>
+                        <input
+                            type="number"
+                            value={preco}
+                            onChange={(e) => setPreco(e.target.value)}
+                            required
+                            className="w-full border rounded-lg px-4 py-2"
+                        />
+                    </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Ano de Fabricação</label>
-            <input
-              type="number"
-              value={anoFabricacao}
-              onChange={(e) => setAnoFabricacao(e.target.value)}
-              required
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
+                    <div>
+                        <label className="block text-sm text-gray-600 mb-1">Quilometragem</label>
+                        <input
+                            type="number"
+                            value={km}
+                            onChange={(e) => setKm(e.target.value)}
+                            required
+                            className="w-full border rounded-lg px-4 py-2"
+                        />
+                    </div>
+                </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Ano do Modelo</label>
-            <input
-              type="number"
-              value={anoModelo}
-              onChange={(e) => setAnoModelo(e.target.value)}
-              required
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
-        </div>
+                <div className="grid grid-cols-3 gap-4">
+                    <div>
+                        <label className="block text-sm text-gray-600 mb-1">Cor</label>
+                        <input
+                            type="text"
+                            value={cor}
+                            onChange={(e) => setCor(e.target.value)}
+                            className="w-full border rounded-lg px-4 py-2"
+                        />
+                    </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Preço (R$)</label>
-            <input
-              type="number"
-              value={preco}
-              onChange={(e) => setPreco(e.target.value)}
-              required
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
+                    <div>
+                        <label className="block text-sm text-gray-600 mb-1">Combustível</label>
+                        <input
+                            type="text"
+                            value={combustivel}
+                            onChange={(e) => setCombustivel(e.target.value)}
+                            className="w-full border rounded-lg px-4 py-2"
+                        />
+                    </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Quilometragem</label>
-            <input
-              type="number"
-              value={km}
-              onChange={(e) => setKm(e.target.value)}
-              required
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
-        </div>
+                    <div>
+                        <label className="block text-sm text-gray-600 mb-1">Câmbio</label>
+                        <input
+                            type="text"
+                            value={cambio}
+                            onChange={(e) => setCambio(e.target.value)}
+                            className="w-full border rounded-lg px-4 py-2"
+                        />
+                    </div>
+                </div>
 
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Cor</label>
-            <input
-              type="text"
-              value={cor}
-              onChange={(e) => setCor(e.target.value)}
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
+                <div className="border-t pt-4 mt-4">
+                    <p className="text-sm text-gray-500 mb-2">Dados internos (não aparecem publicamente, a menos que ativado abaixo)</p>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Combustível</label>
-            <input
-              type="text"
-              value={combustivel}
-              onChange={(e) => setCombustivel(e.target.value)}
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm text-gray-600 mb-1">Placa</label>
+                            <input
+                                type="text"
+                                value={placa}
+                                onChange={(e) => setPlaca(e.target.value)}
+                                className="w-full border rounded-lg px-4 py-2"
+                            />
+                        </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Câmbio</label>
-            <input
-              type="text"
-              value={cambio}
-              onChange={(e) => setCambio(e.target.value)}
-              className="w-full border rounded-lg px-4 py-2"
-            />
-          </div>
-        </div>
+                        <div>
+                            <label className="block text-sm text-gray-600 mb-1">Chassi</label>
+                            <input
+                                type="text"
+                                value={chassi}
+                                onChange={(e) => setChassi(e.target.value)}
+                                className="w-full border rounded-lg px-4 py-2"
+                            />
+                        </div>
+                    </div>
 
-        <div className="border-t pt-4 mt-4">
-          <p className="text-sm text-gray-500 mb-2">Dados internos (não aparecem publicamente, a menos que ativado abaixo)</p>
+                    <label className="flex items-center gap-2 mt-3 text-sm text-gray-700">
+                        <input
+                            type="checkbox"
+                            checked={mostrarPlacaChassi}
+                            onChange={(e) => setMostrarPlacaChassi(e.target.checked)}
+                        />
+                        Exibir placa e chassi publicamente no anúncio
+                    </label>
+                </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Placa</label>
-              <input
-                type="text"
-                value={placa}
-                onChange={(e) => setPlaca(e.target.value)}
-                className="w-full border rounded-lg px-4 py-2"
-              />
-            </div>
+                {erro && <p className="text-red-600 text-sm">{erro}</p>}
 
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Chassi</label>
-              <input
-                type="text"
-                value={chassi}
-                onChange={(e) => setChassi(e.target.value)}
-                className="w-full border rounded-lg px-4 py-2"
-              />
-            </div>
-          </div>
-
-          <label className="flex items-center gap-2 mt-3 text-sm text-gray-700">
-            <input
-              type="checkbox"
-              checked={mostrarPlacaChassi}
-              onChange={(e) => setMostrarPlacaChassi(e.target.checked)}
-            />
-            Exibir placa e chassi publicamente no anúncio
-          </label>
-        </div>
-
-        {erro && <p className="text-red-600 text-sm">{erro}</p>}
-
-        <button
-          type="submit"
-          disabled={salvando}
-          className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
-        >
-          {salvando ? "Salvando..." : "Salvar Carro"}
-        </button>
-      </form>
-    </main>
-  );
+                <button
+                    type="submit"
+                    disabled={salvando}
+                    className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                >
+                    {salvando ? "Salvando..." : "Salvar Carro"}
+                </button>
+            </form>
+        </main>
+    );
 }

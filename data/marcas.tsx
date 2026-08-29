@@ -5,6 +5,9 @@ import {
   RAMLogo, DodgeLogo, MiniLogo, VolvoLogo, PorscheLogo,
 } from "@cardog-icons/react";
 import { Renault } from "@thesvg/react";
+function RenaultLogoAdaptado({ size }: { size?: number }) {
+  return <Renault width={size} height={size} />;
+}
 
 export const marcasDisponiveis = [
   { nome: "Toyota", Logo: ToyotaLogo },
@@ -15,7 +18,7 @@ export const marcasDisponiveis = [
   { nome: "Hyundai", Logo: HyundaiLogo },
   { nome: "Jeep", Logo: JeepLogo },
   { nome: "Ford", Logo: FordLogo },
-  { nome: "Renault", Logo: Renault },
+ { nome: "Renault", Logo: RenaultLogoAdaptado },
   { nome: "Nissan", Logo: NissanLogo },
   { nome: "Mitsubishi", Logo: MitsubishiLogo },
   { nome: "BMW", Logo: BMWLogo },
