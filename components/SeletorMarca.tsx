@@ -27,7 +27,7 @@ export default function SeletorMarca({ valorSelecionado, onSelecionar }: Props) 
     <div>
       <label className="block text-sm text-gray-600 mb-2">Marca</label>
 
-      <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+      <div className="flex gap-3 overflow-x-auto pb-3">
         {marcasDisponiveis.map(({ nome, Logo }) => {
           const selecionada = !usandoOutra && valorSelecionado === nome;
           return (
@@ -36,12 +36,14 @@ export default function SeletorMarca({ valorSelecionado, onSelecionar }: Props) 
               type="button"
               onClick={() => handleSelecionarMarca(nome)}
               className={
-                "flex flex-col items-center justify-center gap-1 border rounded-lg p-3 hover:border-gray-400 transition-colors " +
+                "flex-shrink-0 flex flex-col items-center justify-center gap-1 border rounded-lg p-2 w-40 h-40 hover:border-gray-400 transition-colors " +
                 (selecionada ? "border-black border-2" : "border-gray-200")
               }
             >
-              <Logo size={32} />
-              <span className="text-xs text-gray-600">{nome}</span>
+              <div className="w-20 h-20 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full">
+                <Logo size={110} />
+              </div>
+              <span className="text-sm text-gray-600 text-center">{nome}</span>
             </button>
           );
         })}
@@ -50,12 +52,12 @@ export default function SeletorMarca({ valorSelecionado, onSelecionar }: Props) 
           type="button"
           onClick={handleClicarOutra}
           className={
-            "flex flex-col items-center justify-center gap-1 border rounded-lg p-3 hover:border-gray-400 transition-colors " +
+            "flex-shrink-0 flex flex-col items-center justify-center gap-2 border rounded-lg p-4 w-28 h-28 hover:border-gray-400 transition-colors " +
             (usandoOutra ? "border-black border-2" : "border-gray-200")
           }
         >
-          <span className="text-2xl">+</span>
-          <span className="text-xs text-gray-600">Outra</span>
+          <span className="text-3xl">+</span>
+          <span className="text-sm text-gray-600">Outra</span>
         </button>
       </div>
 
