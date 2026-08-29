@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
 
@@ -32,7 +34,7 @@ export default function Login() {
 
   return (
     <main className="max-w-md mx-auto p-6 mt-16">
-      <h1 className="text-2xl font-bold mb-6">Área Administrativa</h1>
+      <h1 className="text-2xl font-bold mb-6">Login Administrativo</h1>
 
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
@@ -48,13 +50,22 @@ export default function Login() {
 
         <div>
           <label className="block text-sm text-gray-600 mb-1">Senha</label>
-          <input
-            type="password"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-            className="w-full border rounded-lg px-4 py-2"
-          />
+          <div className="relative">
+            <input
+              type={mostrarSenha ? "text" : "password"}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+              className="w-full border rounded-lg px-4 py-2 pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setMostrarSenha(!mostrarSenha)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
         </div>
 
         {erro && <p className="text-red-600 text-sm">{erro}</p>}
