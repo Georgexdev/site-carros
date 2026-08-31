@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import SeletorMarca from "@/components/SeletorMarca";
+import SeletorOpcoes from "@/components/SeletorOpcoes";
+import SeletorCor from "@/components/SeletorCor";
+import { coresDisponiveis, combustiveisDisponiveis, cambiosDisponiveis } from "@/data/opcoesCarro";
 
 
 export default function NovoCarro() {
@@ -145,37 +148,25 @@ export default function NovoCarro() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm text-gray-600 mb-1">Cor</label>
-                        <input
-                            type="text"
-                            value={cor}
-                            onChange={(e) => setCor(e.target.value)}
-                            className="w-full border rounded-lg px-4 py-2"
-                        />
-                    </div>
+                <SeletorCor
+                    opcoes={coresDisponiveis}
+                    valorSelecionado={cor}
+                    onSelecionar={setCor}
+                />
 
-                    <div>
-                        <label className="block text-sm text-gray-600 mb-1">Combustível</label>
-                        <input
-                            type="text"
-                            value={combustivel}
-                            onChange={(e) => setCombustivel(e.target.value)}
-                            className="w-full border rounded-lg px-4 py-2"
-                        />
-                    </div>
+                <SeletorOpcoes
+                    label="Combustível"
+                    opcoes={combustiveisDisponiveis}
+                    valorSelecionado={combustivel}
+                    onSelecionar={setCombustivel}
+                />
 
-                    <div>
-                        <label className="block text-sm text-gray-600 mb-1">Câmbio</label>
-                        <input
-                            type="text"
-                            value={cambio}
-                            onChange={(e) => setCambio(e.target.value)}
-                            className="w-full border rounded-lg px-4 py-2"
-                        />
-                    </div>
-                </div>
+                <SeletorOpcoes
+                    label="Câmbio"
+                    opcoes={cambiosDisponiveis}
+                    valorSelecionado={cambio}
+                    onSelecionar={setCambio}
+                />
 
                 <div className="border-t pt-4 mt-4">
                     <p className="text-sm text-gray-500 mb-2">Dados internos (não aparecem publicamente, a menos que ativado abaixo)</p>
