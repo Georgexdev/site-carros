@@ -8,7 +8,7 @@ import {
 function RenaultLogoAdaptado({ size = 32 }: { size?: number }) {
   return (
     <img
-      src="https://cdn.jsdelivr.net/npm/@thesvg/icons/icons/renault.svg"
+      src="https://cdn.simpleicons.org/renault/000000"
       width={size}
       height={size}
       alt="Renault"

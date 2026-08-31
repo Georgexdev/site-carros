@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import Link from "next/link";
 
 export default function Admin() {
   const router = useRouter();
@@ -50,9 +51,16 @@ export default function Admin() {
         </button>
       </div>
 
-      <p className="text-gray-600">
-        Bem-vindo, {usuario?.email}! Em breve aqui você vai conseguir gerenciar seus carros.
+      <p className="text-gray-600 mb-6">
+        Bem-vindo, {usuario?.email}!
       </p>
+
+      <Link
+        href="/admin/novo-carro"
+        className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800"
+      >
+        + Cadastrar Novo Carro
+      </Link>
     </main>
   );
 }
