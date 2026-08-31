@@ -1,0 +1,265 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import Link from "next/link";
+import SeletorMarca from "@/components/SeletorMarca";
+import SeletorOpcoes from "@/components/SeletorOpcoes";
+import SeletorCor from "@/components/SeletorCor";
+import { coresDisponiveis, combustiveisDisponiveis, cambiosDisponiveis } from "@/data/opcoesCarro";
+
+export default function EditarCarro() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+
+  const [carregandoDados, setCarregandoDados] = useState(true);
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState("");
+
+  const [marca, setMarca] = useState("");
+  const [modelo, setModelo] = useState("");
+  const [versao, setVersao] = useState("");
+  const [anoFabricacao, setAnoFabricacao] = useState("");
+  const [anoModelo, setAnoModelo] = useState("");
+  const [preco, setPreco] = useState("");
+  const [km, setKm] = useState("");
+  const [cor, setCor] = useState("");
+  const [combustivel, setCombustivel] = useState("");
+  const [cambio, setCambio] = useState("");
+  const [placa, setPlaca] = useState("");
+  const [chassi, setChassi] = useState("");
+  const [mostrarPlacaChassi, setMostrarPlacaChassi] = useState(false);
+
+  useEffect(() => {
+    async function carregarCarro() {
+      const { data: sessao } = await supabase.auth.getSession();
+      if (!sessao.session) {
+        router.push("/login");
+        return;
+      }
+
+      const { data: carro, error } = await supabase
+        .from("carros")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error || !carro) {
+        setErro("Carro não encontrado.");
+        setCarregandoDados(false);
+        return;
+      }
+
+      setMarca(carro.marca);
+      setModelo(carro.modelo);
+      setVersao(carro.versao || "");
+      setAnoFabricacao(String(carro.ano_fabricacao));
+      setAnoModelo(String(carro.ano_modelo));
+      setPreco(String(carro.preco));
+      setKm(String(carro.km));
+      setCor(carro.cor || "");
+      setCombustivel(carro.combustivel || "");
+      setCambio(carro.cambio || "");
+      setPlaca(carro.placa || "");
+      setChassi(carro.chassi || "");
+      setMostrarPlacaChassi(carro.mostrar_placa_chassi || false);
+
+      setCarregandoDados(false);
+    }
+
+    carregarCarro();
+  }, [id, router]);
+
+  async function handleSalvar(e: React.FormEvent) {
+    e.preventDefault();
+    setErro("");
+    setSalvando(true);
+
+    const { error } = await supabase
+      .from("carros")
+      .update({
+        marca,
+        modelo,
+        versao,
+        ano_fabricacao: Number(anoFabricacao),
+        ano_modelo: Number(anoModelo),
+        preco: Number(preco),
+        km: Number(km),
+        cor,
+        combustivel,
+        cambio,
+        placa,
+        chassi,
+        mostrar_placa_chassi: mostrarPlacaChassi,
+      })
+      .eq("id", id);
+
+    setSalvando(false);
+
+    if (error) {
+      setErro("Erro ao salvar as alterações. Tente novamente.");
+      console.error(error);
+    } else {
+      router.push("/admin");
+    }
+  }
+
+  if (carregandoDados) {
+    return (
+      <main className="max-w-2xl mx-auto p-6">
+        <p className="text-gray-500">Carregando dados do carro...</p>
+      </main>
+    );
+  }
+
+  return (
+    <main className="max-w-2xl mx-auto p-6">
+      <Link href="/admin" className="text-blue-600 hover:underline">
+        ← Voltar ao painel
+      </Link>
+
+      <h1 className="text-2xl font-bold mt-4 mb-6">Editar Carro</h1>
+
+      <form onSubmit={handleSalvar} className="space-y-4">
+        <SeletorMarca valorSelecionado={marca} onSelecionar={setMarca} />
+
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">Modelo</label>
+          <input
+            type="text"
+            value={modelo}
+            onChange={(e) => setModelo(e.target.value)}
+            required
+            className="w-full border rounded-lg px-4 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm text-gray-600 mb-1">Versão</label>
+          <input
+            type="text"
+            value={versao}
+            onChange={(e) => setVersao(e.target.value)}
+            className="w-full border rounded-lg px-4 py-2"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Ano de Fabricação</label>
+            <input
+              type="number"
+              value={anoFabricacao}
+              onChange={(e) => setAnoFabricacao(e.target.value)}
+              required
+              className="w-full border rounded-lg px-4 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Ano do Modelo</label>
+            <input
+              type="number"
+              value={anoModelo}
+              onChange={(e) => setAnoModelo(e.target.value)}
+              required
+              className="w-full border rounded-lg px-4 py-2"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Preço (R$)</label>
+            <input
+              type="number"
+              value={preco}
+              onChange={(e) => setPreco(e.target.value)}
+              required
+              className="w-full border rounded-lg px-4 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Quilometragem</label>
+            <input
+              type="number"
+              value={km}
+              onChange={(e) => setKm(e.target.value)}
+              required
+              className="w-full border rounded-lg px-4 py-2"
+            />
+          </div>
+        </div>
+
+        <SeletorCor
+          opcoes={coresDisponiveis}
+          valorSelecionado={cor}
+          onSelecionar={setCor}
+        />
+
+        <SeletorOpcoes
+          label="Combustível"
+          opcoes={combustiveisDisponiveis}
+          valorSelecionado={combustivel}
+          onSelecionar={setCombustivel}
+        />
+
+        <SeletorOpcoes
+          label="Câmbio"
+          opcoes={cambiosDisponiveis}
+          valorSelecionado={cambio}
+          onSelecionar={setCambio}
+        />
+
+        <div className="border-t pt-4 mt-4">
+          <p className="text-sm text-gray-500 mb-2">Dados internos (não aparecem publicamente, a menos que ativado abaixo)</p>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Placa</label>
+              <input
+                type="text"
+                value={placa}
+                onChange={(e) => setPlaca(e.target.value)}
+                className="w-full border rounded-lg px-4 py-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Chassi</label>
+              <input
+                type="text"
+                value={chassi}
+                onChange={(e) => setChassi(e.target.value)}
+                className="w-full border rounded-lg px-4 py-2"
+              />
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2 mt-3 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={mostrarPlacaChassi}
+              onChange={(e) => setMostrarPlacaChassi(e.target.checked)}
+            />
+            Exibir placa e chassi publicamente no anúncio
+          </label>
+        </div>
+
+        {erro && <p className="text-red-600 text-sm">{erro}</p>}
+
+        <button
+          type="submit"
+          disabled={salvando}
+          className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+        >
+          {salvando ? "Salvando..." : "Salvar Alterações"}
+        </button>
+      </form>
+    </main>
+  );
+}

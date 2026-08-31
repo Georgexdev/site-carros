@@ -158,6 +158,12 @@ export default function Admin() {
               </div>
 
               <div className="flex gap-2">
+                <Link
+                  href={"/admin/editar-carro/" + carro.id}
+                  className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
+                >
+                  Editar
+                </Link>
                 <button
                   onClick={() => handleAlternarStatus(carro)}
                   className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
