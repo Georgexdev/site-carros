@@ -23,3 +23,13 @@ export type FotoCarro = {
   url: string;
   ordem: number;
 };
+
+export type Banner = {
+  id: string;
+  empresa_id: string;
+  imagem_url: string;
+  titulo: string | null;
+  subtitulo: string | null;
+  ordem: number;
+  ativo: boolean;
+};
