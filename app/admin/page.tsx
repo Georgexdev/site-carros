@@ -111,12 +111,21 @@ export default function Admin() {
 
       <p className="text-gray-600 mb-6">Bem-vindo, {usuario?.email}!</p>
 
-      <Link
-        href="/admin/novo-carro"
-        className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 mb-8"
-      >
-        + Cadastrar Novo Carro
-      </Link>
+      <div className="flex gap-3 mb-8">
+        <Link
+          href="/admin/novo-carro"
+          className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800"
+        >
+          + Cadastrar Novo Carro
+        </Link>
+
+        <Link
+          href="/admin/banners"
+          className="inline-block bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50"
+        >
+          Gerenciar Banners
+        </Link>
+      </div>
 
       <h2 className="text-xl font-bold mb-4">Carros Cadastrados ({carros.length})</h2>
 
