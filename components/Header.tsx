@@ -7,7 +7,7 @@ export default function Header() {
     return (
         <header>
             <div className="bg-gray-900 text-white text-xs py-2 px-4 flex justify-between items-center">
-                <span>Horário de atendimento: Seg a Sexta - 8h às 18h | Sáb - 8h às 12h</span>
+                <span>Horário de atendimento: Seg a Sexta - 8h às 17h | Sáb - 8h às 12h</span>
             </div>
 
             <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
