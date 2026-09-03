@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import CarroCard from "@/components/CarroCard";
 import { supabase } from "@/lib/supabase";
 import { Carro } from "@/types/car";
+import FiltroMarca from "@/components/FiltroMarca";
 
 export default function Home() {
   const [busca, setBusca] = useState("");
+  const [marcaFiltro, setMarcaFiltro] = useState("");
   const [carros, setCarros] = useState<Carro[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -28,7 +30,11 @@ export default function Home() {
     buscarCarros();
   }, []);
 
-  const carrosOrdenados = [...carros].sort((a, b) => {
+  const carrosFiltradosPorMarca = marcaFiltro
+    ? carros.filter((carro) => carro.marca === marcaFiltro)
+    : carros;
+
+  const carrosOrdenados = [...carrosFiltradosPorMarca].sort((a, b) => {
     if (a.status === b.status) return 0;
     return a.status === "vendido" ? 1 : -1;
   });
@@ -63,14 +69,15 @@ export default function Home() {
     <main className="max-w-6xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Carros Disponíveis</h1>
 
+      <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} />
+
       <input
         type="text"
         placeholder="Buscar por marca, modelo ou versão..."
         value={busca}
         onChange={(e) => setBusca(e.target.value)}
-        className="w-full border rounded-lg px-4 py-3 mb-8 text-lg"
+        className="w-full border rounded-lg px-4 py-3 mt-6 mb-8 text-lg"
       />
-
       {termo === "" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {carrosOrdenados.map((carro) => (
