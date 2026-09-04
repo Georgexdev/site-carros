@@ -13,7 +13,6 @@ export default function NovoBanner() {
     const [imagemUrl, setImagemUrl] = useState("");
     const [titulo, setTitulo] = useState("");
     const [subtitulo, setSubtitulo] = useState("");
-    const [ordem, setOrdem] = useState("0");
 
     async function handleSalvar(e: React.FormEvent) {
         e.preventDefault();
@@ -37,7 +36,6 @@ export default function NovoBanner() {
             imagem_url: imagemUrl,
             titulo,
             subtitulo,
-            ordem: Number(ordem),
             ativo: true,
         });
 
@@ -95,19 +93,6 @@ export default function NovoBanner() {
                         placeholder="Ex: Explore nosso estoque completo!"
                         className="w-full border rounded-lg px-4 py-2"
                     />
-                </div>
-
-                <div>
-                    <label className="block text-sm text-gray-600 mb-1">Ordem de exibição</label>
-                    <input
-                        type="number"
-                        value={ordem}
-                        onChange={(e) => setOrdem(e.target.value)}
-                        className="w-full border rounded-lg px-4 py-2"
-                    />
-                    <p className="text-xs text-gray-400 mt-1">
-                        Banners com número menor aparecem primeiro no carrossel
-                    </p>
                 </div>
 
                 {erro && <p className="text-red-600 text-sm">{erro}</p>}

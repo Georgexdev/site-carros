@@ -16,8 +16,7 @@ export default function EditarBanner() {
 
   const [imagemUrl, setImagemUrl] = useState("");
   const [titulo, setTitulo] = useState("");
-  const [subtitulo, setSubtitulo] = useState("");
-  const [ordem, setOrdem] = useState("0");
+  const [subtitulo, setSubtitulo] = useState("");;
 
   useEffect(() => {
     async function carregarBanner() {
@@ -42,7 +41,6 @@ export default function EditarBanner() {
       setImagemUrl(banner.imagem_url);
       setTitulo(banner.titulo || "");
       setSubtitulo(banner.subtitulo || "");
-      setOrdem(String(banner.ordem));
 
       setCarregandoDados(false);
     }
@@ -61,7 +59,6 @@ export default function EditarBanner() {
         imagem_url: imagemUrl,
         titulo,
         subtitulo,
-        ordem: Number(ordem),
       })
       .eq("id", id);
 
@@ -119,16 +116,6 @@ export default function EditarBanner() {
             type="text"
             value={subtitulo}
             onChange={(e) => setSubtitulo(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm text-gray-600 mb-1">Ordem de exibição</label>
-          <input
-            type="number"
-            value={ordem}
-            onChange={(e) => setOrdem(e.target.value)}
             className="w-full border rounded-lg px-4 py-2"
           />
         </div>

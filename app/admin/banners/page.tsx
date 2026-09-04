@@ -5,11 +5,27 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Banner } from "@/types/car";
 import Link from "next/link";
+import {
+    DndContext,
+    closestCenter,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+} from "@dnd-kit/core";
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+    arrayMove,
+} from "@dnd-kit/sortable";
+import BannerItem from "@/components/BannerItem";
 
 export default function GerenciarBanners() {
     const router = useRouter();
     const [banners, setBanners] = useState<Banner[]>([]);
     const [carregando, setCarregando] = useState(true);
+
+    const sensors = useSensors(useSensor(PointerSensor));
 
     useEffect(() => {
         async function verificarSessaoEBuscarBanners() {
@@ -64,6 +80,24 @@ export default function GerenciarBanners() {
         }
     }
 
+    async function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (!over || active.id === over.id) return;
+
+        const indiceAntigo = banners.findIndex((b) => b.id === active.id);
+        const indiceNovo = banners.findIndex((b) => b.id === over.id);
+
+        const novaLista = arrayMove(banners, indiceAntigo, indiceNovo);
+        setBanners(novaLista);
+
+        const atualizacoes = novaLista.map((banner, index) =>
+            supabase.from("banners").update({ ordem: index }).eq("id", banner.id)
+        );
+
+        await Promise.all(atualizacoes);
+    }
+
     if (carregando) {
         return (
             <main className="max-w-4xl mx-auto p-6">
@@ -91,57 +125,27 @@ export default function GerenciarBanners() {
             {banners.length === 0 ? (
                 <p className="text-gray-500">Nenhum banner cadastrado ainda.</p>
             ) : (
-                <div className="space-y-3">
-                    {banners.map((banner) => (
-                        <div
-                            key={banner.id}
-                            className="flex items-center gap-4 justify-between border rounded-lg p-4 bg-white"
-                        >
-                            <div className="flex items-center gap-4">
-                                <img
-                                    src={banner.imagem_url}
-                                    alt={banner.titulo || "Banner"}
-                                    className="w-32 h-16 object-cover rounded-lg flex-shrink-0"
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                >
+                    <SortableContext
+                        items={banners.map((b) => b.id)}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        <div className="space-y-3">
+                            {banners.map((banner) => (
+                                <BannerItem
+                                    key={banner.id}
+                                    banner={banner}
+                                    onAlternarAtivo={handleAlternarAtivo}
+                                    onExcluir={handleExcluir}
                                 />
-                                <div>
-                                    <p className="font-bold">{banner.titulo || "(sem título)"}</p>
-                                    <p className="text-sm text-gray-500">{banner.subtitulo}</p>
-                                    <span
-                                        className={
-                                            "inline-block mt-1 text-xs px-2 py-0.5 rounded-full " +
-                                            (banner.ativo
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-gray-100 text-gray-500")
-                                        }
-                                    >
-                                        {banner.ativo ? "Ativo" : "Inativo"}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-2">
-                                <Link
-                                    href={"/admin/banners/editar/" + banner.id}
-                                    className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
-                                >
-                                    Editar
-                                </Link>
-                                <button
-                                    onClick={() => handleAlternarAtivo(banner)}
-                                    className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
-                                >
-                                    {banner.ativo ? "Desativar" : "Ativar"}
-                                </button>
-                                <button
-                                    onClick={() => handleExcluir(banner)}
-                                    className="text-sm px-3 py-1.5 border border-red-300 text-red-600 rounded-lg hover:bg-red-50"
-                                >
-                                    Excluir
-                                </button>
-                            </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </SortableContext>
+                </DndContext>
             )}
         </main>
     );
