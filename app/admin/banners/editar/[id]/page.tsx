@@ -14,9 +14,11 @@ export default function EditarBanner() {
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
 
-  const [imagemUrl, setImagemUrl] = useState("");
+  const [imagemAtual, setImagemAtual] = useState("");
+  const [arquivo, setArquivo] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [titulo, setTitulo] = useState("");
-  const [subtitulo, setSubtitulo] = useState("");;
+  const [subtitulo, setSubtitulo] = useState("");
 
   useEffect(() => {
     async function carregarBanner() {
@@ -38,7 +40,7 @@ export default function EditarBanner() {
         return;
       }
 
-      setImagemUrl(banner.imagem_url);
+      setImagemAtual(banner.imagem_url);
       setTitulo(banner.titulo || "");
       setSubtitulo(banner.subtitulo || "");
 
@@ -48,15 +50,46 @@ export default function EditarBanner() {
     carregarBanner();
   }, [id, router]);
 
+  function handleSelecionarArquivo(e: React.ChangeEvent<HTMLInputElement>) {
+    const arquivoSelecionado = e.target.files?.[0];
+    if (arquivoSelecionado) {
+      setArquivo(arquivoSelecionado);
+      setPreview(URL.createObjectURL(arquivoSelecionado));
+    }
+  }
+
   async function handleSalvar(e: React.FormEvent) {
     e.preventDefault();
     setErro("");
     setSalvando(true);
 
+    let urlImagemFinal = imagemAtual;
+
+    if (arquivo) {
+      const nomeArquivo = Date.now() + "-" + arquivo.name;
+
+      const { error: erroUpload } = await supabase.storage
+        .from("banners")
+        .upload(nomeArquivo, arquivo);
+
+      if (erroUpload) {
+        setErro("Erro ao enviar a nova imagem. Tente novamente.");
+        console.error(erroUpload);
+        setSalvando(false);
+        return;
+      }
+
+      const { data: urlPublica } = supabase.storage
+        .from("banners")
+        .getPublicUrl(nomeArquivo);
+
+      urlImagemFinal = urlPublica.publicUrl;
+    }
+
     const { error } = await supabase
       .from("banners")
       .update({
-        imagem_url: imagemUrl,
+        imagem_url: urlImagemFinal,
         titulo,
         subtitulo,
       })
@@ -90,14 +123,23 @@ export default function EditarBanner() {
 
       <form onSubmit={handleSalvar} className="space-y-4">
         <div>
-          <label className="block text-sm text-gray-600 mb-1">URL da Imagem</label>
+          <label className="block text-sm text-gray-600 mb-1">Imagem do Banner</label>
+
+          <img
+            src={preview || imagemAtual}
+            alt="Banner"
+            className="w-full h-48 object-cover rounded-lg mb-3"
+          />
+
           <input
-            type="text"
-            value={imagemUrl}
-            onChange={(e) => setImagemUrl(e.target.value)}
-            required
+            type="file"
+            accept="image/*"
+            onChange={handleSelecionarArquivo}
             className="w-full border rounded-lg px-4 py-2"
           />
+          <p className="text-xs text-gray-400 mt-1">
+            Deixe em branco para manter a imagem atual, ou escolha um novo arquivo para substituí-la
+          </p>
         </div>
 
         <div>

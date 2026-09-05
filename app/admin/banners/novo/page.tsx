@@ -10,13 +10,28 @@ export default function NovoBanner() {
     const [salvando, setSalvando] = useState(false);
     const [erro, setErro] = useState("");
 
-    const [imagemUrl, setImagemUrl] = useState("");
+    const [arquivo, setArquivo] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
     const [titulo, setTitulo] = useState("");
     const [subtitulo, setSubtitulo] = useState("");
+
+    function handleSelecionarArquivo(e: React.ChangeEvent<HTMLInputElement>) {
+        const arquivoSelecionado = e.target.files?.[0];
+        if (arquivoSelecionado) {
+            setArquivo(arquivoSelecionado);
+            setPreview(URL.createObjectURL(arquivoSelecionado));
+        }
+    }
 
     async function handleSalvar(e: React.FormEvent) {
         e.preventDefault();
         setErro("");
+
+        if (!arquivo) {
+            setErro("Selecione uma imagem para o banner.");
+            return;
+        }
+
         setSalvando(true);
 
         const { data: sessao } = await supabase.auth.getSession();
@@ -24,6 +39,23 @@ export default function NovoBanner() {
             router.push("/login");
             return;
         }
+
+        const nomeArquivo = Date.now() + "-" + arquivo.name;
+
+        const { error: erroUpload } = await supabase.storage
+            .from("banners")
+            .upload(nomeArquivo, arquivo);
+
+        if (erroUpload) {
+            setErro("Erro ao enviar a imagem. Tente novamente.");
+            console.error(erroUpload);
+            setSalvando(false);
+            return;
+        }
+
+        const { data: urlPublica } = supabase.storage
+            .from("banners")
+            .getPublicUrl(nomeArquivo);
 
         const { data: empresa } = await supabase
             .from("empresas")
@@ -33,7 +65,7 @@ export default function NovoBanner() {
 
         const { error } = await supabase.from("banners").insert({
             empresa_id: empresa?.id,
-            imagem_url: imagemUrl,
+            imagem_url: urlPublica.publicUrl,
             titulo,
             subtitulo,
             ativo: true,
@@ -59,13 +91,21 @@ export default function NovoBanner() {
 
             <form onSubmit={handleSalvar} className="space-y-4">
                 <div>
-                    <label className="block text-sm text-gray-600 mb-1">URL da Imagem</label>
+                    <label className="block text-sm text-gray-600 mb-1">Imagem do Banner</label>
+
+                    {preview && (
+                        <img
+                            src={preview}
+                            alt="Pré-visualização"
+                            className="w-full h-48 object-cover rounded-lg mb-3"
+                        />
+                    )}
+
                     <input
-                        type="text"
-                        value={imagemUrl}
-                        onChange={(e) => setImagemUrl(e.target.value)}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleSelecionarArquivo}
                         required
-                        placeholder="https://..."
                         className="w-full border rounded-lg px-4 py-2"
                     />
                     <p className="text-xs text-gray-400 mt-1">
@@ -102,7 +142,7 @@ export default function NovoBanner() {
                     disabled={salvando}
                     className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
                 >
-                    {salvando ? "Salvando..." : "Salvar Banner"}
+                    {salvando ? "Enviando..." : "Salvar Banner"}
                 </button>
             </form>
         </main>
