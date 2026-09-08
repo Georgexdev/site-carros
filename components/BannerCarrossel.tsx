@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { Banner } from "@/types/car";
 
 export default function BannerCarrossel() {
     const [banners, setBanners] = useState<Banner[]>([]);
     const [indiceAtual, setIndiceAtual] = useState(0);
+    const posicaoInicial = useRef(0);
+    const posicaoFinal = useRef(0);
 
     useEffect(() => {
         async function buscarBanners() {
@@ -32,6 +34,23 @@ export default function BannerCarrossel() {
         setIndiceAtual((atual) => (atual === banners.length - 1 ? 0 : atual + 1));
     }
 
+    function handleTouchStart(e: React.TouchEvent) {
+        posicaoInicial.current = e.touches[0].clientX;
+    }
+
+    function handleTouchEnd(e: React.TouchEvent) {
+        posicaoFinal.current = e.changedTouches[0].clientX;
+        const diferenca = posicaoInicial.current - posicaoFinal.current;
+
+        const distanciaMinima = 50;
+
+        if (diferenca > distanciaMinima) {
+            irParaProxima();
+        } else if (diferenca < -distanciaMinima) {
+            irParaAnterior();
+        }
+    }
+
     if (banners.length === 0) {
         return null;
     }
@@ -39,7 +58,11 @@ export default function BannerCarrossel() {
     const banner = banners[indiceAtual];
 
     return (
-        <div className="relative w-full h-[400px] overflow-hidden">
+        <div
+            className="relative w-full h-[400px] overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+        >
             <img
                 src={banner.imagem_url}
                 alt={banner.titulo || "Banner"}

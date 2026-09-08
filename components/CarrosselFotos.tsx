@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { FotoCarro } from "@/types/car";
 
 type Props = {
@@ -11,6 +11,8 @@ type Props = {
 
 export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
   const [indiceAtual, setIndiceAtual] = useState(0);
+  const posicaoInicial = useRef(0);
+  const posicaoFinal = useRef(0);
 
   function irParaAnterior() {
     setIndiceAtual((atual) => (atual === 0 ? fotos.length - 1 : atual - 1));
@@ -20,10 +22,31 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
     setIndiceAtual((atual) => (atual === fotos.length - 1 ? 0 : atual + 1));
   }
 
+  function handleTouchStart(e: React.TouchEvent) {
+    posicaoInicial.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    posicaoFinal.current = e.changedTouches[0].clientX;
+    const diferenca = posicaoInicial.current - posicaoFinal.current;
+
+    const distanciaMinima = 50;
+
+    if (diferenca > distanciaMinima) {
+      irParaProxima();
+    } else if (diferenca < -distanciaMinima) {
+      irParaAnterior();
+    }
+  }
+
   const fotoAtual = fotos[indiceAtual];
 
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <img
         src={fotoAtual.url}
         alt={altText}
