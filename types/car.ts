@@ -33,3 +33,13 @@ export type Banner = {
   ordem: number;
   ativo: boolean;
 };
+
+export type Administrador = {
+  id: string;
+  empresa_id: string;
+  nome: string;
+  papel: "dono" | "funcionario";
+  pode_gerenciar_carros: boolean;
+  pode_gerenciar_banners: boolean;
+  pode_gerenciar_usuarios: boolean;
+};

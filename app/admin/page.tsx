@@ -3,31 +3,43 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import type { User } from "@supabase/supabase-js";
-import { Carro } from "@/types/car";
+import { Carro, Administrador } from "@/types/car";
 import Link from "next/link";
 
 export default function Admin() {
   const router = useRouter();
-  const [usuario, setUsuario] = useState<User | null>(null);
+  const [administrador, setAdministrador] = useState<Administrador | null>(null);
   const [carros, setCarros] = useState<Carro[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [fotosCapas, setFotosCapas] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    async function verificarSessaoEBuscarCarros() {
-      const { data } = await supabase.auth.getSession();
+    async function verificarSessaoEBuscarDados() {
+      const { data: sessao } = await supabase.auth.getSession();
 
-      if (!data.session) {
+      if (!sessao.session) {
         router.push("/login");
         return;
       }
 
-      setUsuario(data.session.user);
+      const { data: admin, error: erroAdmin } = await supabase
+        .from("administradores")
+        .select("*")
+        .eq("id", sessao.session.user.id)
+        .single();
+
+      if (erroAdmin || !admin) {
+        console.error("Erro ao buscar administrador:", erroAdmin);
+        setCarregando(false);
+        return;
+      }
+
+      setAdministrador(admin as Administrador);
 
       const { data: listaCarros, error } = await supabase
         .from("carros")
         .select("*")
+        .eq("empresa_id", admin.empresa_id)
         .order("criado_em", { ascending: false });
 
       if (error) {
@@ -52,7 +64,7 @@ export default function Admin() {
       setCarregando(false);
     }
 
-    verificarSessaoEBuscarCarros();
+    verificarSessaoEBuscarDados();
   }, [router]);
 
   async function handleLogout() {
@@ -97,6 +109,16 @@ export default function Admin() {
     );
   }
 
+  if (!administrador) {
+    return (
+      <main className="max-w-6xl mx-auto p-6">
+        <p className="text-red-600">
+          Sua conta ainda não está vinculada a nenhuma empresa. Entre em contato com o suporte.
+        </p>
+      </main>
+    );
+  }
+
   return (
     <main className="max-w-6xl mx-auto p-6">
       <div className="flex justify-between items-center mb-2">
@@ -109,22 +131,26 @@ export default function Admin() {
         </button>
       </div>
 
-      <p className="text-gray-600 mb-6">Bem-vindo, {usuario?.email}!</p>
+      <p className="text-gray-600 mb-6">Bem-vindo, {administrador.nome}!</p>
 
       <div className="flex gap-3 mb-8">
-        <Link
-          href="/admin/novo-carro"
-          className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800"
-        >
-          + Cadastrar Novo Carro
-        </Link>
+        {administrador.pode_gerenciar_carros && (
+          <Link
+            href="/admin/novo-carro"
+            className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800"
+          >
+            + Cadastrar Novo Carro
+          </Link>
+        )}
 
-        <Link
-          href="/admin/banners"
-          className="inline-block bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50"
-        >
-          Gerenciar Banners
-        </Link>
+        {administrador.pode_gerenciar_banners && (
+          <Link
+            href="/admin/banners"
+            className="inline-block bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50"
+          >
+            Gerenciar Banners
+          </Link>
+        )}
       </div>
 
       <h2 className="text-xl font-bold mb-4">Carros Cadastrados ({carros.length})</h2>
@@ -166,26 +192,28 @@ export default function Admin() {
                 </div>
               </div>
 
-              <div className="flex gap-2">
-                <Link
-                  href={"/admin/editar-carro/" + carro.id}
-                  className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
-                >
-                  Editar
-                </Link>
-                <button
-                  onClick={() => handleAlternarStatus(carro)}
-                  className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
-                >
-                  {carro.status === "vendido" ? "Marcar Disponível" : "Marcar Vendido"}
-                </button>
-                <button
-                  onClick={() => handleExcluir(carro)}
-                  className="text-sm px-3 py-1.5 border border-red-300 text-red-600 rounded-lg hover:bg-red-50"
-                >
-                  Excluir
-                </button>
-              </div>
+              {administrador.pode_gerenciar_carros && (
+                <div className="flex gap-2">
+                  <Link
+                    href={"/admin/editar-carro/" + carro.id}
+                    className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
+                  >
+                    Editar
+                  </Link>
+                  <button
+                    onClick={() => handleAlternarStatus(carro)}
+                    className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
+                  >
+                    {carro.status === "vendido" ? "Marcar Disponível" : "Marcar Vendido"}
+                  </button>
+                  <button
+                    onClick={() => handleExcluir(carro)}
+                    className="text-sm px-3 py-1.5 border border-red-300 text-red-600 rounded-lg hover:bg-red-50"
+                  >
+                    Excluir
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
