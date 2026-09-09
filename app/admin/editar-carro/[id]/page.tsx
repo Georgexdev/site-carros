@@ -9,6 +9,7 @@ import SeletorMarca from "@/components/SeletorMarca";
 import SeletorOpcoes from "@/components/SeletorOpcoes";
 import SeletorCor from "@/components/SeletorCor";
 import { coresDisponiveis, combustiveisDisponiveis, cambiosDisponiveis } from "@/data/opcoesCarro";
+import GerenciadorFotosCarro from "@/components/GerenciadorFotosCarro";
 
 export default function EditarCarro() {
   const router = useRouter();
@@ -124,7 +125,11 @@ export default function EditarCarro() {
       <h1 className="text-2xl font-bold mt-4 mb-6">Editar Carro</h1>
 
       <form onSubmit={handleSalvar} className="space-y-4">
-        <SeletorMarca valorSelecionado={marca} onSelecionar={setMarca} />
+        <GerenciadorFotosCarro carroId={id} />
+
+        <div className="border-t pt-4">
+          <SeletorMarca valorSelecionado={marca} onSelecionar={setMarca} />
+        </div>
 
         <div>
           <label className="block text-sm text-gray-600 mb-1">Modelo</label>
