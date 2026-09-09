@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
+import ModalRecorteImagem from "@/components/ModalRecorteImagem";
 
 export default function EditarBanner() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function EditarBanner() {
   const [imagemAtual, setImagemAtual] = useState("");
   const [arquivo, setArquivo] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [imagemParaRecortar, setImagemParaRecortar] = useState<string | null>(null);
   const [titulo, setTitulo] = useState("");
   const [subtitulo, setSubtitulo] = useState("");
 
@@ -53,9 +55,18 @@ export default function EditarBanner() {
   function handleSelecionarArquivo(e: React.ChangeEvent<HTMLInputElement>) {
     const arquivoSelecionado = e.target.files?.[0];
     if (arquivoSelecionado) {
-      setArquivo(arquivoSelecionado);
-      setPreview(URL.createObjectURL(arquivoSelecionado));
+      setImagemParaRecortar(URL.createObjectURL(arquivoSelecionado));
     }
+  }
+
+  function handleConfirmarRecorte(arquivoRecortado: File) {
+    setArquivo(arquivoRecortado);
+    setPreview(URL.createObjectURL(arquivoRecortado));
+    setImagemParaRecortar(null);
+  }
+
+  function handleCancelarRecorte() {
+    setImagemParaRecortar(null);
   }
 
   async function handleSalvar(e: React.FormEvent) {
@@ -172,6 +183,15 @@ export default function EditarBanner() {
           {salvando ? "Salvando..." : "Salvar Alterações"}
         </button>
       </form>
+
+      {imagemParaRecortar && (
+        <ModalRecorteImagem
+          imagemSrc={imagemParaRecortar}
+          aspecto={16 / 9}
+          onConfirmar={handleConfirmarRecorte}
+          onCancelar={handleCancelarRecorte}
+        />
+      )}
     </main>
   );
 }
