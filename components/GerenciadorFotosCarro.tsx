@@ -39,6 +39,9 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
 
         setEnviando(true);
 
+        const { data: sessaoTeste } = await supabase.auth.getSession();
+        console.log("Sessão no momento do upload:", sessaoTeste.session);
+
         let ordemAtual = fotos.length;
 
         for (const arquivo of arquivosSelecionados) {
