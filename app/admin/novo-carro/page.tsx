@@ -46,32 +46,37 @@ export default function NovoCarro() {
             .eq("id", sessao.session.user.id)
             .single();
 
-        const { error } = await supabase.from("carros").insert({
-            empresa_id: administrador?.empresa_id,
-            marca,
-            modelo,
-            versao,
-            ano_fabricacao: Number(anoFabricacao),
-            ano_modelo: Number(anoModelo),
-            preco: Number(preco),
-            km: Number(km),
-            cor,
-            combustivel,
-            cambio,
-            placa,
-            chassi,
-            mostrar_placa_chassi: mostrarPlacaChassi,
-            status: "disponivel",
-        });
+        const { data: novoCarro, error } = await supabase
+            .from("carros")
+            .insert({
+                empresa_id: administrador?.empresa_id,
+                marca,
+                modelo,
+                versao,
+                ano_fabricacao: Number(anoFabricacao),
+                ano_modelo: Number(anoModelo),
+                preco: Number(preco),
+                km: Number(km),
+                cor,
+                combustivel,
+                cambio,
+                placa,
+                chassi,
+                mostrar_placa_chassi: mostrarPlacaChassi,
+                status: "disponivel",
+            })
+            .select()
+            .single();
 
         setSalvando(false);
 
-        if (error) {
+        if (error || !novoCarro) {
             setErro("Erro ao salvar o carro. Tente novamente.");
             console.error(error);
         } else {
-            router.push("/admin");
+            router.push("/admin/editar-carro/" + novoCarro.id);
         }
+
     }
 
     return (
