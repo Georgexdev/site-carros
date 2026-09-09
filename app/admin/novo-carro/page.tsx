@@ -34,14 +34,20 @@ export default function NovoCarro() {
         setErro("");
         setSalvando(true);
 
-        const { data: empresa } = await supabase
-            .from("empresas")
-            .select("id")
-            .eq("nome", "Concessionária Teste")
+        const { data: sessao } = await supabase.auth.getSession();
+        if (!sessao.session) {
+            router.push("/login");
+            return;
+        }
+
+        const { data: administrador } = await supabase
+            .from("administradores")
+            .select("empresa_id")
+            .eq("id", sessao.session.user.id)
             .single();
 
         const { error } = await supabase.from("carros").insert({
-            empresa_id: empresa?.id,
+            empresa_id: administrador?.empresa_id,
             marca,
             modelo,
             versao,

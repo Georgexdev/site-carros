@@ -57,14 +57,14 @@ export default function NovoBanner() {
             .from("banners")
             .getPublicUrl(nomeArquivo);
 
-        const { data: empresa } = await supabase
-            .from("empresas")
-            .select("id")
-            .eq("nome", "Concessionária Teste")
+        const { data: administrador } = await supabase
+            .from("administradores")
+            .select("empresa_id")
+            .eq("id", sessao.session.user.id)
             .single();
 
         const { error } = await supabase.from("banners").insert({
-            empresa_id: empresa?.id,
+            empresa_id: administrador?.empresa_id,
             imagem_url: urlPublica.publicUrl,
             titulo,
             subtitulo,
