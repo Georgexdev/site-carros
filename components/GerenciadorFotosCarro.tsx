@@ -10,10 +10,23 @@ type Props = {
     carroId: string;
 };
 
+const TAMANHO_MAXIMO_MB = 5;
+
+function traduzirErroUpload(mensagem: string): string {
+    if (mensagem.includes("exceeded the maximum allowed size")) {
+        return "A imagem é muito grande. O tamanho máximo permitido é " + TAMANHO_MAXIMO_MB + "MB.";
+    }
+    if (mensagem.includes("mime type") || mensagem.includes("not supported")) {
+        return "Tipo de arquivo não permitido. Envie apenas imagens JPG, PNG ou WEBP.";
+    }
+    return "Não foi possível enviar a imagem. Tente novamente.";
+}
+
 export default function GerenciadorFotosCarro({ carroId }: Props) {
     const [fotos, setFotos] = useState<FotoCarro[]>([]);
     const [carregando, setCarregando] = useState(true);
     const [enviando, setEnviando] = useState(false);
+    const [erro, setErro] = useState("");
     const [fotoEditando, setFotoEditando] = useState<FotoCarro | null>(null);
 
     useEffect(() => {
@@ -38,11 +51,10 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
         if (arquivosSelecionados.length === 0) return;
 
         setEnviando(true);
-
-        const { data: sessaoTeste } = await supabase.auth.getSession();
-        console.log("Sessão no momento do upload:", sessaoTeste.session);
+        setErro("");
 
         let ordemAtual = fotos.length;
+        let algumErro = "";
 
         for (const arquivo of arquivosSelecionados) {
             const nomeArquivo = Date.now() + "-" + arquivo.name;
@@ -65,7 +77,13 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                 ordemAtual++;
             } else {
                 console.error("Erro ao enviar foto:", erroUpload);
+                console.log("Mensagem exata do erro:", JSON.stringify(erroUpload.message));
+                algumErro = traduzirErroUpload(erroUpload.message);
             }
+        }
+
+        if (algumErro) {
+            setErro(algumErro);
         }
 
         await buscarFotos();
@@ -77,6 +95,7 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
         if (!fotoEditando) return;
 
         setEnviando(true);
+        setErro("");
 
         const nomeArquivo = Date.now() + "-" + arquivoRecortado.name;
 
@@ -95,6 +114,9 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                 .eq("id", fotoEditando.id);
 
             await buscarFotos();
+        } else {
+            console.error("Erro ao enviar foto recortada:", erroUpload);
+            setErro(traduzirErroUpload(erroUpload.message));
         }
 
         setFotoEditando(null);
@@ -160,8 +182,10 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                 </label>
             </div>
 
+            {erro && <p className="text-red-600 text-sm mb-2">{erro}</p>}
+
             <p className="text-xs text-gray-400">
-                A primeira foto adicionada é usada como capa nos cards do site. Use o ícone de recorte para ajustar o enquadramento de uma foto.
+                A primeira foto adicionada é usada como capa nos cards do site. Use o ícone de recorte para ajustar o enquadramento de uma foto. Tamanho máximo: {TAMANHO_MAXIMO_MB}MB por imagem.
             </p>
 
             {fotoEditando && (
