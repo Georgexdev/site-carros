@@ -19,7 +19,7 @@ export default function Header() {
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-                    <Link href="/" className="hover:text-gray-300">
+                    <Link href="/estoque" className="hover:text-gray-300">
                         ESTOQUE
                     </Link>
                     <Link href="/vender" className="hover:text-gray-300">
@@ -72,7 +72,7 @@ export default function Header() {
                         </button>
 
                         <nav className="flex flex-col gap-5 text-gray-800 font-medium">
-                            <Link href="/" onClick={() => setMenuAberto(false)}>
+                            <Link href="/estoque" onClick={() => setMenuAberto(false)}>
                                 ESTOQUE
                             </Link>
                             <Link href="/vender" onClick={() => setMenuAberto(false)}>
