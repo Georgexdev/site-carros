@@ -54,7 +54,7 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
         setErro("");
 
         let ordemAtual = fotos.length;
-        let algumErro = "";
+        const erros: string[] = [];
 
         for (const arquivo of arquivosSelecionados) {
             const nomeArquivo = Date.now() + "-" + arquivo.name;
@@ -77,13 +77,12 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                 ordemAtual++;
             } else {
                 console.error("Erro ao enviar foto:", erroUpload);
-                console.log("Mensagem exata do erro:", JSON.stringify(erroUpload.message));
-                algumErro = traduzirErroUpload(erroUpload.message);
+                erros.push(arquivo.name + ": " + traduzirErroUpload(erroUpload.message));
             }
         }
 
-        if (algumErro) {
-            setErro(algumErro);
+        if (erros.length > 0) {
+            setErro(erros.join(" | "));
         }
 
         await buscarFotos();
