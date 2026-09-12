@@ -1,21 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Phone, MessageCircle, Menu, X } from "lucide-react";
 
 export default function Header() {
     const [menuAberto, setMenuAberto] = useState(false);
+    const [rolado, setRolado] = useState(false);
+    const pathname = usePathname();
+    const isHome = pathname === "/";
+
+    useEffect(() => {
+        function handleScroll() {
+            setRolado(window.scrollY > 20);
+        }
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const transparente = isHome && !rolado;
 
     return (
-        <header>
-            <div className="bg-gray-900 text-white text-xs py-2 px-4 flex justify-between items-center">
+        <header className={isHome ? "fixed top-0 left-0 right-0 z-50" : "relative"}>
+            <div
+                className={
+                    "text-white text-xs py-2 px-4 flex justify-between items-center transition-colors duration-300 " +
+                    (transparente ? "bg-transparent" : "bg-gray-900")
+                }
+            >
                 <span>Horário de atendimento: Seg a Sexta - 8h às 17h | Sáb - 8h às 12h</span>
             </div>
 
-            <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
-                <Link href="/" className="text-xl font-bold">
-                    Concessionária Teste
+            <div
+                className={
+                    "text-white px-4 py-3 flex items-center justify-between transition-colors duration-300 " +
+                    (transparente ? "bg-transparent" : "bg-black")
+                }
+            >
+                <Link href="/" className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
+                        CT
+                    </div>
+                    <span className="text-xl font-bold">MALU VEICULOS</span>
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -84,9 +112,7 @@ export default function Header() {
                         </nav>
 
                         <div className="mt-8 pt-6 border-t flex flex-col gap-4">
-
                             <a
-
                                 href="tel:5571999999999"
                                 className="flex items-center gap-2 text-gray-700"
                             >
