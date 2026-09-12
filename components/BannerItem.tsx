@@ -26,7 +26,7 @@ export default function BannerItem({ banner, onAlternarAtivo, onExcluir }: Props
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-4 justify-between border rounded-lg p-4 bg-white"
+      className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between border rounded-lg p-4 bg-white"
     >
       <div className="flex items-center gap-4">
         <button
@@ -58,7 +58,7 @@ export default function BannerItem({ banner, onAlternarAtivo, onExcluir }: Props
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Link
           href={"/admin/banners/editar/" + banner.id}
           className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
