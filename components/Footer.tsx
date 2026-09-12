@@ -1,7 +1,17 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { MapPin, Phone, MessageCircle, Mail } from "lucide-react";
 
 export default function Footer() {
-    return (
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin");
+
+  if (isAdmin) {
+    return null;
+  }
+
+  return (
     <footer className="bg-gray-900 text-white mt-auto">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-0">
         <div className="h-72 md:h-auto">
@@ -29,8 +39,8 @@ export default function Footer() {
               (71) 99999-9999
             </a>
 
-            
-              <a href="https://wa.me/5571999999999"
+            <a
+              href="https://wa.me/5571999999999"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 hover:text-white"
@@ -50,6 +60,6 @@ export default function Footer() {
       <div className="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
         © {new Date().getFullYear()} Concessionária Teste. Todos os direitos reservados.
       </div>
-    </footer >
+    </footer>
   );
 }
