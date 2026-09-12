@@ -162,7 +162,7 @@ export default function Admin() {
           {carros.map((carro) => (
             <div
               key={carro.id}
-              className="flex items-center gap-4 justify-between border rounded-lg p-4 bg-white"
+              className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between border rounded-lg p-4 bg-white"
             >
               <div className="flex items-center gap-4">
                 <img
@@ -193,7 +193,7 @@ export default function Admin() {
               </div>
 
               {administrador.pode_gerenciar_carros && (
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Link
                     href={"/admin/editar-carro/" + carro.id}
                     className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
