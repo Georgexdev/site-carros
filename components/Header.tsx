@@ -12,10 +12,6 @@ export default function Header() {
     const isHome = pathname === "/";
     const isAdmin = pathname.startsWith("/admin");
 
-    if (isAdmin) {
-        return null;
-    }
-
     useEffect(() => {
         function handleScroll() {
             setRolado(window.scrollY > 20);
@@ -26,6 +22,10 @@ export default function Header() {
     }, []);
 
     const transparente = isHome && !rolado;
+
+    if (isAdmin) {
+        return null;
+    }
 
     return (
         <header className={isHome ? "fixed top-0 left-0 right-0 z-50" : "relative"}>
