@@ -3,6 +3,25 @@
 import { usePathname } from "next/navigation";
 import { MapPin, Phone, MessageCircle, Mail } from "lucide-react";
 
+function IconeInstagram() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="gradienteInstagram" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#FFDD55" />
+          <stop offset="25%" stopColor="#FF543E" />
+          <stop offset="50%" stopColor="#C837AB" />
+          <stop offset="100%" stopColor="#5A6EE8" />
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#gradienteInstagram)" />
+      <rect x="2" y="2" width="20" height="20" rx="6" fill="none" stroke="none" />
+      <circle cx="12" cy="12" r="4.2" fill="none" stroke="white" strokeWidth="1.8" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="white" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
@@ -52,6 +71,16 @@ export default function Footer() {
             <a href="mailto:contato@concessionariateste.com.br" className="flex items-center gap-2 hover:text-white">
               <Mail size={18} />
               contato@concessionariateste.com.br
+            </a>
+
+            <a
+              href="https://www.instagram.com/maluveiculos_?stkn=MWJhc202ZWdkYmNxcg=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-white"
+            >
+              <IconeInstagram />
+              @maluveiculos_
             </a>
           </div>
         </div>
