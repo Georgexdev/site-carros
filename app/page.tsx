@@ -6,10 +6,12 @@ import { supabase } from "@/lib/supabase";
 import { Carro } from "@/types/car";
 import FiltroMarca from "@/components/FiltroMarca";
 import BannerCarrossel from "@/components/BannerCarrossel";
+import SeletorOrdenacao, { TipoOrdenacao } from "@/components/SeletorOrdenacao";
 
 export default function Home() {
   const [busca, setBusca] = useState("");
   const [marcaFiltro, setMarcaFiltro] = useState("");
+  const [ordenacao, setOrdenacao] = useState<TipoOrdenacao>("relevancia");
   const [carros, setCarros] = useState<Carro[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -36,8 +38,22 @@ export default function Home() {
     : carros;
 
   const carrosOrdenados = [...carrosFiltradosPorMarca].sort((a, b) => {
-    if (a.status === b.status) return 0;
-    return a.status === "vendido" ? 1 : -1;
+    if (a.status !== b.status) {
+      return a.status === "vendido" ? 1 : -1;
+    }
+
+    switch (ordenacao) {
+      case "menor_preco":
+        return a.preco - b.preco;
+      case "maior_preco":
+        return b.preco - a.preco;
+      case "ano_recente":
+        return b.ano_modelo - a.ano_modelo;
+      case "menor_km":
+        return a.km - b.km;
+      default:
+        return 0;
+    }
   });
 
   const termo = busca.trim().toLowerCase();
@@ -75,13 +91,17 @@ export default function Home() {
 
         <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} />
 
-        <input
-          type="text"
-          placeholder="Buscar por marca, modelo ou versão..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          className="w-full border rounded-lg px-4 py-3 mt-6 mb-8 text-lg"
-        />
+        <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
+          <input
+            type="text"
+            placeholder="Buscar por marca, modelo ou versão..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="flex-1 border rounded-lg px-4 py-3 text-lg"
+          />
+
+          <SeletorOrdenacao valor={ordenacao} onSelecionar={setOrdenacao} />
+        </div>
         {termo === "" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {carrosOrdenados.map((carro) => (
