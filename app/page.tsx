@@ -7,6 +7,7 @@ import { Carro } from "@/types/car";
 import FiltroMarca from "@/components/FiltroMarca";
 import BannerCarrossel from "@/components/BannerCarrossel";
 import SeletorOrdenacao, { TipoOrdenacao } from "@/components/SeletorOrdenacao";
+import Link from "next/link";
 
 export default function Home() {
   const [busca, setBusca] = useState("");
@@ -74,6 +75,8 @@ export default function Home() {
 
   const mostrarSemelhantes = termo !== "" && resultadosExatos.length === 0;
 
+  const carrosDestacados = carros.filter((carro) => carro.destaque_home);
+
   if (carregando) {
     return (
       <main className="max-w-6xl mx-auto p-6">
@@ -85,6 +88,34 @@ export default function Home() {
   return (
     <main>
       <BannerCarrossel />
+
+      {carrosDestacados.length > 0 && (
+        <div className="max-w-6xl mx-auto px-6 pt-10 pb-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-1">
+            Destaques da Semana
+          </h2>
+          <p className="text-gray-500 text-center mb-8">
+            Selecionamos os melhores veículos para você
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {carrosDestacados.map((carro) => (
+              <div key={carro.id} className="ring-2 ring-yellow-400 rounded-lg">
+                <CarroCard carro={carro} />
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              href="/estoque"
+              className="inline-block bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-medium"
+            >
+              Ver todos os nossos veículos
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-6xl mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6">Carros Disponíveis</h1>
@@ -103,11 +134,22 @@ export default function Home() {
           <SeletorOrdenacao valor={ordenacao} onSelecionar={setOrdenacao} />
         </div>
         {termo === "" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {carrosOrdenados.map((carro) => (
-              <CarroCard key={carro.id} carro={carro} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {carrosDestacados.map((carro) => (
+                <CarroCard key={carro.id} carro={carro} />
+              ))}
+            </div>
+
+            <div className="text-center mt-8">
+              <Link
+                href="/estoque"
+                className="inline-block bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-medium"
+              >
+                Ver todos os nossos veículos
+              </Link>
+            </div>
+          </>
         )}
 
         {termo !== "" && resultadosExatos.length > 0 && (
