@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { MapPin, Phone, MessageCircle, Mail } from "lucide-react";
+import Link from "next/link";
 
 function IconeInstagram() {
   return (
@@ -86,8 +87,11 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-gray-800 py-4 text-center text-xs text-gray-500">
-        © {new Date().getFullYear()} Concessionária Teste. Todos os direitos reservados.
+      <div className="border-t border-gray-800 py-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-xs text-gray-500">
+        <span>© {new Date().getFullYear()} Concessionária Teste. Todos os direitos reservados.</span>
+        <Link href="/termos" className="hover:text-white underline">
+          Termos de Uso e Privacidade
+        </Link>
       </div>
     </footer>
   );
