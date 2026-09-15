@@ -89,95 +89,70 @@ export default function Home() {
     <main>
       <BannerCarrossel />
 
-      {carrosDestacados.length > 0 && (
-        <div className="max-w-6xl mx-auto px-6 pt-10 pb-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-1">
-            Destaques da Semana
-          </h2>
-          <p className="text-gray-500 text-center mb-8">
-            Selecionamos os melhores veículos para você
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {carrosDestacados.map((carro) => (
-              <div key={carro.id} className="ring-2 ring-yellow-400 rounded-lg">
-                <CarroCard carro={carro} />
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-8">
-            <Link
-              href="/estoque"
-              className="inline-block bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-medium"
-            >
-              Ver todos os nossos veículos
-            </Link>
-          </div>
-        </div>
-      )}
-
       <div className="max-w-6xl mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Carros Disponíveis</h1>
 
-        <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} />
+        <div className="max-w-6xl mx-auto p-6">
+          <h1 className="text-3xl font-bold mb-6">Carros Disponíveis</h1>
 
-        <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
-          <input
-            type="text"
-            placeholder="Buscar por marca, modelo ou versão..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            className="flex-1 border rounded-lg px-4 py-3 text-lg"
-          />
+          <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} />
 
-          <SeletorOrdenacao valor={ordenacao} onSelecionar={setOrdenacao} />
-        </div>
-        {termo === "" && (
-          <>
+          <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
+            <input
+              type="text"
+              placeholder="Buscar por marca, modelo ou versão..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="flex-1 border rounded-lg px-4 py-3 text-lg"
+            />
+
+            <SeletorOrdenacao valor={ordenacao} onSelecionar={setOrdenacao} />
+          </div>
+          {termo === "" && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {carrosDestacados.map((carro) => (
+                  <CarroCard key={carro.id} carro={carro} />
+                ))}
+              </div>
+
+              <div className="text-center mt-8">
+                <Link
+                  href="/estoque"
+                  className="inline-block bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-medium"
+                >
+                  Ver todos os nossos veículos
+                </Link>
+              </div>
+            </>
+          )}
+
+          {termo !== "" && resultadosExatos.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {carrosDestacados.map((carro) => (
+              {resultadosExatos.map((carro) => (
                 <CarroCard key={carro.id} carro={carro} />
               ))}
             </div>
+          )}
 
-            <div className="text-center mt-8">
-              <Link
-                href="/estoque"
-                className="inline-block bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-medium"
-              >
-                Ver todos os nossos veículos
-              </Link>
+          {mostrarSemelhantes && resultadosSemelhantes.length > 0 && (
+            <div>
+              <p className="text-gray-600 mb-4">
+                Não encontramos exatamente o que você buscou, mas talvez você goste destes:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {resultadosSemelhantes.map((carro) => (
+                  <CarroCard key={carro.id} carro={carro} />
+                ))}
+              </div>
             </div>
-          </>
-        )}
+          )}
 
-        {termo !== "" && resultadosExatos.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resultadosExatos.map((carro) => (
-              <CarroCard key={carro.id} carro={carro} />
-            ))}
-          </div>
-        )}
-
-        {mostrarSemelhantes && resultadosSemelhantes.length > 0 && (
-          <div>
-            <p className="text-gray-600 mb-4">
-              Não encontramos exatamente o que você buscou, mas talvez você goste destes:
+          {mostrarSemelhantes && resultadosSemelhantes.length === 0 && (
+            <p className="text-gray-600">
+              Nenhum carro encontrado para essa busca no momento.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {resultadosSemelhantes.map((carro) => (
-                <CarroCard key={carro.id} carro={carro} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {mostrarSemelhantes && resultadosSemelhantes.length === 0 && (
-          <p className="text-gray-600">
-            Nenhum carro encontrado para essa busca no momento.
-          </p>
-        )}
+          )}
+        </div>
       </div>
     </main>
   );
