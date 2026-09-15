@@ -33,6 +33,9 @@ export default function EditarCarro() {
   const [placa, setPlaca] = useState("");
   const [chassi, setChassi] = useState("");
   const [mostrarPlacaChassi, setMostrarPlacaChassi] = useState(false);
+  const [destaqueHome, setDestaqueHome] = useState(false);
+  const [totalDestaques, setTotalDestaques] = useState(0);
+  const [erroDestaque, setErroDestaque] = useState("");
 
   useEffect(() => {
     async function carregarCarro() {
@@ -67,12 +70,31 @@ export default function EditarCarro() {
       setPlaca(carro.placa || "");
       setChassi(carro.chassi || "");
       setMostrarPlacaChassi(carro.mostrar_placa_chassi || false);
+      setDestaqueHome(carro.destaque_home || false);
 
+      const { count } = await supabase
+        .from("carros")
+        .select("*", { count: "exact", head: true })
+        .eq("empresa_id", carro.empresa_id)
+        .eq("destaque_home", true);
+
+      setTotalDestaques(count || 0);
       setCarregandoDados(false);
     }
 
     carregarCarro();
   }, [id, router]);
+
+  function handleAlternarDestaque(marcado: boolean) {
+    setErroDestaque("");
+
+    if (marcado && !destaqueHome && totalDestaques >= 3) {
+      setErroDestaque("Já existem 3 veículos em destaque. Desmarque um antes de adicionar outro.");
+      return;
+    }
+
+    setDestaqueHome(marcado);
+  }
 
   async function handleSalvar(e: React.FormEvent) {
     e.preventDefault();
@@ -95,6 +117,7 @@ export default function EditarCarro() {
         placa,
         chassi,
         mostrar_placa_chassi: mostrarPlacaChassi,
+        destaque_home: destaqueHome,
       })
       .eq("id", id);
 
@@ -253,6 +276,21 @@ export default function EditarCarro() {
             />
             Exibir placa e chassi publicamente no anúncio
           </label>
+        </div>
+
+        <div className="border-t pt-4">
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              checked={destaqueHome}
+              onChange={(e) => handleAlternarDestaque(e.target.checked)}
+            />
+            Destacar este veículo na página inicial
+          </label>
+          <p className="text-xs text-gray-400 mt-1">
+            Máximo de 3 veículos em destaque ({totalDestaques}/3 no momento)
+          </p>
+          {erroDestaque && <p className="text-red-600 text-sm mt-1">{erroDestaque}</p>}
         </div>
 
         {erro && <p className="text-red-600 text-sm">{erro}</p>}

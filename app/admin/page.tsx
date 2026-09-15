@@ -87,6 +87,27 @@ export default function Admin() {
     }
   }
 
+  async function handleAlternarDestaque(carro: Carro) {
+    if (!carro.destaque_home) {
+      const totalAtual = carros.filter((c) => c.destaque_home).length;
+      if (totalAtual >= 3) {
+        alert("Já existem 3 veículos em destaque. Remova um antes de adicionar outro.");
+        return;
+      }
+    }
+
+    const { error } = await supabase
+      .from("carros")
+      .update({ destaque_home: !carro.destaque_home })
+      .eq("id", carro.id);
+
+    if (!error) {
+      setCarros((atual) =>
+        atual.map((c) => (c.id === carro.id ? { ...c, destaque_home: !c.destaque_home } : c))
+      );
+    }
+  }
+
   async function handleExcluir(carro: Carro) {
     const confirmar = window.confirm(
       "Tem certeza que deseja excluir " + carro.marca + " " + carro.modelo + "? Essa ação não pode ser desfeita."
@@ -205,6 +226,15 @@ export default function Admin() {
                     className="text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50"
                   >
                     {carro.status === "vendido" ? "Marcar Disponível" : "Marcar Vendido"}
+                  </button>
+                  <button
+                    onClick={() => handleAlternarDestaque(carro)}
+                    className={
+                      "text-sm px-3 py-1.5 border rounded-lg hover:bg-gray-50 " +
+                      (carro.destaque_home ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "")
+                    }
+                  >
+                    {carro.destaque_home ? "★ Destacado" : "Destacar"}
                   </button>
                   <button
                     onClick={() => handleExcluir(carro)}

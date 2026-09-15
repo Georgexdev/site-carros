@@ -18,7 +18,11 @@ export default function SeletorOrdenacao({ valor, onSelecionar }: Props) {
       <option value="menor_preco">Menor preço</option>
       <option value="maior_preco">Maior preço</option>
       <option value="ano_recente">Ano mais novo</option>
+      <option value="ano_antigo">Ano mais antigo</option>
+      <option value="maior_km">Maior Km</option>
       <option value="menor_km">Menor km</option>
+    
+
     </select>
   );
 }

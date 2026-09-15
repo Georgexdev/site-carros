@@ -15,6 +15,7 @@ export type Carro = {
   placa?: string;
   chassi?: string;
   mostrar_placa_chassi: boolean;
+  destaque_home: boolean;
 };
 
 export type FotoCarro = {
