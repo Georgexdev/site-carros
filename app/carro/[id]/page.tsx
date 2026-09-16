@@ -3,6 +3,7 @@ import { Carro, FotoCarro } from "@/types/car";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CarrosselFotos from "@/components/CarrosselFotos";
+import BotaoInteresseVeiculo from "@/components/BotaoInteresseVeiculo";
 
 type Props = {
   params: Promise<{
@@ -77,6 +78,8 @@ export default async function DetalhesCarro({ params }: Props) {
           <p className="text-3xl font-bold mt-6">
             {carroTipado.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
           </p>
+
+          {!vendido && <BotaoInteresseVeiculo carro={carroTipado} />}
         </div>
       </div>
     </main>
