@@ -10,7 +10,7 @@ export default function Header() {
     const [rolado, setRolado] = useState(false);
     const pathname = usePathname();
     const isHome = pathname === "/";
-    const isAdmin = pathname.startsWith("/admin");
+    const isAdmin = pathname.startsWith("/admin") || pathname === "/login";
 
     useEffect(() => {
         function handleScroll() {

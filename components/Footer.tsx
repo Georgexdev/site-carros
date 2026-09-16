@@ -25,7 +25,7 @@ function IconeInstagram() {
 
 export default function Footer() {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/admin");
+  const isAdmin = pathname.startsWith("/admin") || pathname === "/login";
 
   if (isAdmin) {
     return null;

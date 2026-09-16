@@ -5,7 +5,8 @@ import { MessageCircle } from "lucide-react";
 
 export default function BotaoWhatsAppFlutuante() {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/admin");
+  const isAdmin = pathname.startsWith("/admin") || pathname === "/login";
+
 
   if (isAdmin) {
     return null;
