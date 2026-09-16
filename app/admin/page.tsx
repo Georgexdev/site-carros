@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Carro, Administrador } from "@/types/car";
 import Link from "next/link";
+import { Settings } from "lucide-react";
 
 export default function Admin() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function Admin() {
   const [carros, setCarros] = useState<Carro[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [fotosCapas, setFotosCapas] = useState<Record<string, string>>({});
+  const [menuAberto, setMenuAberto] = useState(false);
 
   useEffect(() => {
     async function verificarSessaoEBuscarDados() {
@@ -144,12 +146,48 @@ export default function Admin() {
     <main className="max-w-6xl mx-auto p-6">
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-3xl font-bold">Painel Administrativo</h1>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-red-600 hover:underline"
-        >
-          Sair
-        </button>
+
+        <div className="relative">
+          <button
+            onClick={() => setMenuAberto(!menuAberto)}
+            className="text-gray-600 hover:text-gray-900 p-2 rounded-full hover:bg-gray-100"
+            aria-label="Configurações"
+          >
+            <Settings size={22} />
+          </button>
+
+          {menuAberto && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setMenuAberto(false)}
+              />
+
+              <div className="absolute right-0 mt-2 w-56 bg-white border rounded-lg shadow-lg z-20 py-1">
+                <Link
+                  href="/admin/configuracoes"
+                  onClick={() => setMenuAberto(false)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  Alterar Sobre
+                </Link>
+                <Link
+                  href="/admin/alterar-senha"
+                  onClick={() => setMenuAberto(false)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  Alterar Senha
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  Sair da Conta
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <p className="text-gray-600 mb-6">Bem-vindo, {administrador.nome}!</p>
