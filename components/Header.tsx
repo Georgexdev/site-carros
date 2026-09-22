@@ -55,6 +55,9 @@ export default function Header() {
                     <Link href="/estoque" className="hover:text-gray-300">
                         ESTOQUE
                     </Link>
+                    <Link href="/financie" className="hover:text-gray-300">
+                        FINANCIE
+                    </Link>
                     <Link href="/vender" className="hover:text-gray-300">
                         VENDA SEU CARRO
                     </Link>
@@ -107,6 +110,9 @@ export default function Header() {
                         <nav className="flex flex-col gap-5 text-gray-800 font-medium">
                             <Link href="/estoque" onClick={() => setMenuAberto(false)}>
                                 ESTOQUE
+                            </Link>
+                            <Link href="/financie" onClick={() => setMenuAberto(false)}>
+                                FINANCIE
                             </Link>
                             <Link href="/vender" onClick={() => setMenuAberto(false)}>
                                 VENDA SEU CARRO
