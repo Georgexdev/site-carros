@@ -5,7 +5,12 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Phone, MessageCircle, Menu, X } from "lucide-react";
 
-export default function Header() {
+type Props = {
+    nomeEmpresa?: string;
+    logoUrl?: string;
+};
+
+export default function Header({ nomeEmpresa, logoUrl }: Props) {
     const [menuAberto, setMenuAberto] = useState(false);
     const [rolado, setRolado] = useState(false);
     const pathname = usePathname();
@@ -41,33 +46,39 @@ export default function Header() {
             <div
                 className={
                     "text-white px-4 py-3 flex items-center justify-between transition-colors duration-300 " +
-                    (transparente ? "bg-transparent" : "bg-black")
+                    (transparente ? "bg-transparent" : "bg-[var(--cor-secundaria)]")
                 }
             >
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
-                        CT
-                    </div>
-                    <span className="text-xl font-bold">MALU VEICULOS</span>
+                    {logoUrl ? (
+                        <img src={logoUrl} alt={nomeEmpresa || "Logo"} className="h-16 w-auto" />
+                    ) : (
+                        <>
+                            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
+                                CT
+                            </div>
+                            <span className="text-xl font-bold">{nomeEmpresa || "MALU VEICULOS"}</span>
+                        </>
+                    )}
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-                    <Link href="/estoque" className="hover:text-gray-300">
+                    <Link href="/estoque" className="hover:text-[var(--cor-primaria)] transition-colors">
                         ESTOQUE
                     </Link>
-                    <Link href="/financie" className="hover:text-gray-300">
+                    <Link href="/financie" className="hover:text-[var(--cor-primaria)] transition-colors">
                         FINANCIE
                     </Link>
-                    <Link href="/vender" className="hover:text-gray-300">
+                    <Link href="/vender" className="hover:text-[var(--cor-primaria)] transition-colors">
                         VENDA SEU CARRO
                     </Link>
-                    <Link href="/sobre" className="hover:text-gray-300">
+                    <Link href="/sobre" className="hover:text-[var(--cor-primaria)] transition-colors">
                         SOBRE
                     </Link>
                 </nav>
 
                 <div className="hidden md:flex items-center gap-4">
-                    <a href="tel:5571999999999" className="flex items-center gap-1 text-sm hover:text-gray-300">
+                    <a href="tel:5571999999999" className="flex items-center gap-1 text-sm hover:text-[var(--cor-primaria)] transition-colors">
                         <Phone size={16} />
                         (71) 99999-9999
                     </a>
