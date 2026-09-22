@@ -75,6 +75,8 @@ export default function Home() {
 
   const mostrarSemelhantes = termo !== "" && resultadosExatos.length === 0;
 
+  const filtroAtivo = termo !== "" || marcaFiltro !== "";
+
   const carrosDestacados = carros.filter((carro) => carro.destaque_home);
 
   if (carregando) {
@@ -107,7 +109,7 @@ export default function Home() {
 
             <SeletorOrdenacao valor={ordenacao} onSelecionar={setOrdenacao} />
           </div>
-          {termo === "" && (
+          {!filtroAtivo && (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {carrosDestacados.map((carro) => (
@@ -126,7 +128,7 @@ export default function Home() {
             </>
           )}
 
-          {termo !== "" && resultadosExatos.length > 0 && (
+          {filtroAtivo && resultadosExatos.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {resultadosExatos.map((carro) => (
                 <CarroCard key={carro.id} carro={carro} />
@@ -150,6 +152,12 @@ export default function Home() {
           {mostrarSemelhantes && resultadosSemelhantes.length === 0 && (
             <p className="text-gray-600">
               Nenhum carro encontrado para essa busca no momento.
+            </p>
+          )}
+
+          {filtroAtivo && !mostrarSemelhantes && resultadosExatos.length === 0 && (
+            <p className="text-gray-600">
+              Nenhum carro dessa marca disponível no momento.
             </p>
           )}
         </div>
