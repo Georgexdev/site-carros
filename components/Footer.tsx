@@ -4,6 +4,10 @@ import { usePathname } from "next/navigation";
 import { MapPin, Phone, MessageCircle, Mail } from "lucide-react";
 import Link from "next/link";
 
+type Props = {
+  nomeEmpresa?: string;
+};
+
 function IconeInstagram() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24">
@@ -23,7 +27,7 @@ function IconeInstagram() {
   );
 }
 
-export default function Footer() {
+export default function Footer({ nomeEmpresa }: Props) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin") || pathname === "/login";
 
@@ -31,8 +35,10 @@ export default function Footer() {
     return null;
   }
 
+  const nome = nomeEmpresa || "Concessionária Teste";
+
   return (
-    <footer className="bg-gray-900 text-white mt-auto">
+    <footer className="bg-[var(--cor-secundaria)] text-white mt-auto">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-0">
         <div className="h-72 md:h-auto">
           <iframe
@@ -46,7 +52,7 @@ export default function Footer() {
         </div>
 
         <div className="p-8">
-          <h3 className="text-xl font-bold mb-4">Concessionária Teste</h3>
+          <h3 className="text-xl font-bold mb-4">{nome}</h3>
 
           <div className="space-y-3 text-sm text-gray-300">
             <p className="flex items-start gap-2">
@@ -54,7 +60,7 @@ export default function Footer() {
               Avenida Exemplo, 1000 - Bairro Modelo - Salvador/BA - CEP 40000-000
             </p>
 
-            <a href="tel:5571999999999" className="flex items-center gap-2 hover:text-white">
+            <a href="tel:5571999999999" className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors">
               <Phone size={18} />
               (71) 99999-9999
             </a>
@@ -63,13 +69,13 @@ export default function Footer() {
               href="https://wa.me/5571999999999"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-white"
+              className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors"
             >
               <MessageCircle size={18} />
               (71) 99999-9999
             </a>
 
-            <a href="mailto:contato@concessionariateste.com.br" className="flex items-center gap-2 hover:text-white">
+            <a href="mailto:contato@concessionariateste.com.br" className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors">
               <Mail size={18} />
               contato@concessionariateste.com.br
             </a>
@@ -78,21 +84,21 @@ export default function Footer() {
               href="https://www.instagram.com/maluveiculos_?stkn=MWJhc202ZWdkYmNxcg=="
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-white"
+              className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors"
             >
               <IconeInstagram />
               @maluveiculos_
             </a>
           </div>
         </div>
-      </div>
+      </div >
 
       <div className="border-t border-gray-800 py-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-xs text-gray-500">
-        <span>© {new Date().getFullYear()} Concessionária Teste. Todos os direitos reservados.</span>
-        <Link href="/termos" className="hover:text-white underline">
+        <span>© {new Date().getFullYear()} {nome}. Todos os direitos reservados.</span>
+        <Link href="/termos" className="hover:text-[var(--cor-primaria)] underline transition-colors">
           Termos de Uso e Privacidade
         </Link>
       </div>
-    </footer>
+    </footer >
   );
 }

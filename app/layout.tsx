@@ -46,7 +46,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Header nomeEmpresa={empresa?.nome} logoUrl={empresa?.logo_url} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer nomeEmpresa={empresa?.nome} />
         <BotaoWhatsAppFlutuante />
       </body>
     </html>
