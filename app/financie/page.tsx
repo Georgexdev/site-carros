@@ -13,7 +13,7 @@ const bancosParceiros = [
     { nome: "Pan", logo: "/bancos/pan.png" },
     { nome: "Itaú", logo: "/bancos/itau.png" },
     { nome: "Bradesco", logo: "/bancos/bradesco.png" },
-    { nome: "Mercado Pago", logo: "/bancos/mercadopago.svg" },
+    { nome: "Mercado Pago", logo: "/bancos/mercadopago.png" },
 ];
 
 export default function Financie() {
