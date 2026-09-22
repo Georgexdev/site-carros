@@ -5,6 +5,17 @@ import { supabase } from "@/lib/supabase";
 import { Carro } from "@/types/car";
 import { Landmark, Phone, User, Calendar, IdCard, Car as CarIcon, X } from "lucide-react";
 
+const bancosParceiros = [
+    { nome: "Santander", logo: "/bancos/santander.png" },
+    { nome: "C6 Bank", logo: "/bancos/c6.png" },
+    { nome: "BV", logo: "/bancos/bv.png" },
+    { nome: "Safra", logo: "/bancos/safra.png" },
+    { nome: "Pan", logo: "/bancos/pan.png" },
+    { nome: "Itaú", logo: "/bancos/itau.png" },
+    { nome: "Bradesco", logo: "/bancos/bradesco.png" },
+    { nome: "Mercado Pago", logo: "/bancos/mercadopago.svg" },
+];
+
 export default function Financie() {
     const [carros, setCarros] = useState<Carro[]>([]);
     const [fotosCapa, setFotosCapa] = useState<Record<string, string>>({});
@@ -101,14 +112,14 @@ export default function Financie() {
             <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <div>
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">Bancos Parceiros</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {bancosParceiros.map((banco) => (
                             <div
-                                key={n}
-                                className="border rounded-lg py-4 flex flex-col items-center gap-2 text-gray-500"
+                                key={banco.nome}
+                                className="border rounded-lg py-4 flex flex-col items-center gap-2 text-gray-600"
                             >
-                                <Landmark size={24} />
-                                <span className="text-xs">Banco Parceiro</span>
+                                <img src={banco.logo} alt={banco.nome} className="h-10 max-w-[80%] object-contain" />
+                                <span className="text-xs text-center">{banco.nome}</span>
                             </div>
                         ))}
                     </div>
