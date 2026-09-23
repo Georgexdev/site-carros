@@ -82,14 +82,16 @@ export default function BannerCarrossel() {
                 <>
                     <button
                         onClick={irParaAnterior}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/70"
+                        aria-label="Banner anterior"
+                        className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full items-center justify-center hover:bg-black/70"
                     >
                         ‹
                     </button>
 
                     <button
                         onClick={irParaProxima}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/70"
+                        aria-label="Próximo banner"
+                        className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 text-white w-10 h-10 rounded-full items-center justify-center hover:bg-black/70"
                     >
                         ›
                     </button>
@@ -99,11 +101,16 @@ export default function BannerCarrossel() {
                             <button
                                 key={b.id}
                                 onClick={() => setIndiceAtual(index)}
-                                className={
-                                    "w-2.5 h-2.5 rounded-full " +
-                                    (index === indiceAtual ? "bg-white" : "bg-white/50")
-                                }
-                            />
+                                aria-label={"Ir para banner " + (index + 1)}
+                                className="w-9 h-9 flex items-center justify-center"
+                            >
+                                <span
+                                    className={
+                                        "w-2.5 h-2.5 rounded-full block " +
+                                        (index === indiceAtual ? "bg-white" : "bg-white/50")
+                                    }
+                                />
+                            </button>
                         ))}
                     </div>
                 </>

@@ -57,6 +57,7 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
         <>
           <button
             onClick={irParaAnterior}
+            aria-label="Foto anterior"
             className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/70"
           >
             ‹
@@ -64,6 +65,7 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
 
           <button
             onClick={irParaProxima}
+            aria-label="Próxima foto"
             className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/70"
           >
             ›
@@ -74,11 +76,16 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
               <button
                 key={foto.id}
                 onClick={() => setIndiceAtual(index)}
-                className={
-                  "w-2.5 h-2.5 rounded-full " +
-                  (index === indiceAtual ? "bg-white" : "bg-white/50")
-                }
-              />
+                aria-label={"Ir para foto " + (index + 1)}
+                className="w-9 h-9 flex items-center justify-center"
+              >
+                <span
+                  className={
+                    "w-2.5 h-2.5 rounded-full block " +
+                    (index === indiceAtual ? "bg-white" : "bg-white/50")
+                  }
+                />
+              </button>
             ))}
           </div>
         </>
