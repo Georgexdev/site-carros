@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Phone, MessageCircle, Menu, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 type Props = {
     nomeEmpresa?: string;
@@ -13,6 +14,7 @@ type Props = {
 export default function Header({ nomeEmpresa, logoUrl }: Props) {
     const [menuAberto, setMenuAberto] = useState(false);
     const [rolado, setRolado] = useState(false);
+    const [temBannerAtivo, setTemBannerAtivo] = useState(false);
     const pathname = usePathname();
     const isHome = pathname === "/";
     const isAdmin = pathname.startsWith("/admin") || pathname === "/login";
@@ -26,14 +28,30 @@ export default function Header({ nomeEmpresa, logoUrl }: Props) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const transparente = isHome && !rolado;
+    useEffect(() => {
+        if (!isHome) return;
+
+        async function verificarBanner() {
+            const { data } = await supabase
+                .from("banners")
+                .select("id")
+                .eq("ativo", true)
+                .limit(1);
+
+            setTemBannerAtivo(!!data && data.length > 0);
+        }
+
+        verificarBanner();
+    }, [isHome]);
+
+    const transparente = isHome && temBannerAtivo && !rolado;
 
     if (isAdmin) {
         return null;
     }
 
     return (
-        <header className={isHome ? "fixed top-0 left-0 right-0 z-50" : "relative"}>
+        <header className={isHome && temBannerAtivo ? "fixed top-0 left-0 right-0 z-50" : "relative"}>
             <div
                 className={
                     "text-white text-xs py-2 px-4 flex justify-between items-center transition-colors duration-300 " +
@@ -103,60 +121,62 @@ export default function Header({ nomeEmpresa, logoUrl }: Props) {
                 </button>
             </div>
 
-            {menuAberto && (
-                <div className="fixed inset-0 z-50 md:hidden">
-                    <div
-                        className="absolute inset-0 bg-black/50"
-                        onClick={() => setMenuAberto(false)}
-                    />
-
-                    <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-lg flex flex-col p-6">
-                        <button
-                            type="button"
+            {
+                menuAberto && (
+                    <div className="fixed inset-0 z-50 md:hidden">
+                        <div
+                            className="absolute inset-0 bg-black/50"
                             onClick={() => setMenuAberto(false)}
-                            className="self-end mb-6 text-gray-500 w-11 h-11 flex items-center justify-center -mr-2"
-                            aria-label="Fechar menu"
-                        >
-                            <X size={24} />
-                        </button>
+                        />
 
-                        <nav className="flex flex-col gap-5 text-gray-800 font-medium">
-                            <Link href="/estoque" onClick={() => setMenuAberto(false)}>
-                                ESTOQUE
-                            </Link>
-                            <Link href="/financie" onClick={() => setMenuAberto(false)}>
-                                FINANCIE
-                            </Link>
-                            <Link href="/vender" onClick={() => setMenuAberto(false)}>
-                                VENDA SEU CARRO
-                            </Link>
-                            <Link href="/sobre" onClick={() => setMenuAberto(false)}>
-                                SOBRE
-                            </Link>
-                        </nav>
-
-                        <div className="mt-8 pt-6 border-t flex flex-col gap-4">
-                            <a
-                                href="tel:5571999999999"
-                                className="flex items-center gap-2 text-gray-700"
+                        <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-lg flex flex-col p-6">
+                            <button
+                                type="button"
+                                onClick={() => setMenuAberto(false)}
+                                className="self-end mb-6 text-gray-500 w-11 h-11 flex items-center justify-center -mr-2"
+                                aria-label="Fechar menu"
                             >
-                                <Phone size={18} />
-                                (71) 99999-9999
-                            </a>
+                                <X size={24} />
+                            </button>
 
-                            <a
-                                href="https://wa.me/5571999999999"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg w-fit"
-                            >
-                                <MessageCircle size={18} />
-                                WhatsApp
-                            </a>
-                        </div>
+                            <nav className="flex flex-col gap-5 text-gray-800 font-medium">
+                                <Link href="/estoque" onClick={() => setMenuAberto(false)}>
+                                    ESTOQUE
+                                </Link>
+                                <Link href="/financie" onClick={() => setMenuAberto(false)}>
+                                    FINANCIE
+                                </Link>
+                                <Link href="/vender" onClick={() => setMenuAberto(false)}>
+                                    VENDA SEU CARRO
+                                </Link>
+                                <Link href="/sobre" onClick={() => setMenuAberto(false)}>
+                                    SOBRE
+                                </Link>
+                            </nav>
+
+                            <div className="mt-8 pt-6 border-t flex flex-col gap-4">
+                                <a
+                                    href="tel:5571999999999"
+                                    className="flex items-center gap-2 text-gray-700"
+                                >
+                                    <Phone size={18} />
+                                    (71) 99999-9999
+                                </a>
+
+                                <a
+                                    href="https://wa.me/5571999999999"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg w-fit"
+                                >
+                                    <MessageCircle size={18} />
+                                    WhatsApp
+                                </a>
+                            </div>
+                        </div >
                     </div>
-                </div>
-            )}
-        </header>
+                )
+            }
+        </header >
     );
 }
