@@ -81,7 +81,7 @@ export default function Footer({ nomeEmpresa, logoUrl }: Props) {
           <div className="space-y-3 text-sm text-gray-300">
             <p className="flex items-start gap-2">
               <MapPin size={18} className="flex-shrink-0 mt-0.5 text-[var(--cor-primaria)]" />
-              Avenida Exemplo, 1000 - Bairro Modelo - Salvador/BA - CEP 40000-000
+              Av. Pres. Castelo Branco - Nazaré, Salvador - BA, 40045-050
             </p>
 
             <a href="tel:5571999999999" className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors w-fit">
@@ -109,8 +109,8 @@ export default function Footer({ nomeEmpresa, logoUrl }: Props) {
 
       <div className="max-w-6xl mx-auto px-6 pb-14">
         <div className="rounded-xl overflow-hidden h-64 border border-white/10">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.0!2d-38.5!3d-12.97!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzEyLjAiUyAzOMKwMzAnMDAuMCJX!5e0!3m2!1spt-BR!2sbr!4v1600000000000"
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5148.499987944242!2d-38.5029791!3d-12.9748712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x71605004d36662b%3A0x35033bc728680985!2sMALU%20VEICULOS!5e1!3m2!1spt-BR!2sbr!4v1790127430018!5m2!1spt-BR!2sbr"
             width="100%"
             height="100%"
             style={{ border: 0 }}
