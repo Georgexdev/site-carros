@@ -112,7 +112,7 @@ export default function Home() {
           {!filtroAtivo && (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {carrosDestacados.map((carro) => (
+                {carrosOrdenados.filter((carro) => carro.destaque_home).map((carro) => (
                   <CarroCard key={carro.id} carro={carro} />
                 ))}
               </div>
