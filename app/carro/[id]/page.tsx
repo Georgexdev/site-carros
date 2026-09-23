@@ -89,15 +89,17 @@ export default async function DetalhesCarro({ params }: Props) {
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-4 text-gray-700">
-            {infoItens.map((item, index) => {
-              const Icone = item.icone;
-              return (
-                <p key={index} className="flex items-center gap-2">
-                  <Icone size={18} className="text-gray-500 shrink-0" />
-                  {item.texto}
-                </p>
-              );
-            })}
+            {infoItens
+              .filter((item) => item.texto && item.texto.trim() !== "")
+              .map((item, index) => {
+                const Icone = item.icone;
+                return (
+                  <p key={index} className="flex items-center gap-2">
+                    <Icone size={18} className="text-gray-500 shrink-0" />
+                    {item.texto}
+                  </p>
+                );
+              })}
           </div>
 
           <p className="text-3xl font-bold mt-6">
