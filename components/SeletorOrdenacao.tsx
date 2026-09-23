@@ -1,7 +1,6 @@
 "use client";
 
-export type TipoOrdenacao = "relevancia" | "menor_preco" | "maior_preco" | "ano_recente" | "menor_km";
-
+export type TipoOrdenacao = "relevancia" | "menor_preco" | "maior_preco" | "ano_recente" | "ano_antigo" | "menor_km" | "maior_km";
 type Props = {
   valor: TipoOrdenacao;
   onSelecionar: (valor: TipoOrdenacao) => void;
@@ -21,7 +20,7 @@ export default function SeletorOrdenacao({ valor, onSelecionar }: Props) {
       <option value="ano_antigo">Ano mais antigo</option>
       <option value="maior_km">Maior Km</option>
       <option value="menor_km">Menor km</option>
-    
+
 
     </select>
   );

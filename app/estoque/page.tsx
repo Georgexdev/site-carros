@@ -48,8 +48,12 @@ export default function Estoque() {
         return b.preco - a.preco;
       case "ano_recente":
         return b.ano_modelo - a.ano_modelo;
+      case "ano_antigo":
+        return a.ano_modelo - b.ano_modelo;
       case "menor_km":
         return a.km - b.km;
+      case "maior_km":
+        return b.km - a.km;
       default:
         return 0;
     }
