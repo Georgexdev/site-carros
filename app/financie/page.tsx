@@ -131,6 +131,7 @@ export default function Financie() {
                         Nossos consultores avaliam qual é a melhor taxa de juros para o seu perfil.
                     </p>
                     <button
+                        type="button"
                         onClick={rolarParaFormulario}
                         className="mt-4 bg-green-500 hover:bg-green-600 text-white font-medium px-5 py-2 rounded-lg"
                     >
@@ -181,6 +182,7 @@ export default function Financie() {
                                     <p className="text-sm text-gray-500">{veiculoSelecionado.versao}</p>
                                 </div>
                                 <button
+                                    type="button"
                                     onClick={() => setListaAberta(true)}
                                     className="text-sm text-blue-600 hover:underline shrink-0"
                                 >
@@ -189,6 +191,7 @@ export default function Financie() {
                             </div>
                         ) : (
                             <button
+                                type="button"
                                 onClick={() => setListaAberta(!listaAberta)}
                                 className="w-full flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-3 text-gray-500 hover:border-black"
                             >
@@ -202,6 +205,7 @@ export default function Financie() {
                                 <div className="flex items-center justify-between px-3 py-2 border-b bg-gray-50">
                                     <span className="text-sm text-gray-500">Escolha um veículo</span>
                                     <button
+                                        type="button"
                                         onClick={() => setListaAberta(false)}
                                         className="text-sm text-gray-500 hover:text-black flex items-center gap-1"
                                     >
@@ -221,6 +225,7 @@ export default function Financie() {
 
                                     {carros.map((carro) => (
                                         <button
+                                            type="button"
                                             key={carro.id}
                                             onClick={() => {
                                                 setVeiculoSelecionado(carro);
@@ -252,48 +257,74 @@ export default function Financie() {
                     <div>
                         <h3 className="font-semibold text-gray-800 mb-3">Dados de Contato</h3>
                         <div className="space-y-3">
-                            <div className="relative">
-                                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Nome completo"
-                                    value={nome}
-                                    onChange={(e) => setNome(e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                                />
+                            <div>
+                                <label htmlFor="nome-financiamento" className="block text-sm text-gray-600 mb-1">
+                                    Nome completo
+                                </label>
+                                <div className="relative">
+                                    <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        id="nome-financiamento"
+                                        type="text"
+                                        placeholder="Digite seu nome completo"
+                                        value={nome}
+                                        onChange={(e) => setNome(e.target.value)}
+                                        required
+                                        className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="relative">
-                                <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                <input
-                                    type="text"
-                                    placeholder="(71) 99999-9999"
-                                    value={celular}
-                                    onChange={(e) => setCelular(formatarCelular(e.target.value))}
-                                    className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                                />
+                            <div>
+                                <label htmlFor="celular-financiamento" className="block text-sm text-gray-600 mb-1">
+                                    Celular
+                                </label>
+                                <div className="relative">
+                                    <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        id="celular-financiamento"
+                                        type="text"
+                                        placeholder="(71) 99999-9999"
+                                        value={celular}
+                                        onChange={(e) => setCelular(formatarCelular(e.target.value))}
+                                        required
+                                        className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                    />
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div className="relative">
-                                    <Calendar size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                    <input
-                                        type="date"
-                                        value={dataNascimento}
-                                        onChange={(e) => setDataNascimento(e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-gray-600"
-                                    />
+                                <div>
+                                    <label htmlFor="nascimento-financiamento" className="block text-sm text-gray-600 mb-1">
+                                        Data de nascimento (opcional)
+                                    </label>
+                                    <div className="relative">
+                                        <Calendar size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                        <input
+                                            id="nascimento-financiamento"
+                                            type="date"
+                                            value={dataNascimento}
+                                            onChange={(e) => setDataNascimento(e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-gray-600"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="relative">
-                                    <IdCard size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                    <input
-                                        type="text"
-                                        placeholder="CPF (opcional)"
-                                        value={cpf}
-                                        onChange={(e) => setCpf(formatarCpf(e.target.value))}
-                                        className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                                    />
+                                <div>
+                                    <label htmlFor="cpf-financiamento" className="block text-sm text-gray-600 mb-1">
+                                        CPF (opcional)
+                                    </label>
+                                    <div className="relative">
+                                        <IdCard size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                        <input
+                                            id="cpf-financiamento"
+                                            type="text"
+                                            placeholder="000.000.000-00"
+                                            value={cpf}
+                                            onChange={(e) => setCpf(formatarCpf(e.target.value))}
+                                            className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -302,6 +333,7 @@ export default function Financie() {
                     {erro && <p className="text-red-600 text-sm">{erro}</p>}
 
                     <button
+                        type="button"
                         onClick={handleSolicitar}
                         className="w-full bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg py-3"
                     >

@@ -94,8 +94,9 @@ export default function Header({ nomeEmpresa, logoUrl }: Props) {
                 </div>
 
                 <button
+                    type="button"
                     onClick={() => setMenuAberto(true)}
-                    className="md:hidden"
+                    className="md:hidden w-11 h-11 flex items-center justify-center -mr-2"
                     aria-label="Abrir menu"
                 >
                     <Menu size={26} />
@@ -111,8 +112,9 @@ export default function Header({ nomeEmpresa, logoUrl }: Props) {
 
                     <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-lg flex flex-col p-6">
                         <button
+                            type="button"
                             onClick={() => setMenuAberto(false)}
-                            className="self-end mb-6 text-gray-500"
+                            className="self-end mb-6 text-gray-500 w-11 h-11 flex items-center justify-center -mr-2"
                             aria-label="Fechar menu"
                         >
                             <X size={24} />
