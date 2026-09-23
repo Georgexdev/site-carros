@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import CarrosselFotos from "@/components/CarrosselFotos";
 import BotaoInteresseVeiculo from "@/components/BotaoInteresseVeiculo";
 import { marcasDisponiveis } from "@/data/marcas";
+import { coresDisponiveis } from "@/data/opcoesCarro";
 import { Calendar, Gauge, Fuel, Settings2, Palette } from "lucide-react";
 
 type Props = {
@@ -49,8 +50,9 @@ export default async function DetalhesCarro({ params }: Props) {
     { icone: Gauge, texto: carroTipado.km.toLocaleString("pt-BR") + " km" },
     { icone: Fuel, texto: carroTipado.combustivel },
     { icone: Settings2, texto: carroTipado.cambio },
-    { icone: Palette, texto: carroTipado.cor },
   ];
+
+  const corEncontrada = coresDisponiveis.find((c) => c.nome === carroTipado.cor);
 
   return (
     <main className="max-w-4xl mx-auto p-6">
@@ -100,6 +102,20 @@ export default async function DetalhesCarro({ params }: Props) {
                   </p>
                 );
               })}
+
+            {carroTipado.cor && carroTipado.cor.trim() !== "" && (
+              <p className="flex items-center gap-2">
+                {corEncontrada ? (
+                  <span
+                    className="w-[18px] h-[18px] rounded-full border border-gray-300 shrink-0"
+                    style={{ backgroundColor: corEncontrada.hex }}
+                  />
+                ) : (
+                  <Palette size={18} className="text-gray-500 shrink-0" />
+                )}
+                {carroTipado.cor}
+              </p>
+            )}
           </div>
 
           <p className="text-3xl font-bold mt-6">
