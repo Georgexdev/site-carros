@@ -94,7 +94,7 @@ export default function Estoque() {
         {totalDisponiveis} veículo{totalDisponiveis !== 1 ? "s" : ""} disponível{totalDisponiveis !== 1 ? "eis" : ""} no momento
       </p>
 
-      <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} />
+      <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} carros={carros} />
 
       <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
         <input

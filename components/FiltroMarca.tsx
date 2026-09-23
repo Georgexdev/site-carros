@@ -1,16 +1,26 @@
 "use client";
 
 import { marcasDisponiveis } from "@/data/marcas";
+import { Carro } from "@/types/car";
 
 type Props = {
   marcaSelecionada: string;
   onSelecionar: (marca: string) => void;
+  carros: Carro[];
 };
 
-export default function FiltroMarca({ marcaSelecionada, onSelecionar }: Props) {
+export default function FiltroMarca({ marcaSelecionada, onSelecionar, carros }: Props) {
+  const marcasComEstoque = marcasDisponiveis.filter((marca) =>
+    carros.some((carro) => carro.marca === marca.nome)
+  );
+
+  if (marcasComEstoque.length === 0) {
+    return null;
+  }
+
   return (
     <div className="flex gap-3 overflow-x-auto pb-3">
-      {marcasDisponiveis.map(({ nome, Logo }) => {
+      {marcasComEstoque.map(({ nome, Logo }) => {
         const selecionada = marcaSelecionada === nome;
         return (
           <button

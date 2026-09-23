@@ -100,7 +100,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto p-6">
           <h1 className="text-3xl font-bold mb-6">Carros Disponíveis</h1>
 
-          <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} />
+          <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} carros={carros} />
 
           <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
             <input
