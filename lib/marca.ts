@@ -8,9 +8,9 @@ export const MARCA = {
   descricao:
     "Encontre o carro ideal pra você com quem entende do assunto. Estoque atualizado, condições facilitadas e atendimento de verdade.",
 
-  // TODO: trocar pelo número real da loja (apenas dígitos, com DDI 55).
-  whatsapp: "5571999999999",
-  telefoneExibicao: "(71) 99999-9999",
+  // Número da loja: apenas dígitos, com DDI 55 + DDD.
+  whatsapp: "5571984296345",
+  telefoneExibicao: "(71) 98429-6345",
 
   // Deixe vazio para esconder o e-mail do rodapé.
   email: "",
@@ -30,7 +30,7 @@ export const MARCA = {
   horarios: [
     { dias: "Segunda a sexta", horario: "8h às 17h" },
     { dias: "Sábado", horario: "8h às 12h" },
-    { dias: "Domingo", horario: "Fechado" },
+    { dias: "Domingo e Feriados", horario: "Fechado" },
   ],
   horarioResumo: "Seg a Sex, 8h às 17h · Sáb, 8h às 12h",
 };
