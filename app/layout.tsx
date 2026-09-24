@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   description: "Confira nosso estoque de veículos, simule seu financiamento e fale direto com nossa equipe pelo WhatsApp.",
 };
 
+// As páginas buscam os dados da loja no banco de novo a cada 60 segundos.
+// Assim, o que for alterado no painel aparece no site sem precisar de novo deploy.
+export const revalidate = 60;
+
 export const viewport: Viewport = {
   themeColor: "#0B0B0B",
 };
