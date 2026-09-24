@@ -2,13 +2,14 @@
 
 import { Carro } from "@/types/car";
 import { MessageCircle } from "lucide-react";
-import { linkWhatsApp } from "@/lib/marca";
+import { useLoja } from "@/components/LojaProvider";
 
 type Props = {
   carro: Carro;
 };
 
 export default function BotaoInteresseVeiculo({ carro }: Props) {
+  const { linkWhatsApp } = useLoja();
   function handleClick() {
     const mensagem =
       "Olá! Tenho interesse no veículo " +

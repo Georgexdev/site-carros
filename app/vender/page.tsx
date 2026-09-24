@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, MessageCircle, Phone, User } from "lucide-react";
-import { linkWhatsApp } from "@/lib/marca";
+import { useLoja } from "@/components/LojaProvider";
 
 const vantagens = [
     { titulo: "Use seu carro como entrada", texto: "Na troca, o valor do seu usado abate direto do próximo carro." },
@@ -18,6 +18,7 @@ const tituloGrupo = "text-xs font-bold tracking-[0.2em] uppercase text-gold-text
 type Motivo = "troca" | "venda" | null;
 
 export default function VendaSeuCarro() {
+    const { linkWhatsApp } = useLoja();
     const [marca, setMarca] = useState("");
     const [modelo, setModelo] = useState("");
     const [ano, setAno] = useState("");

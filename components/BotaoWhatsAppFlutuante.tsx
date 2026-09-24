@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, ChevronRight, ChevronLeft } from "lucide-react";
-import { linkWhatsApp } from "@/lib/marca";
+import { useLoja } from "@/components/LojaProvider";
 
 export default function BotaoWhatsAppFlutuante() {
+  const { linkWhatsApp } = useLoja();
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin") || pathname === "/login";
   const [minimizado, setMinimizado] = useState(false);

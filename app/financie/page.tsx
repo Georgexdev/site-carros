@@ -6,7 +6,7 @@ import { EMPRESA_ID } from "@/lib/empresa";
 import { Carro } from "@/types/car";
 import { Phone, User, Calendar, IdCard, Car as CarIcon, X, ShieldCheck } from "lucide-react";
 import { bancosParceiros } from "@/data/bancos";
-import { linkWhatsApp } from "@/lib/marca";
+import { useLoja } from "@/components/LojaProvider";
 
 const passos = [
     { titulo: "Escolha o veículo", texto: "Selecione o carro do nosso estoque que você tem interesse em financiar." },
@@ -21,6 +21,7 @@ const iconeCampo = "absolute left-4 top-1/2 -translate-y-1/2 text-gold-text";
 const tituloGrupo = "text-xs font-bold tracking-[0.2em] uppercase text-gold-text mb-3";
 
 export default function Financie() {
+    const { linkWhatsApp } = useLoja();
     const [carros, setCarros] = useState<Carro[]>([]);
     const [fotosCapa, setFotosCapa] = useState<Record<string, string>>({});
     const [carregandoCarros, setCarregandoCarros] = useState(true);
