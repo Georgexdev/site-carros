@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { Car, ChevronLeft, ChevronRight } from "lucide-react";
 import { FotoCarro } from "@/types/car";
 
 type Props = {
@@ -39,56 +40,66 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
     }
   }
 
+  if (fotos.length === 0) {
+    return (
+      <div className="h-72 md:h-[460px] rounded-2xl bg-malu-surface flex flex-col items-center justify-center gap-3">
+        <Car size={120} strokeWidth={0.6} className="text-gold/60" aria-hidden="true" />
+        <span className="text-xs font-semibold tracking-[0.24em] uppercase text-muted-soft">Fotos em breve</span>
+      </div>
+    );
+  }
+
   const fotoAtual = fotos[indiceAtual];
+  const botaoSeta =
+    "absolute top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-malu-black/60 border border-gold/50 text-gold-light flex items-center justify-center hover:bg-malu-black/80 transition-colors";
 
   return (
-    <div
-      className="relative"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      <img
-        src={fotoAtual.url}
-        alt={altText}
-        className={"w-full h-80 object-cover " + (vendido ? "grayscale opacity-70" : "")}
-      />
+    <div className="flex flex-col gap-3">
+      <div
+        className="relative h-72 md:h-[460px] rounded-2xl overflow-hidden bg-malu-surface"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <img
+          src={fotoAtual.url}
+          alt={altText + " – foto " + (indiceAtual + 1)}
+          className={"w-full h-full object-cover " + (vendido ? "grayscale opacity-70" : "")}
+        />
+
+        {fotos.length > 1 && (
+          <>
+            <button onClick={irParaAnterior} aria-label="Foto anterior" className={botaoSeta + " left-4"}>
+              <ChevronLeft size={22} aria-hidden="true" />
+            </button>
+
+            <button onClick={irParaProxima} aria-label="Próxima foto" className={botaoSeta + " right-4"}>
+              <ChevronRight size={22} aria-hidden="true" />
+            </button>
+
+            <span className="absolute right-4 bottom-4 px-3 py-1 rounded-full bg-malu-black/70 text-gold-light text-[13px] font-semibold">
+              {indiceAtual + 1} / {fotos.length}
+            </span>
+          </>
+        )}
+      </div>
 
       {fotos.length > 1 && (
-        <>
-          <button
-            onClick={irParaAnterior}
-            aria-label="Foto anterior"
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/70"
-          >
-            ‹
-          </button>
-
-          <button
-            onClick={irParaProxima}
-            aria-label="Próxima foto"
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-black/70"
-          >
-            ›
-          </button>
-
-          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
-            {fotos.map((foto, index) => (
-              <button
-                key={foto.id}
-                onClick={() => setIndiceAtual(index)}
-                aria-label={"Ir para foto " + (index + 1)}
-                className="w-9 h-9 flex items-center justify-center"
-              >
-                <span
-                  className={
-                    "w-2.5 h-2.5 rounded-full block " +
-                    (index === indiceAtual ? "bg-white" : "bg-white/50")
-                  }
-                />
-              </button>
-            ))}
-          </div>
-        </>
+        <div className="flex gap-3 overflow-x-auto pb-1">
+          {fotos.map((foto, index) => (
+            <button
+              key={foto.id}
+              onClick={() => setIndiceAtual(index)}
+              aria-label={"Ver foto " + (index + 1)}
+              aria-current={index === indiceAtual}
+              className={
+                "shrink-0 w-24 h-16 md:w-32 md:h-20 rounded-xl overflow-hidden border-2 transition-all " +
+                (index === indiceAtual ? "border-gold" : "border-transparent opacity-70 hover:opacity-100")
+              }
+            >
+              <img src={foto.url} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Carro } from "@/types/car";
 import { MessageCircle, Eye } from "lucide-react";
+import { linkWhatsApp } from "@/lib/marca";
 
 type Props = {
     carro: Carro;
@@ -23,8 +24,7 @@ export default function ModalInteresseCarro({ carro, onFechar }: Props) {
             carro.marca + " " + carro.modelo + " " + carro.versao +
             " (Ano " + carro.ano_fabricacao + "/" + carro.ano_modelo + "). Podem me passar mais informações?";
 
-        const url = "https://wa.me/5571999999999?text=" + encodeURIComponent(mensagem);
-        window.open(url, "_blank");
+        window.open(linkWhatsApp(mensagem), "_blank");
         onFechar();
     }
 
@@ -34,28 +34,30 @@ export default function ModalInteresseCarro({ carro, onFechar }: Props) {
             onClick={onFechar}
         >
             <div
-                className="bg-white rounded-lg w-full max-w-sm p-6"
+                role="dialog"
+                aria-modal="true"
+                aria-label={carro.marca + " " + carro.modelo}
+                className="bg-white rounded-2xl border-t-4 border-gold w-full max-w-sm p-6"
                 onClick={(e) => e.stopPropagation()}
             >
-                <h3 className="text-lg font-bold mb-1">
-                    {carro.marca} {carro.modelo}
-                </h3>
-                <p className="text-gray-500 text-sm mb-6">{carro.versao}</p>
+                <span className="text-xs font-bold tracking-[0.2em] uppercase text-gold-text">{carro.marca}</span>
+                <h3 className="font-display text-2xl text-ink mt-1">{carro.modelo}</h3>
+                <p className="text-muted text-sm mb-6">{carro.versao}</p>
 
                 <div className="space-y-3">
                     <button
                         onClick={handleVerDetalhes}
-                        className="w-full flex items-center justify-center gap-2 border rounded-lg py-3 hover:bg-gray-50"
+                        className="w-full h-12 flex items-center justify-center gap-2 border border-line-strong rounded-xl font-semibold hover:border-gold transition-colors"
                     >
-                        <Eye size={18} />
+                        <Eye size={18} aria-hidden="true" />
                         Ver detalhes completos
                     </button>
 
                     <button
                         onClick={handleInformarInteresse}
-                        className="w-full flex items-center justify-center gap-2 bg-green-500 text-white rounded-lg py-3 hover:bg-green-600"
+                        className="w-full h-12 flex items-center justify-center gap-2 bg-whatsapp hover:bg-whatsapp-hover text-white rounded-xl font-bold transition-colors"
                     >
-                        <MessageCircle size={18} />
+                        <MessageCircle size={18} aria-hidden="true" />
                         Informar interesse
                     </button>
                 </div>

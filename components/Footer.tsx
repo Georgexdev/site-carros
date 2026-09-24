@@ -3,31 +3,22 @@
 import { usePathname } from "next/navigation";
 import { MapPin, Phone, MessageCircle, Mail } from "lucide-react";
 import Link from "next/link";
-
-type Props = {
-  nomeEmpresa?: string;
-  logoUrl?: string;
-};
+import { MARCA, linkTelefone, linkWhatsApp } from "@/lib/marca";
+import LogoMalu from "@/components/LogoMalu";
 
 function IconeInstagram() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24">
-      <defs>
-        <linearGradient id="gradienteInstagram" x1="0%" y1="100%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#FFDD55" />
-          <stop offset="25%" stopColor="#FF543E" />
-          <stop offset="50%" stopColor="#C837AB" />
-          <stop offset="100%" stopColor="#5A6EE8" />
-        </linearGradient>
-      </defs>
-      <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#gradienteInstagram)" />
-      <circle cx="12" cy="12" r="4.2" fill="none" stroke="white" strokeWidth="1.8" />
-      <circle cx="17.2" cy="6.8" r="1.1" fill="white" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" />
     </svg>
   );
 }
 
-export default function Footer({ nomeEmpresa, logoUrl }: Props) {
+const tituloColuna = "text-xs font-bold uppercase tracking-[0.22em] text-gold mb-5";
+
+export default function Footer() {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin") || pathname === "/login";
 
@@ -35,97 +26,99 @@ export default function Footer({ nomeEmpresa, logoUrl }: Props) {
     return null;
   }
 
-  const nome = nomeEmpresa || "Concessionária Teste";
-
   return (
-    <footer className="bg-[var(--cor-secundaria)] text-white mt-auto">
-      <div className="h-1 bg-[var(--cor-primaria)]" />
-
-      <div className="max-w-6xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div>
-          {logoUrl ? (
-            <img src={logoUrl} alt={nome} className="h-14 w-auto mb-4" />
-          ) : (
-            <h3 className="text-xl font-bold mb-4">{nome}</h3>
-          )}
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Encontre o carro ideal pra você com quem entende do assunto. Estoque atualizado,
-            condições facilitadas e atendimento de verdade.
-          </p>
+    <footer className="bg-malu-black text-[#D8D0C0] border-t border-gold/40 mt-auto">
+      <div className="max-w-6xl mx-auto px-6 pt-16 pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.4fr] gap-10 lg:gap-12">
+        <div className="flex flex-col gap-5">
+          <Link href="/" aria-label={MARCA.nome + ", página inicial"} className="w-fit">
+            <LogoMalu comIcone={false} />
+          </Link>
+          <p className="text-sm text-muted-dark leading-relaxed">{MARCA.descricao}</p>
 
           <a
-            href="https://www.instagram.com/maluveiculos_?stkn=MWJhc202ZWdkYmNxcg=="
+            href={MARCA.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-colors mt-5"
-            aria-label="Instagram"
+            className="flex items-center gap-3 w-fit text-sm font-semibold text-[#E9E3D6] hover:text-gold transition-colors"
           >
-            <IconeInstagram />
+            <span className="w-11 h-11 rounded-full border border-gold/50 flex items-center justify-center text-gold">
+              <IconeInstagram />
+            </span>
+            {MARCA.instagramUsuario}
           </a>
         </div>
 
         <div>
-          <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-5">Horário de Atendimento</h4>
-          <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm text-gray-300 max-w-[220px]">
-            <span>Segunda a Sexta</span>
-            <span className="text-gray-400 text-right">8h às 17h</span>
-            <span>Sábado</span>
-            <span className="text-gray-400 text-right">8h às 12h</span>
-            <span>Domingo</span>
-            <span className="text-gray-400 text-right">Fechado</span>
-          </div>
+          <h2 className={tituloColuna}>Navegação</h2>
+          <ul className="space-y-3 text-sm">
+            <li><Link href="/estoque" className="hover:text-gold transition-colors">Estoque</Link></li>
+            <li><Link href="/financie" className="hover:text-gold transition-colors">Financiamento</Link></li>
+            <li><Link href="/vender" className="hover:text-gold transition-colors">Venda ou troque seu carro</Link></li>
+            <li><Link href="/sobre" className="hover:text-gold transition-colors">Sobre a MALU</Link></li>
+          </ul>
         </div>
 
         <div>
-          <h4 className="text-xs uppercase tracking-widest text-gray-400 mb-5">Contato</h4>
-          <div className="space-y-3 text-sm text-gray-300">
-            <p className="flex items-start gap-2">
-              <MapPin size={18} className="flex-shrink-0 mt-0.5 text-[var(--cor-primaria)]" />
-              Av. Pres. Castelo Branco - Nazaré, Salvador - BA, 40045-050
-            </p>
+          <h2 className={tituloColuna}>Horário</h2>
+          <dl className="space-y-3 text-sm">
+            {MARCA.horarios.map((h) => (
+              <div key={h.dias} className="flex justify-between gap-4">
+                <dt>{h.dias}</dt>
+                <dd className={h.horario === "Fechado" ? "text-muted-soft" : "text-[#E9E3D6] font-semibold"}>{h.horario}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
 
-            <a href="tel:5571999999999" className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors w-fit">
-              <Phone size={18} className="text-[var(--cor-primaria)]" />
-              (71) 99999-9999
+        <div>
+          <h2 className={tituloColuna}>Contato</h2>
+          <div className="space-y-3 text-sm">
+            <a
+              href={MARCA.endereco.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-3 hover:text-gold transition-colors"
+            >
+              <MapPin size={17} className="flex-shrink-0 mt-0.5 text-gold" aria-hidden="true" />
+              {MARCA.endereco.linha1}, {MARCA.endereco.cidade} · {MARCA.endereco.cep}
+            </a>
+
+            <a href={linkTelefone()} className="flex items-center gap-3 hover:text-gold transition-colors w-fit">
+              <Phone size={17} className="text-gold" aria-hidden="true" />
+              {MARCA.telefoneExibicao}
             </a>
 
             <a
-              href="https://wa.me/5571999999999"
+              href={linkWhatsApp()}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors w-fit"
+              className="flex items-center gap-3 hover:text-gold transition-colors w-fit"
             >
-              <MessageCircle size={18} className="text-[var(--cor-primaria)]" />
-              (71) 99999-9999
+              <MessageCircle size={17} className="text-gold" aria-hidden="true" />
+              WhatsApp
             </a>
 
-            <a href="mailto:contato@concessionariateste.com.br" className="flex items-center gap-2 hover:text-[var(--cor-primaria)] transition-colors w-fit">
-              <Mail size={18} className="text-[var(--cor-primaria)]" />
-              contato@concessionariateste.com.br
-            </a>
+            {MARCA.email && (
+              <a href={"mailto:" + MARCA.email} className="flex items-center gap-3 hover:text-gold transition-colors w-fit">
+                <Mail size={17} className="text-gold" aria-hidden="true" />
+                {MARCA.email}
+              </a>
+            )}
           </div>
         </div>
-      </div >
+      </div>
 
-      <div className="max-w-6xl mx-auto px-6 pb-14">
-        <div className="rounded-xl overflow-hidden h-64 border border-white/10">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5148.499987944242!2d-38.5029791!3d-12.9748712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x71605004d36662b%3A0x35033bc728680985!2sMALU%20VEICULOS!5e1!3m2!1spt-BR!2sbr!4v1790127430018!5m2!1spt-BR!2sbr"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+      <div className="border-t border-gold/20">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-soft text-center">
+          <span>
+            © {new Date().getFullYear()} {MARCA.nome}
+            {MARCA.cnpj && " · CNPJ " + MARCA.cnpj}
+          </span>
+          <Link href="/termos" className="text-muted-dark hover:text-gold underline transition-colors">
+            Termos de uso e privacidade
+          </Link>
         </div>
       </div>
-
-      <div className="border-t border-white/10 py-5 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-xs text-gray-500">
-        <span>© {new Date().getFullYear()} {nome}. Todos os direitos reservados.</span>
-        <Link href="/termos" className="hover:text-[var(--cor-primaria)] underline transition-colors">
-          Termos de Uso e Privacidade
-        </Link>
-      </div>
-    </footer >
+    </footer>
   );
 }

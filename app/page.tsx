@@ -1,13 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { ArrowRight, Repeat } from "lucide-react";
 import CarroCard from "@/components/CarroCard";
 import { supabase } from "@/lib/supabase";
 import { Carro } from "@/types/car";
 import FiltroMarca from "@/components/FiltroMarca";
 import BannerCarrossel from "@/components/BannerCarrossel";
-import SeletorOrdenacao, { TipoOrdenacao } from "@/components/SeletorOrdenacao";
-import Link from "next/link";
+import HeroInicio from "@/components/HeroInicio";
+import Diferenciais from "@/components/Diferenciais";
+import BarraBusca from "@/components/BarraBusca";
+import GradeCarrosCarregando from "@/components/GradeCarrosCarregando";
+import { TipoOrdenacao } from "@/components/SeletorOrdenacao";
+import { bancosParceiros } from "@/data/bancos";
 
 export default function Home() {
   const [busca, setBusca] = useState("");
@@ -81,91 +87,144 @@ export default function Home() {
 
   const filtroAtivo = termo !== "" || marcaFiltro !== "";
 
-  const carrosDestacados = carros.filter((carro) => carro.destaque_home);
-
-  if (carregando) {
-    return (
-      <main className="max-w-6xl mx-auto p-6">
-        <p className="text-gray-500">Carregando carros...</p>
-      </main>
-    );
-  }
+  const grade = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8";
 
   return (
-    <main>
-      <BannerCarrossel />
+    <div>
+      <BannerCarrossel semBanners={<HeroInicio />} />
 
-      <div className="max-w-6xl mx-auto p-6">
+      <Diferenciais />
 
-        <div className="max-w-6xl mx-auto p-6">
-          <h1 className="text-3xl font-bold mb-6">Carros Disponíveis</h1>
-
-          <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} carros={carros} />
-
-          <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
-            <input
-              type="text"
-              placeholder="Buscar por marca, modelo ou versão..."
-              value={busca}
-              onChange={(e) => setBusca(e.target.value)}
-              className="flex-1 border rounded-lg px-4 py-3 text-lg"
-            />
-
-            <SeletorOrdenacao valor={ordenacao} onSelecionar={setOrdenacao} />
+      <section className="max-w-6xl mx-auto px-6 py-16 md:py-24 flex flex-col gap-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="flex flex-col gap-3">
+            <span className="text-xs md:text-[13px] font-bold tracking-[0.28em] uppercase text-gold-text">Estoque</span>
+            <h2 className="font-display text-4xl md:text-[44px] leading-tight text-ink">Carros disponíveis</h2>
           </div>
-          {!filtroAtivo && (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {carrosOrdenados.filter((carro) => carro.destaque_home).map((carro) => (
-                  <CarroCard key={carro.id} carro={carro} />
-                ))}
-              </div>
-
-              <div className="text-center mt-8">
-                <Link
-                  href="/estoque"
-                  className="inline-block bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 font-medium"
-                >
-                  Ver todos os nossos veículos
-                </Link>
-              </div>
-            </>
-          )}
-
-          {filtroAtivo && resultadosExatos.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {resultadosExatos.map((carro) => (
-                <CarroCard key={carro.id} carro={carro} />
-              ))}
-            </div>
-          )}
-
-          {mostrarSemelhantes && resultadosSemelhantes.length > 0 && (
-            <div>
-              <p className="text-gray-600 mb-4">
-                Não encontramos exatamente o que você buscou, mas talvez você goste destes:
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {resultadosSemelhantes.map((carro) => (
-                  <CarroCard key={carro.id} carro={carro} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {mostrarSemelhantes && resultadosSemelhantes.length === 0 && (
-            <p className="text-gray-600">
-              Nenhum carro encontrado para essa busca no momento.
-            </p>
-          )}
-
-          {filtroAtivo && !mostrarSemelhantes && resultadosExatos.length === 0 && (
-            <p className="text-gray-600">
-              Nenhum carro dessa marca disponível no momento.
-            </p>
-          )}
+          <Link
+            href="/estoque"
+            className="flex items-center gap-2 w-fit text-[15px] font-bold text-ink border-b-2 border-gold pb-1 hover:text-gold-text transition-colors"
+          >
+            Ver todo o estoque
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
         </div>
-      </div>
-    </main>
+
+        {carregando ? (
+          <GradeCarrosCarregando quantidade={3} />
+        ) : (
+          <>
+            <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} carros={carros} />
+
+            <BarraBusca busca={busca} onBuscar={setBusca} ordenacao={ordenacao} onOrdenar={setOrdenacao} />
+
+            {!filtroAtivo && (
+              <>
+                <div className={grade}>
+                  {carrosOrdenados.filter((carro) => carro.destaque_home).map((carro) => (
+                    <CarroCard key={carro.id} carro={carro} />
+                  ))}
+                </div>
+
+                <div className="text-center mt-2">
+                  <Link
+                    href="/estoque"
+                    className="inline-flex items-center gap-2 h-13 min-h-[52px] px-8 rounded-xl bg-malu-black text-gold-light hover:bg-gold hover:text-malu-black font-bold transition-colors"
+                  >
+                    Ver todos os nossos veículos
+                    <ArrowRight size={18} aria-hidden="true" />
+                  </Link>
+                </div>
+              </>
+            )}
+
+            {filtroAtivo && resultadosExatos.length > 0 && (
+              <div className={grade}>
+                {resultadosExatos.map((carro) => (
+                  <CarroCard key={carro.id} carro={carro} />
+                ))}
+              </div>
+            )}
+
+            {mostrarSemelhantes && resultadosSemelhantes.length > 0 && (
+              <div>
+                <p className="text-muted mb-4">
+                  Não encontramos exatamente o que você buscou, mas talvez você goste destes:
+                </p>
+                <div className={grade}>
+                  {resultadosSemelhantes.map((carro) => (
+                    <CarroCard key={carro.id} carro={carro} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {mostrarSemelhantes && resultadosSemelhantes.length === 0 && (
+              <p className="text-muted">Nenhum carro encontrado para essa busca no momento.</p>
+            )}
+
+            {filtroAtivo && !mostrarSemelhantes && resultadosExatos.length === 0 && (
+              <p className="text-muted">Nenhum carro dessa marca disponível no momento.</p>
+            )}
+          </>
+        )}
+      </section>
+
+      <section className="bg-malu-black">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="flex flex-col gap-5">
+            <span className="text-xs md:text-[13px] font-bold tracking-[0.28em] uppercase text-gold">Financiamento</span>
+            <h2 className="font-display text-4xl md:text-[44px] leading-tight text-[#F4EEE2]">Financie seu próximo carro</h2>
+            <p className="text-base md:text-[17px] leading-relaxed text-muted-dark">
+              Nossos consultores avaliam qual é a melhor taxa de juros para o seu perfil e te chamam no WhatsApp com a proposta.
+            </p>
+            <Link
+              href="/financie"
+              className="w-fit mt-2 h-14 px-7 flex items-center rounded-xl bg-gold hover:bg-gold-light text-malu-black font-bold transition-colors"
+            >
+              Solicitar análise
+            </Link>
+          </div>
+
+          <ul className="grid grid-cols-2 sm:grid-cols-4 gap-3" aria-label="Bancos parceiros">
+            {bancosParceiros.map((banco) => (
+              <li
+                key={banco.nome}
+                className="group h-20 rounded-xl bg-white/[0.04] border border-gold/20 flex items-center justify-center p-3"
+              >
+                <span className="bg-white rounded-lg w-full h-full flex items-center justify-center px-2">
+                  <img
+                    src={banco.logo}
+                    alt={banco.nome}
+                    className="max-h-8 max-w-full object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                  />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-6 py-16 md:py-24">
+        <div className="rounded-3xl bg-white border border-line overflow-hidden grid grid-cols-1 md:grid-cols-2">
+          <div className="p-8 md:p-12 flex flex-col gap-4 justify-center">
+            <span className="text-xs md:text-[13px] font-bold tracking-[0.28em] uppercase text-gold-text">Venda ou troca</span>
+            <h2 className="font-display text-3xl md:text-4xl leading-tight text-ink">Quer vender ou trocar seu carro?</h2>
+            <p className="text-base leading-relaxed text-muted">
+              Mande os dados do seu veículo e receba uma proposta da nossa equipe pelo WhatsApp.
+            </p>
+            <Link
+              href="/vender"
+              className="w-fit mt-2 h-12 px-6 flex items-center rounded-xl bg-malu-black text-gold-light hover:bg-gold hover:text-malu-black font-bold transition-colors"
+            >
+              Avaliar meu carro
+            </Link>
+          </div>
+          <div className="hidden md:flex bg-malu-surface items-center justify-center min-h-[280px]">
+            <Repeat size={110} strokeWidth={0.7} className="text-gold/60" aria-hidden="true" />
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

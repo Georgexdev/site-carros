@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { marcasDisponiveis } from "@/data/marcas";
-import { Calendar, Gauge } from "lucide-react";
+import { ArrowRight, Calendar, Car, Gauge } from "lucide-react";
 
 type Props = {
   carro: Carro;
@@ -33,59 +33,80 @@ export default function CarroCard({ carro }: Props) {
     buscarFoto();
   }, [carro.id]);
 
-  const imagemExibida = foto || "https://placehold.co/600x400?text=" + carro.modelo;
-
   const marcaEncontrada = marcasDisponiveis.find((m) => m.nome === carro.marca);
   const LogoMarca = marcaEncontrada?.Logo;
+  const anos = carro.ano_fabricacao + "/" + carro.ano_modelo;
 
   return (
     <Link
       href={"/carro/" + carro.id}
-      className="block relative border rounded-lg overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow"
+      className="group flex flex-col relative bg-white border border-line rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(28,26,23,0.04),0_8px_24px_rgba(28,26,23,0.06)] hover:shadow-[0_2px_4px_rgba(28,26,23,0.06),0_16px_36px_rgba(28,26,23,0.12)] hover:-translate-y-0.5 transition-all duration-200"
     >
-      {vendido && (
-        <div className="absolute top-4 left-0 bg-red-600 text-white font-bold px-4 py-1 z-10 rotate-[-20deg] -translate-x-2">
-          VENDIDO
-        </div>
-      )}
+      <div className="relative h-52 bg-malu-surface overflow-hidden">
+        {foto ? (
+          <img
+            src={foto}
+            alt={carro.marca + " " + carro.modelo}
+            className={
+              "w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300 " +
+              (vendido ? "grayscale opacity-60" : "")
+            }
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+            <Car size={64} strokeWidth={0.9} className="text-gold/60" aria-hidden="true" />
+            <span className="text-[11px] font-semibold tracking-[0.24em] uppercase text-muted-soft">Foto em breve</span>
+          </div>
+        )}
 
-      <img
-        src={imagemExibida}
-        alt={carro.marca + " " + carro.modelo}
-        className={"w-full h-48 object-cover " + (vendido ? "grayscale opacity-70" : "")}
-      />
+        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-malu-black/75 border border-gold/50 text-gold-light text-xs font-semibold">
+          {anos}
+        </span>
 
-      <div className="p-4">
+        {vendido && (
+          <span className="absolute top-3 right-3 px-3 py-1 rounded-md bg-malu-black text-gold text-xs font-bold tracking-[0.2em]">
+            VENDIDO
+          </span>
+        )}
+      </div>
+
+      <div className="p-5 flex flex-col gap-2.5 flex-1">
         <div className="flex items-center gap-2">
           {LogoMarca && (
-            <div className="w-6 h-6 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full">
+            <span className="w-6 h-6 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full [&>img]:w-full [&>img]:h-full">
               <LogoMarca size={24} />
-            </div>
+            </span>
           )}
-          <h2 className="text-lg font-bold">
-            {carro.marca} {carro.modelo}
-          </h2>
+          <span className="text-xs font-bold tracking-[0.2em] uppercase text-gold-text">{carro.marca}</span>
         </div>
 
-        <p className="text-gray-600">{carro.versao}</p>
+        <div>
+          <h3 className="text-xl font-bold leading-tight text-ink">{carro.modelo}</h3>
+          {carro.versao && <p className="text-sm text-muted mt-1">{carro.versao}</p>}
+        </div>
 
-        <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-          <span className="flex items-center gap-1">
-            <Calendar size={15} />
-            {carro.ano_fabricacao}/{carro.ano_modelo}
+        <div className="flex items-center gap-4 text-[13px] text-muted">
+          <span className="flex items-center gap-1.5">
+            <Calendar size={14} className="text-gold-text" aria-hidden="true" />
+            {anos}
           </span>
-          <span className="flex items-center gap-1">
-            <Gauge size={15} />
+          <span className="flex items-center gap-1.5">
+            <Gauge size={14} className="text-gold-text" aria-hidden="true" />
             {carro.km.toLocaleString("pt-BR")} km
           </span>
         </div>
 
-        <p className="text-xl font-semibold mt-2">
-          {carro.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-        </p>
-
-        <div className="mt-3 border border-black text-black text-center py-2 rounded-lg text-sm font-medium hover:bg-black hover:text-white transition-colors">
-          Ver mais
+        <div className="mt-auto pt-4 border-t border-[#EFE9DE] flex items-end justify-between gap-3">
+          <div className="flex flex-col">
+            <span className="text-xs text-muted">{vendido ? "Vendido" : "À vista"}</span>
+            <strong className="text-2xl font-bold tracking-tight text-ink">
+              {carro.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 })}
+            </strong>
+          </div>
+          <span className="h-11 px-4 flex items-center gap-2 rounded-lg bg-malu-black text-gold-light text-sm font-bold group-hover:bg-gold group-hover:text-malu-black transition-colors">
+            Ver detalhes
+            <ArrowRight size={16} aria-hidden="true" />
+          </span>
         </div>
       </div>
     </Link>
