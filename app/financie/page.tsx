@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { EMPRESA_ID } from "@/lib/empresa";
 import { Carro } from "@/types/car";
 import { Phone, User, Calendar, IdCard, Car as CarIcon, X, ShieldCheck } from "lucide-react";
 import { bancosParceiros } from "@/data/bancos";
@@ -35,11 +36,10 @@ export default function Financie() {
 
     useEffect(() => {
         async function buscarCarros() {
-            const { data: carrosData } = await supabase
-                .from("carros")
-                .select("*")
-                .eq("status", "disponivel")
-                .order("criado_em", { ascending: false });
+            let consulta = supabase.from("carros").select("*").eq("status", "disponivel");
+            if (EMPRESA_ID) consulta = consulta.eq("empresa_id", EMPRESA_ID);
+
+            const { data: carrosData } = await consulta.order("criado_em", { ascending: false });
 
             const carrosTipados = (carrosData as Carro[]) || [];
             setCarros(carrosTipados);
