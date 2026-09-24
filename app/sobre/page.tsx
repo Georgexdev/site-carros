@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { buscarEmpresa } from "@/lib/empresa";
 import { MARCA } from "@/lib/marca";
 import { Clock, Landmark, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
 
@@ -9,11 +9,7 @@ const valores = [
 ];
 
 export default async function Sobre() {
-  const { data: empresa } = await supabase
-    .from("empresas")
-    .select("nome, sobre")
-    .eq("nome", "Concessionária Teste")
-    .single();
+  const empresa = await buscarEmpresa("nome, sobre");
 
   const textoSobre = empresa?.sobre?.trim() || "Em breve, mais informações sobre nossa empresa.";
 
