@@ -1,5 +1,5 @@
 import { buscarEmpresa } from "@/lib/empresa";
-import { MARCA } from "@/lib/marca";
+import { COLUNAS_LOJA, montarDadosLoja } from "@/lib/loja";
 import { Clock, Landmark, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
 
 const valores = [
@@ -9,7 +9,9 @@ const valores = [
 ];
 
 export default async function Sobre() {
-  const empresa = await buscarEmpresa("nome, sobre");
+  const empresa =
+    (await buscarEmpresa("nome, sobre, " + COLUNAS_LOJA)) ?? (await buscarEmpresa("nome, sobre"));
+  const loja = montarDadosLoja(empresa);
 
   const textoSobre = empresa?.sobre?.trim() || "Em breve, mais informações sobre nossa empresa.";
 
@@ -43,13 +45,13 @@ export default async function Sobre() {
         <div className="rounded-3xl overflow-hidden bg-malu-black grid grid-cols-1 lg:grid-cols-[420px_minmax(0,1fr)]">
           <div className="p-8 md:p-11 flex flex-col gap-5">
             <span className="text-xs md:text-[13px] font-bold tracking-[0.28em] uppercase text-gold">Visite a loja</span>
-            <strong className="font-display font-normal text-3xl leading-tight text-[#F4EEE2]">{MARCA.endereco.linha1}</strong>
+            <strong className="font-display font-normal text-3xl leading-tight text-[#F4EEE2]">{loja.endereco.linha1}</strong>
             <span className="flex items-center gap-2 text-[15px] text-muted-dark">
               <MapPin size={16} className="text-gold" aria-hidden="true" />
-              {MARCA.endereco.cidade} · {MARCA.endereco.cep}
+              {loja.endereco.cidade} · {loja.endereco.cep}
             </span>
             <dl className="flex flex-col gap-2 text-[15px] text-muted-dark">
-              {MARCA.horarios.map((h) => (
+              {loja.horarios.map((h) => (
                 <div key={h.dias} className="flex items-center gap-2">
                   <Clock size={16} className="text-gold" aria-hidden="true" />
                   <dt>{h.dias}:</dt>
@@ -58,7 +60,7 @@ export default async function Sobre() {
               ))}
             </dl>
             <a
-              href={MARCA.endereco.mapsUrl}
+              href={loja.endereco.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-auto w-fit h-12 px-6 flex items-center rounded-xl bg-gold hover:bg-gold-light text-malu-black font-bold transition-colors"
@@ -68,7 +70,7 @@ export default async function Sobre() {
           </div>
           <div className="h-72 lg:h-auto lg:min-h-[380px] bg-malu-surface-2">
             <iframe
-              title={"Mapa: " + MARCA.nome}
+              title={"Mapa: " + loja.nome}
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5148.499987944242!2d-38.5029791!3d-12.9748712!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x71605004d36662b%3A0x35033bc728680985!2sMALU%20VEICULOS!5e1!3m2!1spt-BR!2sbr!4v1790127430018!5m2!1spt-BR!2sbr"
               width="100%"
               height="100%"

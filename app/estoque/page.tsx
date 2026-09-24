@@ -11,9 +11,10 @@ import BarraBusca from "@/components/BarraBusca";
 import GradeCarrosCarregando from "@/components/GradeCarrosCarregando";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
-import { linkWhatsApp } from "@/lib/marca";
+import { useLoja } from "@/components/LojaProvider";
 
 export default function Estoque() {
+  const { linkWhatsApp } = useLoja();
   const [busca, setBusca] = useState("");
   const [marcaFiltro, setMarcaFiltro] = useState("");
   const [ordenacao, setOrdenacao] = useState<TipoOrdenacao>("relevancia");

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Carro } from "@/types/car";
 import { MessageCircle, Eye } from "lucide-react";
-import { linkWhatsApp } from "@/lib/marca";
+import { useLoja } from "@/components/LojaProvider";
 
 type Props = {
     carro: Carro;
@@ -11,6 +11,7 @@ type Props = {
 };
 
 export default function ModalInteresseCarro({ carro, onFechar }: Props) {
+    const { linkWhatsApp } = useLoja();
     const router = useRouter();
 
     function handleVerDetalhes() {

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Phone, MessageCircle, Menu, X, Clock, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { EMPRESA_ID } from "@/lib/empresa";
-import { MARCA, linkTelefone, linkWhatsApp } from "@/lib/marca";
+import { useLoja } from "@/components/LojaProvider";
 import LogoMalu from "@/components/LogoMalu";
 
 const links = [
@@ -17,6 +17,7 @@ const links = [
 ];
 
 export default function Header() {
+    const { loja, linkWhatsApp, linkTelefone } = useLoja();
     const [menuAberto, setMenuAberto] = useState(false);
     const [rolado, setRolado] = useState(false);
     const [temBannerAtivo, setTemBannerAtivo] = useState(false);
@@ -68,11 +69,11 @@ export default function Header() {
             >
                 <span className="flex items-center gap-2">
                     <Clock size={14} className="text-gold" aria-hidden="true" />
-                    {MARCA.horarioResumo}
+                    {loja.horarioResumo}
                 </span>
                 <span className="hidden md:flex items-center gap-2">
                     <MapPin size={14} className="text-gold" aria-hidden="true" />
-                    {MARCA.endereco.linha1} · {MARCA.endereco.cidade}
+                    {loja.endereco.linha1} · {loja.endereco.cidade}
                 </span>
             </div>
 
@@ -82,7 +83,7 @@ export default function Header() {
                     (transparente ? "bg-gradient-to-b from-black/60 to-transparent" : "bg-malu-black border-b border-gold/20")
                 }
             >
-                <Link href="/" aria-label={MARCA.nome + ", página inicial"} className="md:w-72">
+                <Link href="/" aria-label={loja.nome + ", página inicial"} className="md:w-72">
                     <span className="md:hidden"><LogoMalu tamanho="sm" comIcone={false} /></span>
                     <span className="hidden md:block"><LogoMalu /></span>
                 </Link>
@@ -109,7 +110,7 @@ export default function Header() {
                 <div className="hidden md:flex items-center gap-5 md:w-72 justify-end">
                     <a href={linkTelefone()} className="hidden lg:flex items-center gap-2 text-sm font-semibold hover:text-gold transition-colors">
                         <Phone size={16} className="text-gold" aria-hidden="true" />
-                        {MARCA.telefoneExibicao}
+                        {loja.telefoneExibicao}
                     </a>
 
                     <a
@@ -185,11 +186,11 @@ export default function Header() {
                         <div className="mt-auto flex flex-col gap-4 text-sm text-muted-dark">
                             <span className="flex items-center gap-2">
                                 <Clock size={16} className="text-gold" aria-hidden="true" />
-                                {MARCA.horarioResumo}
+                                {loja.horarioResumo}
                             </span>
                             <a href={linkTelefone()} className="flex items-center gap-2 text-[#E9E3D6]">
                                 <Phone size={16} className="text-gold" aria-hidden="true" />
-                                {MARCA.telefoneExibicao}
+                                {loja.telefoneExibicao}
                             </a>
                             <a
                                 href={linkWhatsApp()}
