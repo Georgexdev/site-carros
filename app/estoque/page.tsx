@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import CarroCard from "@/components/CarroCard";
 import { supabase } from "@/lib/supabase";
+import { EMPRESA_ID } from "@/lib/empresa";
 import { Carro } from "@/types/car";
 import FiltroMarca from "@/components/FiltroMarca";
 import { TipoOrdenacao } from "@/components/SeletorOrdenacao";
@@ -21,9 +22,10 @@ export default function Estoque() {
 
   useEffect(() => {
     async function buscarCarros() {
-      const { data, error } = await supabase
-        .from("carros")
-        .select("*");
+      let consulta = supabase.from("carros").select("*");
+      if (EMPRESA_ID) consulta = consulta.eq("empresa_id", EMPRESA_ID);
+
+      const { data, error } = await consulta;
 
       if (error) {
         console.error("Erro ao buscar carros:", error);

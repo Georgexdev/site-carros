@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { EMPRESA_ID } from "@/lib/empresa";
 import { Carro, FotoCarro } from "@/types/car";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -29,7 +30,8 @@ export default async function DetalhesCarro({ params }: Props) {
     .eq("id", id)
     .single();
 
-  if (error || !carro) {
+  // Um carro de outra empresa não pode ser aberto neste site.
+  if (error || !carro || (EMPRESA_ID && carro.empresa_id !== EMPRESA_ID)) {
     notFound();
   }
 

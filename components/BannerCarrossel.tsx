@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { EMPRESA_ID } from "@/lib/empresa";
 import { Banner } from "@/types/car";
 
 type Props = {
@@ -19,11 +20,10 @@ export default function BannerCarrossel({ semBanners = null }: Props) {
 
     useEffect(() => {
         async function buscarBanners() {
-            const { data } = await supabase
-                .from("banners")
-                .select("*")
-                .eq("ativo", true)
-                .order("ordem", { ascending: true });
+            let consulta = supabase.from("banners").select("*").eq("ativo", true);
+            if (EMPRESA_ID) consulta = consulta.eq("empresa_id", EMPRESA_ID);
+
+            const { data } = await consulta.order("ordem", { ascending: true });
 
             if (data) {
                 setBanners(data as Banner[]);

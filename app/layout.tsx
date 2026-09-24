@@ -6,7 +6,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import BotaoWhatsAppFlutuante from "@/components/BotaoWhatsAppFlutuante";
 import Footer from "@/components/Footer";
-import { supabase } from "@/lib/supabase";
+import { buscarEmpresa } from "@/lib/empresa";
 
 export const metadata: Metadata = {
   title: "MALU Veículos e Financiamentos",
@@ -18,11 +18,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const { data: empresa } = await supabase
-    .from("empresas")
-    .select("nome, logo_url, cor_primaria, cor_secundaria")
-    .eq("nome", "Concessionária Teste")
-    .single();
+  const empresa = await buscarEmpresa("nome, logo_url, cor_primaria, cor_secundaria");
 
   const corPrimaria = empresa?.cor_primaria || "#B8A070";
   const corSecundaria = empresa?.cor_secundaria || "#0B0B0B";

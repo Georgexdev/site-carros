@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Phone, MessageCircle, Menu, X, Clock, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { EMPRESA_ID } from "@/lib/empresa";
 import { MARCA, linkTelefone, linkWhatsApp } from "@/lib/marca";
 import LogoMalu from "@/components/LogoMalu";
 
@@ -36,11 +37,10 @@ export default function Header() {
         if (!isHome) return;
 
         async function verificarBanner() {
-            const { data } = await supabase
-                .from("banners")
-                .select("id")
-                .eq("ativo", true)
-                .limit(1);
+            let consulta = supabase.from("banners").select("id").eq("ativo", true);
+            if (EMPRESA_ID) consulta = consulta.eq("empresa_id", EMPRESA_ID);
+
+            const { data } = await consulta.limit(1);
 
             setTemBannerAtivo(!!data && data.length > 0);
         }

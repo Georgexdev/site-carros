@@ -53,6 +53,7 @@ export default function Admin() {
         const { data: fotos } = await supabase
           .from("fotos_carros")
           .select("carro_id, url")
+          .in("carro_id", listaCarros.map((c) => c.id))
           .eq("ordem", 0);
 
         if (fotos) {
