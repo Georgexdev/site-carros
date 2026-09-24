@@ -47,7 +47,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     { href: "/admin", label: "Veículos", Icone: Car, visivel: true },
     { href: "/admin/novo-carro", label: "Cadastrar veículo", Icone: PlusCircle, visivel: !!administrador?.pode_gerenciar_carros },
     { href: "/admin/banners", label: "Banners", Icone: ImageIcon, visivel: !!administrador?.pode_gerenciar_banners },
-    { href: "/admin/configuracoes", label: "Sobre a loja", Icone: Store, visivel: true },
+    { href: "/admin/configuracoes", label: "Dados da loja", Icone: Store, visivel: true },
     { href: "/admin/alterar-senha", label: "Alterar senha", Icone: KeyRound, visivel: true },
   ];
 
