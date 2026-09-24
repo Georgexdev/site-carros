@@ -1,25 +1,20 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { CSSProperties } from "react";
-import { Geist, Geist_Mono } from "next/font/google";
+import "@fontsource/marcellus/400.css";
+import "@fontsource-variable/manrope";
 import "./globals.css";
 import Header from "@/components/Header";
 import BotaoWhatsAppFlutuante from "@/components/BotaoWhatsAppFlutuante";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: "MALU Veículos e Financiamentos",
   description: "Confira nosso estoque de veículos, simule seu financiamento e fale direto com nossa equipe pelo WhatsApp.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0B0B0B",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -29,8 +24,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     .eq("nome", "Concessionária Teste")
     .single();
 
-  const corPrimaria = empresa?.cor_primaria || "#B8A271";
-  const corSecundaria = empresa?.cor_secundaria || "#000000";
+  const corPrimaria = empresa?.cor_primaria || "#B8A070";
+  const corSecundaria = empresa?.cor_secundaria || "#0B0B0B";
 
   const variaveisDeCor = {
     "--cor-primaria": corPrimaria,
@@ -38,15 +33,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   } as CSSProperties;
 
   return (
-    <html
-      lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      style={variaveisDeCor}
-    >
+    <html lang="pt-BR" className="h-full antialiased" style={variaveisDeCor}>
       <body className="min-h-full flex flex-col">
-        <Header nomeEmpresa={empresa?.nome} logoUrl={empresa?.logo_url} />
+        <Header />
         <main className="flex-1">{children}</main>
-        <Footer nomeEmpresa={empresa?.nome} />
+        <Footer />
         <BotaoWhatsAppFlutuante />
       </body>
     </html>

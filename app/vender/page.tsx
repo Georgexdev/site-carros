@@ -1,7 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Car, Phone, User } from "lucide-react";
+import { Check, MessageCircle, Phone, User } from "lucide-react";
+import { linkWhatsApp } from "@/lib/marca";
+
+const vantagens = [
+    { titulo: "Use seu carro como entrada", texto: "Na troca, o valor do seu usado abate direto do próximo carro." },
+    { titulo: "Proposta pelo WhatsApp", texto: "Mande os dados do veículo e nossa equipe responde com uma avaliação." },
+    { titulo: "Atendimento direto com a loja", texto: "Você conversa com quem vai avaliar e fechar o negócio." },
+];
+
+const campo =
+    "w-full h-13 min-h-[52px] border border-line-strong rounded-xl bg-[#FBFAF7] text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30";
+const rotulo = "block text-sm font-semibold text-ink mb-2";
+const tituloGrupo = "text-xs font-bold tracking-[0.2em] uppercase text-gold-text mb-3";
 
 type Motivo = "troca" | "venda" | null;
 
@@ -50,121 +62,142 @@ export default function VendaSeuCarro() {
             "\n\nMeus dados:\nNome: " + nome.trim() +
             "\nCelular: " + celular.trim();
 
-        const url = "https://wa.me/5571999999999?text=" + encodeURIComponent(mensagem);
-        window.open(url, "_blank");
+        window.open(linkWhatsApp(mensagem), "_blank");
+    }
+
+    function classeMotivo(valor: Motivo) {
+        return (
+            "h-14 rounded-xl border text-[15px] font-bold transition-colors " +
+            (motivo === valor
+                ? "bg-malu-black text-gold-light border-malu-black"
+                : "bg-white border-line-strong text-ink hover:border-gold")
+        );
     }
 
     return (
-        <main className="max-w-2xl mx-auto p-6">
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-                <Car size={28} />
-                Venda ou troque seu carro
-            </h1>
-            <p className="text-gray-600 mt-1">
-                Preencha os dados abaixo e fale direto com a nossa equipe pelo WhatsApp.
-            </p>
-
-            <div className="mt-6 bg-white border rounded-lg shadow-sm p-6 space-y-5">
-                <div>
-                    <h2 className="font-semibold text-gray-800 mb-3">O que você deseja?</h2>
-                    <div className="grid grid-cols-2 gap-3">
-                        <button
-                            type="button"
-                            onClick={() => setMotivo("troca")}
-                            className={
-                                "border rounded-lg py-3 text-sm font-medium transition-colors " +
-                                (motivo === "troca"
-                                    ? "bg-black text-white border-black"
-                                    : "border-gray-300 text-gray-700 hover:border-black")
-                            }
-                        >
-                            Trocar por outro carro
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setMotivo("venda")}
-                            className={
-                                "border rounded-lg py-3 text-sm font-medium transition-colors " +
-                                (motivo === "venda"
-                                    ? "bg-black text-white border-black"
-                                    : "border-gray-300 text-gray-700 hover:border-black")
-                            }
-                        >
-                            Apenas vender
-                        </button>
-                    </div>
+        <div>
+            <section className="bg-malu-black border-b border-gold/20">
+                <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 flex flex-col gap-5">
+                    <span className="text-xs md:text-[13px] font-bold tracking-[0.28em] uppercase text-gold">Venda ou troca</span>
+                    <h1 className="font-display text-[40px] md:text-[60px] leading-[1.05] text-[#F4EEE2]">Venda ou troque seu carro</h1>
+                    <p className="text-base md:text-lg leading-relaxed text-muted-dark max-w-2xl">
+                        Preencha os dados abaixo e fale direto com a nossa equipe pelo WhatsApp.
+                    </p>
                 </div>
+            </section>
 
-                <div>
-                    <h2 className="font-semibold text-gray-800 mb-3">Dados do seu veículo</h2>
-                    <div className="grid grid-cols-2 gap-3">
-                        <input
-                            type="text"
-                            placeholder="Marca"
-                            value={marca}
-                            onChange={(e) => setMarca(e.target.value)}
-                            className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Modelo"
-                            value={modelo}
-                            onChange={(e) => setModelo(e.target.value)}
-                            className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Ano"
-                            value={ano}
-                            onChange={(e) => setAno(e.target.value)}
-                            className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                        <input
-                            type="text"
-                            placeholder="KM"
-                            value={km}
-                            onChange={(e) => setKm(e.target.value)}
-                            className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                        />
-                    </div>
-                </div>
+            <div className="max-w-6xl mx-auto px-6 py-14 md:py-24 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_560px] gap-12 lg:gap-16 items-start">
+                <section className="flex flex-col gap-6 order-2 lg:order-1">
+                    <h2 className="font-display text-3xl md:text-4xl text-ink">Por que vender pra MALU</h2>
+                    <ul className="flex flex-col gap-4">
+                        {vantagens.map((v) => (
+                            <li key={v.titulo} className="flex gap-4 items-start p-5 rounded-2xl bg-white border border-line">
+                                <span className="w-11 h-11 rounded-full bg-malu-black flex items-center justify-center shrink-0">
+                                    <Check size={20} strokeWidth={2.2} className="text-gold" aria-hidden="true" />
+                                </span>
+                                <div className="flex flex-col gap-1.5">
+                                    <strong className="text-[17px] text-ink">{v.titulo}</strong>
+                                    <span className="text-[15px] leading-relaxed text-muted">{v.texto}</span>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
 
-                <div>
-                    <h2 className="font-semibold text-gray-800 mb-3">Seus dados</h2>
-                    <div className="space-y-3">
-                        <div className="relative">
-                            <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="Nome completo"
-                                value={nome}
-                                onChange={(e) => setNome(e.target.value)}
-                                className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                            />
-                        </div>
-                        <div className="relative">
-                            <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="(71) 99999-9999"
-                                value={celular}
-                                onChange={(e) => handleCelularChange(e.target.value)}
-                                className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                            />
+                <section className="order-1 lg:order-2 p-6 md:p-10 rounded-2xl bg-white border border-line border-t-4 border-t-gold shadow-[0_8px_28px_rgba(28,26,23,0.07)] space-y-7">
+                    <div>
+                        <h2 className={tituloGrupo}>O que você deseja?</h2>
+                        <div role="group" aria-label="O que você deseja" className="grid grid-cols-2 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setMotivo("troca")}
+                                aria-pressed={motivo === "troca"}
+                                className={classeMotivo("troca")}
+                            >
+                                Trocar por outro carro
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setMotivo("venda")}
+                                aria-pressed={motivo === "venda"}
+                                className={classeMotivo("venda")}
+                            >
+                                Apenas vender
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                {erro && <p className="text-red-600 text-sm">{erro}</p>}
+                    <div>
+                        <h2 className={tituloGrupo}>Seu veículo</h2>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label htmlFor="vender-marca" className={rotulo}>Marca</label>
+                                <input id="vender-marca" type="text" placeholder="Ex.: Toyota" value={marca} onChange={(e) => setMarca(e.target.value)} className={campo + " px-4"} />
+                            </div>
+                            <div>
+                                <label htmlFor="vender-modelo" className={rotulo}>Modelo</label>
+                                <input id="vender-modelo" type="text" placeholder="Ex.: Corolla" value={modelo} onChange={(e) => setModelo(e.target.value)} className={campo + " px-4"} />
+                            </div>
+                            <div>
+                                <label htmlFor="vender-ano" className={rotulo}>Ano</label>
+                                <input id="vender-ano" type="text" inputMode="numeric" placeholder="Ex.: 2020" value={ano} onChange={(e) => setAno(e.target.value)} className={campo + " px-4"} />
+                            </div>
+                            <div>
+                                <label htmlFor="vender-km" className={rotulo}>Quilometragem</label>
+                                <input id="vender-km" type="text" inputMode="numeric" placeholder="Ex.: 45.000" value={km} onChange={(e) => setKm(e.target.value)} className={campo + " px-4"} />
+                            </div>
+                        </div>
+                    </div>
 
-                <button
-                    type="button"
-                    onClick={handleEnviar}
-                    className="w-full bg-green-500 text-white rounded-lg py-3 hover:bg-green-600 font-medium"
-                >
-                    Falar com a loja no WhatsApp
-                </button>
+                    <div>
+                        <h2 className={tituloGrupo}>Seus dados</h2>
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="vender-nome" className={rotulo}>Nome completo</label>
+                                <div className="relative">
+                                    <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gold-text" aria-hidden="true" />
+                                    <input
+                                        id="vender-nome"
+                                        type="text"
+                                        autoComplete="name"
+                                        placeholder="Como devemos te chamar"
+                                        value={nome}
+                                        onChange={(e) => setNome(e.target.value)}
+                                        className={campo + " pl-11 pr-3"}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="vender-celular" className={rotulo}>Celular (WhatsApp)</label>
+                                <div className="relative">
+                                    <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gold-text" aria-hidden="true" />
+                                    <input
+                                        id="vender-celular"
+                                        type="tel"
+                                        inputMode="numeric"
+                                        autoComplete="tel-national"
+                                        placeholder="(71) 9 0000-0000"
+                                        value={celular}
+                                        onChange={(e) => handleCelularChange(e.target.value)}
+                                        className={campo + " pl-11 pr-3"}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {erro && <p className="text-[#B42318] text-sm font-medium" role="alert">{erro}</p>}
+
+                    <button
+                        type="button"
+                        onClick={handleEnviar}
+                        className="w-full h-14 flex items-center justify-center gap-2.5 bg-whatsapp hover:bg-whatsapp-hover text-white rounded-xl font-bold transition-colors"
+                    >
+                        <MessageCircle size={20} aria-hidden="true" />
+                        Falar com a loja no WhatsApp
+                    </button>
+                </section>
             </div>
-        </main>
+        </div>
     );
 }

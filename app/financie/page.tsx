@@ -3,18 +3,21 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Carro } from "@/types/car";
-import { Landmark, Phone, User, Calendar, IdCard, Car as CarIcon, X } from "lucide-react";
+import { Phone, User, Calendar, IdCard, Car as CarIcon, X, ShieldCheck } from "lucide-react";
+import { bancosParceiros } from "@/data/bancos";
+import { linkWhatsApp } from "@/lib/marca";
 
-const bancosParceiros = [
-    { nome: "Santander", logo: "/bancos/santander.png" },
-    { nome: "C6 Bank", logo: "/bancos/c6.png" },
-    { nome: "BV", logo: "/bancos/bv.png" },
-    { nome: "Safra", logo: "/bancos/safra.png" },
-    { nome: "Pan", logo: "/bancos/pan.png" },
-    { nome: "Itaú", logo: "/bancos/itau.png" },
-    { nome: "Bradesco", logo: "/bancos/bradesco.png" },
-    { nome: "Mercado Pago", logo: "/bancos/mercadopago.png" },
+const passos = [
+    { titulo: "Escolha o veículo", texto: "Selecione o carro do nosso estoque que você tem interesse em financiar." },
+    { titulo: "Preencha seus dados", texto: "Informe seus dados de contato para nossos consultores entrarem em contato." },
+    { titulo: "Receba a proposta", texto: "Nossa equipe te chama no WhatsApp com a melhor condição disponível." },
 ];
+
+const campo =
+    "w-full h-13 min-h-[52px] border border-line-strong rounded-xl bg-[#FBFAF7] pl-11 pr-3 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30";
+const rotulo = "block text-sm font-semibold text-ink mb-2";
+const iconeCampo = "absolute left-4 top-1/2 -translate-y-1/2 text-gold-text";
+const tituloGrupo = "text-xs font-bold tracking-[0.2em] uppercase text-gold-text mb-3";
 
 export default function Financie() {
     const [carros, setCarros] = useState<Carro[]>([]);
@@ -40,6 +43,13 @@ export default function Financie() {
 
             const carrosTipados = (carrosData as Carro[]) || [];
             setCarros(carrosTipados);
+
+            // Pré-seleciona o veículo quando vem da página de detalhes (/financie?carro=ID)
+            const idDaUrl = new URLSearchParams(window.location.search).get("carro");
+            const carroDaUrl = idDaUrl ? carrosTipados.find((c) => c.id === idDaUrl) : undefined;
+            if (carroDaUrl) {
+                setVeiculoSelecionado(carroDaUrl);
+            }
 
             if (carrosTipados.length > 0) {
                 const ids = carrosTipados.map((c) => c.id);
@@ -102,245 +112,272 @@ export default function Financie() {
             (dataNascimento.trim() ? "\nData de nascimento: " + dataNascimento.trim() : "") +
             (cpf.trim() ? "\nCPF: " + cpf.trim() : "");
 
-        const url = "https://wa.me/5571999999999?text=" + encodeURIComponent(mensagem);
-        window.open(url, "_blank");
+        window.open(linkWhatsApp(mensagem), "_blank");
     }
 
     return (
-        <main className="max-w-4xl mx-auto p-6">
-            {/* Seção 1 */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div>
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Bancos Parceiros</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        {bancosParceiros.map((banco) => (
-                            <div
-                                key={banco.nome}
-                                className="border rounded-lg py-4 flex flex-col items-center gap-2 text-gray-600"
-                            >
-                                <img src={banco.logo} alt={banco.nome} className="h-10 max-w-[80%] object-contain" />
-                                <span className="text-xs text-center">{banco.nome}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="bg-black text-white rounded-lg p-6">
-                    <h1 className="text-xl font-bold">Financie seu próximo carro</h1>
-                    <p className="text-gray-300 mt-2">
-                        Nossos consultores avaliam qual é a melhor taxa de juros para o seu perfil.
+        <div>
+            <section className="bg-malu-black border-b border-gold/20">
+                <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 flex flex-col gap-5">
+                    <span className="text-xs md:text-[13px] font-bold tracking-[0.28em] uppercase text-gold">Financiamento</span>
+                    <h1 className="font-display text-[40px] md:text-[60px] leading-[1.05] text-[#F4EEE2]">Financie seu próximo carro</h1>
+                    <p className="text-base md:text-lg leading-relaxed text-muted-dark max-w-2xl">
+                        Nossos consultores avaliam qual é a melhor taxa de juros para o seu perfil, entre {bancosParceiros.length} bancos parceiros.
                     </p>
                     <button
                         type="button"
                         onClick={rolarParaFormulario}
-                        className="mt-4 bg-green-500 hover:bg-green-600 text-white font-medium px-5 py-2 rounded-lg"
+                        className="lg:hidden w-fit mt-2 h-14 px-7 rounded-xl bg-gold hover:bg-gold-light text-malu-black font-bold transition-colors"
                     >
-                        Entrar em Contato
+                        Solicitar análise
                     </button>
                 </div>
             </section>
 
-            {/* Seção 2 */}
-            <section className="mt-12">
-                <h2 className="text-xl font-bold text-center">Como Funciona</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                    {[
-                        { titulo: "Escolha o veículo", texto: "Selecione o carro do nosso estoque que você tem interesse em financiar." },
-                        { titulo: "Preencha seus dados", texto: "Informe seus dados de contato para nossos consultores entrarem em contato." },
-                        { titulo: "Receba a proposta", texto: "Nossa equipe te chama no WhatsApp com a melhor condição disponível." },
-                    ].map((passo, index) => (
-                        <div key={index} className="text-center">
-                            <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold mx-auto">
-                                {index + 1}
-                            </div>
-                            <h3 className="font-semibold mt-3">{passo.titulo}</h3>
-                            <p className="text-gray-600 text-sm mt-1">{passo.texto}</p>
-                        </div>
-                    ))}
-                </div>
-            </section>
+            <div className="max-w-6xl mx-auto px-6 py-14 md:py-24 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_540px] gap-12 lg:gap-16 items-start">
+                <div className="flex flex-col gap-12">
+                    <section className="flex flex-col gap-7">
+                        <h2 className="font-display text-3xl md:text-4xl text-ink">Como funciona</h2>
+                        <ol className="flex flex-col gap-7">
+                            {passos.map((passo, index) => (
+                                <li key={passo.titulo} className="flex gap-5 items-start">
+                                    <span className="w-13 h-13 min-w-[52px] min-h-[52px] rounded-full bg-malu-black border border-gold text-gold font-display text-[22px] flex items-center justify-center shrink-0">
+                                        {index + 1}
+                                    </span>
+                                    <div className="flex flex-col gap-1.5 pt-1">
+                                        <strong className="text-lg text-ink">{passo.titulo}</strong>
+                                        <span className="text-[15px] leading-relaxed text-muted">{passo.texto}</span>
+                                    </div>
+                                </li>
+                            ))}
+                        </ol>
+                    </section>
 
-            {/* Seção 3 */}
-            <section id="formulario" className="mt-12 bg-white border rounded-lg shadow-sm p-6">
-                <h2 className="text-xl font-bold mb-6">Solicite sua Análise de Financiamento</h2>
-
-                <div className="space-y-6">
-                    <div>
-                        <h3 className="font-semibold text-gray-800 mb-3">Dados do Veículo</h3>
-
-                        {veiculoSelecionado && !listaAberta ? (
-                            <div className="flex items-center gap-3 border rounded-lg p-3">
-                                <img
-                                    src={fotosCapa[veiculoSelecionado.id] || "https://placehold.co/100x70?text=Carro"}
-                                    alt={veiculoSelecionado.marca + " " + veiculoSelecionado.modelo}
-                                    className="w-20 h-14 object-cover rounded"
-                                />
-                                <div className="flex-1">
-                                    <p className="font-medium">
-                                        {veiculoSelecionado.marca} {veiculoSelecionado.modelo}
-                                    </p>
-                                    <p className="text-sm text-gray-500">{veiculoSelecionado.versao}</p>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setListaAberta(true)}
-                                    className="text-sm text-blue-600 hover:underline shrink-0"
+                    <section className="flex flex-col gap-5">
+                        <h2 className="text-xs md:text-[13px] font-bold tracking-[0.28em] uppercase text-gold-text">Bancos parceiros</h2>
+                        <ul className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            {bancosParceiros.map((banco) => (
+                                <li
+                                    key={banco.nome}
+                                    className="group h-20 rounded-xl bg-white border border-line flex items-center justify-center px-3 hover:border-gold/60 transition-colors"
                                 >
-                                    Trocar veículo
-                                </button>
-                            </div>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={() => setListaAberta(!listaAberta)}
-                                className="w-full flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-3 text-gray-500 hover:border-black"
-                            >
-                                <CarIcon size={18} />
-                                Selecione um veículo
-                            </button>
-                        )}
+                                    <img
+                                        src={banco.logo}
+                                        alt={banco.nome}
+                                        className="max-h-9 max-w-full object-contain grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                </div>
 
-                        {listaAberta && (
-                            <div className="mt-3 border rounded-lg overflow-hidden">
-                                <div className="flex items-center justify-between px-3 py-2 border-b bg-gray-50">
-                                    <span className="text-sm text-gray-500">Escolha um veículo</span>
+                <section
+                    id="formulario"
+                    className="scroll-mt-6 p-6 md:p-10 rounded-2xl bg-white border border-line border-t-4 border-t-gold shadow-[0_8px_28px_rgba(28,26,23,0.07)]"
+                >
+                    <h2 className="font-display text-3xl text-ink">Solicite sua análise</h2>
+                    <p className="text-sm text-muted mt-1.5 mb-8">Leva menos de 1 minuto. Respondemos pelo WhatsApp.</p>
+
+                    <div className="space-y-7">
+                        <div>
+                            <h3 className={tituloGrupo}>Veículo</h3>
+
+                            {veiculoSelecionado && !listaAberta ? (
+                                <div className="flex items-center gap-3 border border-gold/60 bg-cream rounded-xl p-3">
+                                    {fotosCapa[veiculoSelecionado.id] ? (
+                                        <img
+                                            src={fotosCapa[veiculoSelecionado.id]}
+                                            alt={veiculoSelecionado.marca + " " + veiculoSelecionado.modelo}
+                                            className="w-20 h-14 object-cover rounded-lg shrink-0"
+                                        />
+                                    ) : (
+                                        <span className="w-20 h-14 rounded-lg bg-malu-surface flex items-center justify-center shrink-0">
+                                            <CarIcon size={24} className="text-gold/70" aria-hidden="true" />
+                                        </span>
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-ink truncate">
+                                            {veiculoSelecionado.marca} {veiculoSelecionado.modelo}
+                                        </p>
+                                        <p className="text-sm text-muted truncate">{veiculoSelecionado.versao}</p>
+                                    </div>
                                     <button
                                         type="button"
-                                        onClick={() => setListaAberta(false)}
-                                        className="text-sm text-gray-500 hover:text-black flex items-center gap-1"
+                                        onClick={() => setListaAberta(true)}
+                                        className="text-sm font-semibold text-gold-text hover:underline shrink-0 px-2 py-2"
                                     >
-                                        <X size={16} />
-                                        Fechar
+                                        Trocar
                                     </button>
                                 </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => setListaAberta(!listaAberta)}
+                                    className="w-full h-13 min-h-[52px] flex items-center gap-3 border border-line-strong bg-[#FBFAF7] rounded-xl px-4 text-[15px] text-muted hover:border-gold transition-colors"
+                                >
+                                    <CarIcon size={18} className="text-gold-text" aria-hidden="true" />
+                                    Qual carro você quer financiar?
+                                </button>
+                            )}
 
-                                <div className="max-h-80 overflow-y-auto divide-y">
-                                    {carregandoCarros && (
-                                        <p className="text-sm text-gray-500 p-3">Carregando veículos...</p>
-                                    )}
-
-                                    {!carregandoCarros && carros.length === 0 && (
-                                        <p className="text-sm text-gray-500 p-3">Nenhum veículo disponível no momento.</p>
-                                    )}
-
-                                    {carros.map((carro) => (
+                            {listaAberta && (
+                                <div className="mt-3 border border-line rounded-xl overflow-hidden">
+                                    <div className="flex items-center justify-between px-4 py-2 border-b border-line bg-cream">
+                                        <span className="text-sm text-muted">Escolha um veículo</span>
                                         <button
                                             type="button"
-                                            key={carro.id}
-                                            onClick={() => {
-                                                setVeiculoSelecionado(carro);
-                                                setListaAberta(false);
-                                            }}
-                                            className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left"
+                                            onClick={() => setListaAberta(false)}
+                                            className="text-sm text-muted hover:text-ink flex items-center gap-1 py-2"
                                         >
-                                            <img
-                                                src={fotosCapa[carro.id] || "https://placehold.co/100x70?text=" + carro.modelo}
-                                                alt={carro.marca + " " + carro.modelo}
-                                                className="w-20 h-14 object-cover rounded shrink-0"
-                                            />
-                                            <div>
-                                                <p className="font-medium">
-                                                    {carro.marca} {carro.modelo}
-                                                </p>
-                                                <p className="text-sm text-gray-500">
-                                                    {carro.versao} · {carro.ano_fabricacao}/{carro.ano_modelo} ·{" "}
-                                                    {carro.km.toLocaleString("pt-BR")} km
-                                                </p>
-                                            </div>
+                                            <X size={16} aria-hidden="true" />
+                                            Fechar
                                         </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                                    </div>
 
-                    <div>
-                        <h3 className="font-semibold text-gray-800 mb-3">Dados de Contato</h3>
-                        <div className="space-y-3">
-                            <div>
-                                <label htmlFor="nome-financiamento" className="block text-sm text-gray-600 mb-1">
-                                    Nome completo
-                                </label>
-                                <div className="relative">
-                                    <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                    <input
-                                        id="nome-financiamento"
-                                        type="text"
-                                        placeholder="Digite seu nome completo"
-                                        value={nome}
-                                        onChange={(e) => setNome(e.target.value)}
-                                        required
-                                        className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                                    />
-                                </div>
-                            </div>
+                                    <div className="max-h-80 overflow-y-auto divide-y divide-line">
+                                        {carregandoCarros && (
+                                            <p className="text-sm text-muted p-4">Carregando veículos...</p>
+                                        )}
 
-                            <div>
-                                <label htmlFor="celular-financiamento" className="block text-sm text-gray-600 mb-1">
-                                    Celular
-                                </label>
-                                <div className="relative">
-                                    <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                    <input
-                                        id="celular-financiamento"
-                                        type="text"
-                                        placeholder="(71) 99999-9999"
-                                        value={celular}
-                                        onChange={(e) => setCelular(formatarCelular(e.target.value))}
-                                        required
-                                        className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
-                                    />
-                                </div>
-                            </div>
+                                        {!carregandoCarros && carros.length === 0 && (
+                                            <p className="text-sm text-muted p-4">Nenhum veículo disponível no momento.</p>
+                                        )}
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {carros.map((carro) => (
+                                            <button
+                                                type="button"
+                                                key={carro.id}
+                                                onClick={() => {
+                                                    setVeiculoSelecionado(carro);
+                                                    setListaAberta(false);
+                                                }}
+                                                className="w-full flex items-center gap-3 p-3 hover:bg-cream text-left transition-colors"
+                                            >
+                                                {fotosCapa[carro.id] ? (
+                                                    <img
+                                                        src={fotosCapa[carro.id]}
+                                                        alt={carro.marca + " " + carro.modelo}
+                                                        className="w-20 h-14 object-cover rounded-lg shrink-0"
+                                                    />
+                                                ) : (
+                                                    <span className="w-20 h-14 rounded-lg bg-malu-surface flex items-center justify-center shrink-0">
+                                                        <CarIcon size={24} className="text-gold/70" aria-hidden="true" />
+                                                    </span>
+                                                )}
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-ink">
+                                                        {carro.marca} {carro.modelo}
+                                                    </p>
+                                                    <p className="text-sm text-muted">
+                                                        {carro.versao} · {carro.ano_fabricacao}/{carro.ano_modelo} ·{" "}
+                                                        {carro.km.toLocaleString("pt-BR")} km
+                                                    </p>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div>
+                            <h3 className={tituloGrupo}>Seus dados</h3>
+                            <div className="space-y-4">
                                 <div>
-                                    <label htmlFor="nascimento-financiamento" className="block text-sm text-gray-600 mb-1">
-                                        Data de nascimento (opcional)
+                                    <label htmlFor="nome-financiamento" className={rotulo}>
+                                        Nome completo
                                     </label>
                                     <div className="relative">
-                                        <Calendar size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                        <User size={18} className={iconeCampo} aria-hidden="true" />
                                         <input
-                                            id="nascimento-financiamento"
-                                            type="date"
-                                            value={dataNascimento}
-                                            onChange={(e) => setDataNascimento(e.target.value)}
-                                            className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-gray-600"
+                                            id="nome-financiamento"
+                                            type="text"
+                                            autoComplete="name"
+                                            placeholder="Como devemos te chamar"
+                                            value={nome}
+                                            onChange={(e) => setNome(e.target.value)}
+                                            required
+                                            className={campo}
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label htmlFor="cpf-financiamento" className="block text-sm text-gray-600 mb-1">
-                                        CPF (opcional)
+                                    <label htmlFor="celular-financiamento" className={rotulo}>
+                                        Celular (WhatsApp)
                                     </label>
                                     <div className="relative">
-                                        <IdCard size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                        <Phone size={18} className={iconeCampo} aria-hidden="true" />
                                         <input
-                                            id="cpf-financiamento"
-                                            type="text"
-                                            placeholder="000.000.000-00"
-                                            value={cpf}
-                                            onChange={(e) => setCpf(formatarCpf(e.target.value))}
-                                            className="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                                            id="celular-financiamento"
+                                            type="tel"
+                                            inputMode="numeric"
+                                            autoComplete="tel-national"
+                                            placeholder="(71) 9 0000-0000"
+                                            value={celular}
+                                            onChange={(e) => setCelular(formatarCelular(e.target.value))}
+                                            required
+                                            className={campo}
                                         />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label htmlFor="nascimento-financiamento" className={rotulo}>
+                                            Nascimento <span className="font-normal text-muted text-[13px]">(opcional)</span>
+                                        </label>
+                                        <div className="relative">
+                                            <Calendar size={18} className={iconeCampo} aria-hidden="true" />
+                                            <input
+                                                id="nascimento-financiamento"
+                                                type="date"
+                                                value={dataNascimento}
+                                                onChange={(e) => setDataNascimento(e.target.value)}
+                                                className={campo}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="cpf-financiamento" className={rotulo}>
+                                            CPF <span className="font-normal text-muted text-[13px]">(opcional)</span>
+                                        </label>
+                                        <div className="relative">
+                                            <IdCard size={18} className={iconeCampo} aria-hidden="true" />
+                                            <input
+                                                id="cpf-financiamento"
+                                                type="text"
+                                                inputMode="numeric"
+                                                placeholder="000.000.000-00"
+                                                value={cpf}
+                                                onChange={(e) => setCpf(formatarCpf(e.target.value))}
+                                                className={campo}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        {erro && <p className="text-[#B42318] text-sm font-medium" role="alert">{erro}</p>}
+
+                        <button
+                            type="button"
+                            onClick={handleSolicitar}
+                            className="w-full h-14 rounded-xl bg-gold hover:bg-gold-light text-malu-black font-bold transition-colors"
+                        >
+                            Solicitar análise
+                        </button>
+
+                        <p className="flex items-center gap-2 text-[13px] text-muted">
+                            <ShieldCheck size={16} className="text-gold-text shrink-0" aria-hidden="true" />
+                            Seus dados são usados só para a análise de crédito.
+                        </p>
                     </div>
-
-                    {erro && <p className="text-red-600 text-sm">{erro}</p>}
-
-                    <button
-                        type="button"
-                        onClick={handleSolicitar}
-                        className="w-full bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg py-3"
-                    >
-                        Solicitar Análise
-                    </button>
-                </div>
-            </section>
-        </main>
+                </section>
+            </div>
+        </div>
     );
 }

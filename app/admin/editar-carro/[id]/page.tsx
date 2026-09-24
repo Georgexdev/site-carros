@@ -133,92 +133,92 @@ export default function EditarCarro() {
 
   if (carregandoDados) {
     return (
-      <main className="max-w-2xl mx-auto p-6">
-        <p className="text-gray-500">Carregando dados do carro...</p>
-      </main>
+      <div className="max-w-3xl mx-auto px-4 sm:px-8 py-8">
+        <p className="text-muted">Carregando dados do carro...</p>
+      </div>
     );
   }
 
   return (
-    <main className="max-w-2xl mx-auto p-6">
-      <Link href="/admin" className="text-blue-600 hover:underline">
-        ← Voltar ao painel
+    <div className="max-w-3xl mx-auto px-4 sm:px-8 py-8">
+      <Link href="/admin" className="inline-flex items-center gap-1 text-sm font-semibold text-gold-text hover:underline">
+        ← Voltar aos veículos
       </Link>
 
-      <h1 className="text-2xl font-bold mt-4 mb-6">Editar Carro</h1>
+      <h1 className="font-display text-3xl sm:text-4xl text-ink mt-3 mb-6">Editar veículo</h1>
 
-      <form onSubmit={handleSalvar} className="space-y-4">
+      <form onSubmit={handleSalvar} className="bg-white border border-line rounded-2xl p-5 sm:p-8 space-y-6">
         <GerenciadorFotosCarro carroId={id} />
 
-        <div className="border-t pt-4">
+        <div className="border-t border-line pt-6">
           <SeletorMarca valorSelecionado={marca} onSelecionar={setMarca} />
         </div>
 
         <div>
-          <label className="block text-sm text-gray-600 mb-1">Modelo</label>
+          <label className="block text-sm font-semibold text-ink mb-2">Modelo</label>
           <input
             type="text"
             value={modelo}
             onChange={(e) => setModelo(e.target.value)}
             required
-            className="w-full border rounded-lg px-4 py-2"
+            className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
           />
         </div>
 
         <div>
-          <label className="block text-sm text-gray-600 mb-1">Versão</label>
+          <label className="block text-sm font-semibold text-ink mb-2">Versão</label>
           <input
             type="text"
             value={versao}
             onChange={(e) => setVersao(e.target.value)}
-            className="w-full border rounded-lg px-4 py-2"
+            className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Ano de Fabricação</label>
+            <label className="block text-sm font-semibold text-ink mb-2">Ano de Fabricação</label>
             <input
               type="number"
               value={anoFabricacao}
               onChange={(e) => setAnoFabricacao(e.target.value)}
               required
-              className="w-full border rounded-lg px-4 py-2"
+              className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Ano do Modelo</label>
+            <label className="block text-sm font-semibold text-ink mb-2">Ano do Modelo</label>
             <input
               type="number"
               value={anoModelo}
               onChange={(e) => setAnoModelo(e.target.value)}
               required
-              className="w-full border rounded-lg px-4 py-2"
+              className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Preço (R$)</label>
+            <label className="block text-sm font-semibold text-ink mb-2">Preço (R$)</label>
             <input
               type="number"
               value={preco}
               onChange={(e) => setPreco(e.target.value)}
               required
-              className="w-full border rounded-lg px-4 py-2"
+              className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Quilometragem</label>
+            <label className="block text-sm font-semibold text-ink mb-2">Quilometragem</label>
             <input
               type="number"
               value={km}
               onChange={(e) => setKm(e.target.value)}
               required
-              className="w-full border rounded-lg px-4 py-2"
+              className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
             />
           </div>
         </div>
@@ -243,32 +243,32 @@ export default function EditarCarro() {
           onSelecionar={setCambio}
         />
 
-        <div className="border-t pt-4 mt-4">
-          <p className="text-sm text-gray-500 mb-2">Dados internos (não aparecem publicamente, a menos que ativado abaixo)</p>
+        <div className="border-t border-line pt-6">
+          <p className="text-sm text-muted mb-4">Dados internos (não aparecem publicamente, a menos que ativado abaixo)</p>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Placa</label>
+              <label className="block text-sm font-semibold text-ink mb-2">Placa</label>
               <input
                 type="text"
                 value={placa}
                 onChange={(e) => setPlaca(e.target.value)}
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
               />
             </div>
 
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Chassi</label>
+              <label className="block text-sm font-semibold text-ink mb-2">Chassi</label>
               <input
                 type="text"
                 value={chassi}
                 onChange={(e) => setChassi(e.target.value)}
-                className="w-full border rounded-lg px-4 py-2"
+                className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
               />
             </div>
           </div>
 
-          <label className="flex items-center gap-2 mt-3 text-sm text-gray-700">
+          <label className="flex items-center gap-3 mt-4 text-sm text-ink [&>input]:w-5 [&>input]:h-5 [&>input]:accent-[#7A6538]">
             <input
               type="checkbox"
               checked={mostrarPlacaChassi}
@@ -278,8 +278,8 @@ export default function EditarCarro() {
           </label>
         </div>
 
-        <div className="border-t pt-4">
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+        <div className="border-t border-line pt-6">
+          <label className="flex items-center gap-3 text-sm text-ink [&>input]:w-5 [&>input]:h-5 [&>input]:accent-[#7A6538]">
             <input
               type="checkbox"
               checked={destaqueHome}
@@ -287,22 +287,22 @@ export default function EditarCarro() {
             />
             Destacar este veículo na página inicial
           </label>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-muted mt-1.5">
             Máximo de 3 veículos em destaque ({totalDestaques}/3 no momento)
           </p>
-          {erroDestaque && <p className="text-red-600 text-sm mt-1">{erroDestaque}</p>}
+          {erroDestaque && <p className="text-[#B42318] text-sm font-medium mt-1.5">{erroDestaque}</p>}
         </div>
 
-        {erro && <p className="text-red-600 text-sm">{erro}</p>}
+        {erro && <p className="text-[#B42318] text-sm font-medium">{erro}</p>}
 
         <button
           type="submit"
           disabled={salvando}
-          className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+          className="w-full h-13 min-h-[52px] rounded-xl bg-malu-black text-gold-light font-bold hover:bg-gold hover:text-malu-black transition-colors disabled:opacity-50"
         >
-          {salvando ? "Salvando..." : "Salvar Alterações"}
+          {salvando ? "Salvando..." : "Salvar alterações"}
         </button>
       </form>
-    </main>
+    </div>
   );
 }

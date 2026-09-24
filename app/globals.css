@@ -1,21 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F7F6F4;
-  --foreground: #171717;
+  --background: #F7F4EE;
+  --foreground: #1C1A17;
 }
 
+/*
+  Identidade visual MALU
+  - preto + dourado vêm do logo
+  - --cor-primaria é definida no layout a partir do cadastro da empresa
+    (com o dourado da marca como padrão)
+*/
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-malu-black: #0B0B0B;
+  --color-malu-surface: #161513;
+  --color-malu-surface-2: #1F1D1A;
+
+  --color-gold: var(--cor-primaria, #B8A070);
+  --color-gold-light: #D9C9A0;
+  --color-gold-text: #7A6538;
+
+  --color-cream: #F7F4EE;
+  --color-ink: #1C1A17;
+  --color-muted: #6E665B;
+  --color-muted-dark: #BDB4A3;
+  --color-muted-soft: #8F877A;
+  --color-line: #E6DFD2;
+  --color-line-strong: #DCD3C3;
+
+  --color-whatsapp: #0F7B3C;
+  --color-whatsapp-hover: #0C6632;
+
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Marcellus", Georgia, serif;
 }
 
 body {
-  background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(184, 162, 113, 0.14), transparent 60%),
-    #F7F6F4;
+  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--cor-primaria, #B8A070);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #D9C9A0;
+  color: #0B0B0B;
 }

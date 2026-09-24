@@ -48,12 +48,12 @@ export default function ModalRecorteImagem({
 
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg w-full max-w-2xl flex flex-col">
-        <div className="p-4 border-b">
-          <h2 className="font-bold text-lg">Ajustar imagem</h2>
+      <div className="bg-white rounded-2xl w-full max-w-2xl flex flex-col overflow-hidden">
+        <div className="p-5 border-b border-line">
+          <h2 className="font-display text-xl text-ink">Ajustar imagem</h2>
         </div>
 
-        <div className="relative w-full h-96 bg-gray-900">
+        <div className="relative w-full h-96 bg-malu-surface">
           <Cropper
             image={imagemSrc}
             crop={crop}
@@ -66,7 +66,7 @@ export default function ModalRecorteImagem({
         </div>
 
         <div className="p-4">
-          <label className="block text-sm text-gray-600 mb-2">Zoom</label>
+          <label className="block text-sm font-semibold text-ink mb-3">Zoom</label>
           <input
             type="range"
             min={1}
@@ -78,17 +78,17 @@ export default function ModalRecorteImagem({
           />
         </div>
 
-        <div className="p-4 border-t flex justify-end gap-3">
+        <div className="p-4 border-t border-line flex justify-end gap-3">
           <button
             onClick={onCancelar}
-            className="px-4 py-2 rounded-lg border hover:bg-gray-50"
+            className="h-11 px-5 rounded-xl border border-line-strong bg-white font-semibold hover:border-gold transition-colors"
           >
             Cancelar
           </button>
           <button
             onClick={handleConfirmar}
             disabled={processando}
-            className="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 disabled:opacity-50"
+            className="h-11 px-5 rounded-xl bg-malu-black text-gold-light font-bold hover:bg-gold hover:text-malu-black transition-colors disabled:opacity-50"
           >
             {processando ? "Processando..." : "Confirmar"}
           </button>

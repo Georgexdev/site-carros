@@ -93,22 +93,22 @@ export default function NovoBanner() {
     }
 
     return (
-        <main className="max-w-2xl mx-auto p-6">
-            <Link href="/admin/banners" className="text-blue-600 hover:underline">
+        <div className="max-w-3xl mx-auto px-4 sm:px-8 py-8">
+            <Link href="/admin/banners" className="inline-flex items-center gap-1 text-sm font-semibold text-gold-text hover:underline">
                 ← Voltar aos banners
             </Link>
 
-            <h1 className="text-2xl font-bold mt-4 mb-6">Novo Banner</h1>
+            <h1 className="font-display text-3xl sm:text-4xl text-ink mt-3 mb-6">Novo banner</h1>
 
-            <form onSubmit={handleSalvar} className="space-y-4">
+            <form onSubmit={handleSalvar} className="bg-white border border-line rounded-2xl p-5 sm:p-8 space-y-6">
                 <div>
-                    <label className="block text-sm text-gray-600 mb-1">Imagem do Banner</label>
+                    <label className="block text-sm font-semibold text-ink mb-2">Imagem do Banner</label>
 
                     {preview && (
                         <img
                             src={preview}
                             alt="Pré-visualização"
-                            className="w-full h-48 object-cover rounded-lg mb-3"
+                            className="w-full h-48 object-cover rounded-xl mb-3"
                         />
                     )}
 
@@ -117,41 +117,41 @@ export default function NovoBanner() {
                         accept="image/*"
                         onChange={handleSelecionarArquivo}
                         required
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
                     />
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-muted mt-1.5">
                         Recomendado: imagem larga, formato paisagem (ex: 1600x600 pixels)
                     </p>
                 </div>
 
                 <div>
-                    <label className="block text-sm text-gray-600 mb-1">Título</label>
+                    <label className="block text-sm font-semibold text-ink mb-2">Título</label>
                     <input
                         type="text"
                         value={titulo}
                         onChange={(e) => setTitulo(e.target.value)}
                         placeholder="Ex: DESCUBRA SEU PRÓXIMO CARRO"
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm text-gray-600 mb-1">Subtítulo</label>
+                    <label className="block text-sm font-semibold text-ink mb-2">Subtítulo</label>
                     <input
                         type="text"
                         value={subtitulo}
                         onChange={(e) => setSubtitulo(e.target.value)}
                         placeholder="Ex: Explore nosso estoque completo!"
-                        className="w-full border rounded-lg px-4 py-2"
+                        className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
                     />
                 </div>
 
-                {erro && <p className="text-red-600 text-sm">{erro}</p>}
+                {erro && <p className="text-[#B42318] text-sm font-medium">{erro}</p>}
 
                 <button
                     type="submit"
                     disabled={salvando}
-                    className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+                    className="w-full h-13 min-h-[52px] rounded-xl bg-malu-black text-gold-light font-bold hover:bg-gold hover:text-malu-black transition-colors disabled:opacity-50"
                 >
                     {salvando ? "Enviando..." : "Salvar Banner"}
                 </button>
@@ -165,6 +165,6 @@ export default function NovoBanner() {
                     onCancelar={handleCancelarRecorte}
                 />
             )}
-        </main>
+        </div>
     );
 }

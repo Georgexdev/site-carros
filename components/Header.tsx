@@ -3,15 +3,19 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Phone, MessageCircle, Menu, X } from "lucide-react";
+import { Phone, MessageCircle, Menu, X, Clock, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { MARCA, linkTelefone, linkWhatsApp } from "@/lib/marca";
+import LogoMalu from "@/components/LogoMalu";
 
-type Props = {
-    nomeEmpresa?: string;
-    logoUrl?: string;
-};
+const links = [
+    { href: "/estoque", label: "Estoque" },
+    { href: "/financie", label: "Financie" },
+    { href: "/vender", label: "Venda seu carro" },
+    { href: "/sobre", label: "Sobre" },
+];
 
-export default function Header({ nomeEmpresa, logoUrl }: Props) {
+export default function Header() {
     const [menuAberto, setMenuAberto] = useState(false);
     const [rolado, setRolado] = useState(false);
     const [temBannerAtivo, setTemBannerAtivo] = useState(false);
@@ -50,133 +54,156 @@ export default function Header({ nomeEmpresa, logoUrl }: Props) {
         return null;
     }
 
+    function estaAtivo(href: string) {
+        return pathname === href || pathname.startsWith(href + "/") || (href === "/estoque" && pathname.startsWith("/carro/"));
+    }
+
     return (
-        <header className={isHome && temBannerAtivo ? "fixed top-0 left-0 right-0 z-50" : "relative"}>
+        <header className={isHome && temBannerAtivo ? "fixed top-0 left-0 right-0 z-50" : "relative z-40"}>
             <div
                 className={
-                    "text-white text-xs py-2 px-4 flex justify-between items-center transition-colors duration-300 " +
-                    (transparente ? "bg-transparent" : "bg-gray-900")
+                    "hidden sm:flex text-xs text-muted-dark py-2 px-6 lg:px-16 justify-between items-center border-b transition-colors duration-300 " +
+                    (transparente ? "bg-transparent border-white/10" : "bg-malu-black border-gold/20")
                 }
             >
-                <span>Horário de atendimento: Seg a Sexta - 8h às 17h | Sáb - 8h às 12h</span>
+                <span className="flex items-center gap-2">
+                    <Clock size={14} className="text-gold" aria-hidden="true" />
+                    {MARCA.horarioResumo}
+                </span>
+                <span className="hidden md:flex items-center gap-2">
+                    <MapPin size={14} className="text-gold" aria-hidden="true" />
+                    {MARCA.endereco.linha1} · {MARCA.endereco.cidade}
+                </span>
             </div>
 
             <div
                 className={
-                    "text-white px-4 py-3 flex items-center justify-between transition-colors duration-300 " +
-                    (transparente ? "bg-transparent" : "bg-[var(--cor-secundaria)]")
+                    "text-[#E9E3D6] px-4 sm:px-6 lg:px-16 h-16 md:h-20 flex items-center justify-between transition-colors duration-300 " +
+                    (transparente ? "bg-gradient-to-b from-black/60 to-transparent" : "bg-malu-black border-b border-gold/20")
                 }
             >
-                <Link href="/" className="flex items-center gap-2">
-                    {logoUrl ? (
-                        <img src={logoUrl} alt={nomeEmpresa || "Logo"} className="h-16 w-auto" />
-                    ) : (
-                        <>
-                            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
-                                CT
-                            </div>
-                            <span className="text-xl font-bold">{nomeEmpresa || "MALU VEICULOS"}</span>
-                        </>
-                    )}
+                <Link href="/" aria-label={MARCA.nome + ", página inicial"} className="md:w-72">
+                    <span className="md:hidden"><LogoMalu tamanho="sm" comIcone={false} /></span>
+                    <span className="hidden md:block"><LogoMalu /></span>
                 </Link>
 
-                <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-                    <Link href="/estoque" className="hover:text-[var(--cor-primaria)] transition-colors">
-                        ESTOQUE
-                    </Link>
-                    <Link href="/financie" className="hover:text-[var(--cor-primaria)] transition-colors">
-                        FINANCIE
-                    </Link>
-                    <Link href="/vender" className="hover:text-[var(--cor-primaria)] transition-colors">
-                        VENDA SEU CARRO
-                    </Link>
-                    <Link href="/sobre" className="hover:text-[var(--cor-primaria)] transition-colors">
-                        SOBRE
-                    </Link>
+                <nav aria-label="Principal" className="hidden md:flex items-center gap-8 lg:gap-10 text-sm font-semibold tracking-[0.1em] uppercase">
+                    {links.map((link) => {
+                        const ativo = estaAtivo(link.href);
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                aria-current={ativo ? "page" : undefined}
+                                className={
+                                    "py-2.5 border-b-2 transition-colors " +
+                                    (ativo ? "text-gold border-gold" : "border-transparent hover:text-gold")
+                                }
+                            >
+                                {link.label}
+                            </Link>
+                        );
+                    })}
                 </nav>
 
-                <div className="hidden md:flex items-center gap-4">
-                    <a href="tel:5571999999999" className="flex items-center gap-1 text-sm hover:text-[var(--cor-primaria)] transition-colors">
-                        <Phone size={16} />
-                        (71) 99999-9999
+                <div className="hidden md:flex items-center gap-5 md:w-72 justify-end">
+                    <a href={linkTelefone()} className="hidden lg:flex items-center gap-2 text-sm font-semibold hover:text-gold transition-colors">
+                        <Phone size={16} className="text-gold" aria-hidden="true" />
+                        {MARCA.telefoneExibicao}
                     </a>
 
                     <a
-                        href="https://wa.me/5571999999999"
+                        href={linkWhatsApp()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-green-500 p-2 rounded-full hover:bg-green-600"
+                        className="flex items-center gap-2 h-11 px-4 rounded-full bg-whatsapp hover:bg-whatsapp-hover text-white text-sm font-bold transition-colors"
                     >
-                        <MessageCircle size={20} />
+                        <MessageCircle size={18} aria-hidden="true" />
+                        WhatsApp
                     </a>
                 </div>
 
-                <button
-                    type="button"
-                    onClick={() => setMenuAberto(true)}
-                    className="md:hidden w-11 h-11 flex items-center justify-center -mr-2"
-                    aria-label="Abrir menu"
-                >
-                    <Menu size={26} />
-                </button>
+                <div className="md:hidden flex items-center gap-2">
+                    <a
+                        href={linkTelefone()}
+                        aria-label="Ligar para a loja"
+                        className="w-11 h-11 rounded-full border border-gold/50 flex items-center justify-center"
+                    >
+                        <Phone size={18} className="text-gold" aria-hidden="true" />
+                    </a>
+                    <button
+                        type="button"
+                        onClick={() => setMenuAberto(true)}
+                        className="w-11 h-11 rounded-full border border-gold/50 flex items-center justify-center"
+                        aria-label="Abrir menu"
+                    >
+                        <Menu size={22} />
+                    </button>
+                </div>
             </div>
 
-            {
-                menuAberto && (
-                    <div className="fixed inset-0 z-50 md:hidden">
-                        <div
-                            className="absolute inset-0 bg-black/50"
-                            onClick={() => setMenuAberto(false)}
-                        />
+            {menuAberto && (
+                <div className="fixed inset-0 z-50 md:hidden">
+                    <div
+                        className="absolute inset-0 bg-black/60"
+                        onClick={() => setMenuAberto(false)}
+                    />
 
-                        <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-lg flex flex-col p-6">
+                    <div className="absolute right-0 top-0 h-full w-80 max-w-[85%] bg-malu-black border-l border-gold/20 shadow-lg flex flex-col p-6">
+                        <div className="flex items-center justify-between mb-8">
+                            <LogoMalu tamanho="sm" comIcone={false} />
                             <button
                                 type="button"
                                 onClick={() => setMenuAberto(false)}
-                                className="self-end mb-6 text-gray-500 w-11 h-11 flex items-center justify-center -mr-2"
+                                className="text-[#E9E3D6] w-11 h-11 flex items-center justify-center -mr-2"
                                 aria-label="Fechar menu"
                             >
                                 <X size={24} />
                             </button>
+                        </div>
 
-                            <nav className="flex flex-col gap-5 text-gray-800 font-medium">
-                                <Link href="/estoque" onClick={() => setMenuAberto(false)}>
-                                    ESTOQUE
-                                </Link>
-                                <Link href="/financie" onClick={() => setMenuAberto(false)}>
-                                    FINANCIE
-                                </Link>
-                                <Link href="/vender" onClick={() => setMenuAberto(false)}>
-                                    VENDA SEU CARRO
-                                </Link>
-                                <Link href="/sobre" onClick={() => setMenuAberto(false)}>
-                                    SOBRE
-                                </Link>
-                            </nav>
-
-                            <div className="mt-8 pt-6 border-t flex flex-col gap-4">
-                                <a
-                                    href="tel:5571999999999"
-                                    className="flex items-center gap-2 text-gray-700"
+                        <nav aria-label="Principal" className="flex flex-col text-[#E9E3D6] font-semibold tracking-[0.1em] uppercase text-sm">
+                            <Link
+                                href="/"
+                                onClick={() => setMenuAberto(false)}
+                                className={"py-4 border-b border-white/10 " + (isHome ? "text-gold" : "")}
+                            >
+                                Início
+                            </Link>
+                            {links.map((link) => (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    onClick={() => setMenuAberto(false)}
+                                    className={"py-4 border-b border-white/10 " + (estaAtivo(link.href) ? "text-gold" : "")}
                                 >
-                                    <Phone size={18} />
-                                    (71) 99999-9999
-                                </a>
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </nav>
 
-                                <a
-                                    href="https://wa.me/5571999999999"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg w-fit"
-                                >
-                                    <MessageCircle size={18} />
-                                    WhatsApp
-                                </a>
-                            </div>
-                        </div >
+                        <div className="mt-auto flex flex-col gap-4 text-sm text-muted-dark">
+                            <span className="flex items-center gap-2">
+                                <Clock size={16} className="text-gold" aria-hidden="true" />
+                                {MARCA.horarioResumo}
+                            </span>
+                            <a href={linkTelefone()} className="flex items-center gap-2 text-[#E9E3D6]">
+                                <Phone size={16} className="text-gold" aria-hidden="true" />
+                                {MARCA.telefoneExibicao}
+                            </a>
+                            <a
+                                href={linkWhatsApp()}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-center gap-2 bg-whatsapp text-white font-bold h-12 rounded-lg"
+                            >
+                                <MessageCircle size={18} aria-hidden="true" />
+                                Falar no WhatsApp
+                            </a>
+                        </div>
                     </div>
-                )
-            }
-        </header >
+                </div>
+            )}
+        </header>
     );
 }

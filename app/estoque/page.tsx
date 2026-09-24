@@ -5,7 +5,12 @@ import CarroCard from "@/components/CarroCard";
 import { supabase } from "@/lib/supabase";
 import { Carro } from "@/types/car";
 import FiltroMarca from "@/components/FiltroMarca";
-import SeletorOrdenacao, { TipoOrdenacao } from "@/components/SeletorOrdenacao";
+import { TipoOrdenacao } from "@/components/SeletorOrdenacao";
+import BarraBusca from "@/components/BarraBusca";
+import GradeCarrosCarregando from "@/components/GradeCarrosCarregando";
+import Link from "next/link";
+import { MessageCircle } from "lucide-react";
+import { linkWhatsApp } from "@/lib/marca";
 
 export default function Estoque() {
   const [busca, setBusca] = useState("");
@@ -79,69 +84,87 @@ export default function Estoque() {
 
   const totalDisponiveis = carros.filter((carro) => carro.status === "disponivel").length;
 
-  if (carregando) {
-    return (
-      <main className="max-w-6xl mx-auto p-6">
-        <p className="text-gray-500">Carregando carros...</p>
-      </main>
-    );
-  }
+  const grade = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8";
 
   return (
-    <main className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">Nosso Estoque</h1>
-      <p className="text-gray-600 mb-6">
-        {totalDisponiveis} veículo{totalDisponiveis !== 1 ? "s" : ""} disponível{totalDisponiveis !== 1 ? "eis" : ""} no momento
-      </p>
+    <div className="max-w-6xl mx-auto px-6 pt-10 md:pt-14 pb-16 md:pb-24 flex flex-col gap-7">
+      <nav aria-label="Você está em" className="text-[13px] text-muted flex gap-2">
+        <Link href="/" className="hover:text-gold-text">Início</Link>
+        <span aria-hidden="true">/</span>
+        <span className="text-ink font-semibold" aria-current="page">Estoque</span>
+      </nav>
 
-      <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} carros={carros} />
-
-      <div className="flex flex-col sm:flex-row gap-3 mt-6 mb-8">
-        <input
-          type="text"
-          placeholder="Buscar por marca, modelo ou versão..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          className="flex-1 border rounded-lg px-4 py-3 text-lg"
-        />
-
-        <SeletorOrdenacao valor={ordenacao} onSelecionar={setOrdenacao} />
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-4xl md:text-[52px] leading-tight text-ink">Nosso estoque</h1>
+        {!carregando && (
+          <p className="text-muted">
+            {totalDisponiveis} veículo{totalDisponiveis !== 1 ? "s" : ""} disponíve{totalDisponiveis !== 1 ? "is" : "l"} no momento
+          </p>
+        )}
       </div>
 
-      {termo === "" && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {carrosOrdenados.map((carro) => (
-            <CarroCard key={carro.id} carro={carro} />
-          ))}
-        </div>
+      {carregando ? (
+        <GradeCarrosCarregando quantidade={6} />
+      ) : (
+        <>
+          <BarraBusca busca={busca} onBuscar={setBusca} ordenacao={ordenacao} onOrdenar={setOrdenacao} />
+
+          <FiltroMarca marcaSelecionada={marcaFiltro} onSelecionar={setMarcaFiltro} carros={carros} />
+
+          {termo === "" && carrosOrdenados.length > 0 && (
+            <div className={grade}>
+              {carrosOrdenados.map((carro) => (
+                <CarroCard key={carro.id} carro={carro} />
+              ))}
+            </div>
+          )}
+
+          {termo === "" && carrosOrdenados.length === 0 && (
+            <p className="text-muted">Nenhum veículo disponível no momento.</p>
+          )}
+
+          {termo !== "" && resultadosExatos.length > 0 && (
+            <div className={grade}>
+              {resultadosExatos.map((carro) => (
+                <CarroCard key={carro.id} carro={carro} />
+              ))}
+            </div>
+          )}
+
+          {mostrarSemelhantes && resultadosSemelhantes.length > 0 && (
+            <div>
+              <p className="text-muted mb-4">
+                Não encontramos exatamente o que você buscou, mas talvez você goste destes:
+              </p>
+              <div className={grade}>
+                {resultadosSemelhantes.map((carro) => (
+                  <CarroCard key={carro.id} carro={carro} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {mostrarSemelhantes && resultadosSemelhantes.length === 0 && (
+            <p className="text-muted">Nenhum carro encontrado para essa busca no momento.</p>
+          )}
+        </>
       )}
 
-      {termo !== "" && resultadosExatos.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {resultadosExatos.map((carro) => (
-            <CarroCard key={carro.id} carro={carro} />
-          ))}
+      <div className="mt-4 p-6 md:p-10 rounded-2xl bg-malu-black flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="flex flex-col gap-1.5">
+          <strong className="font-display font-normal text-2xl md:text-[26px] text-[#F4EEE2]">Não encontrou o carro que procura?</strong>
+          <span className="text-[15px] text-muted-dark">Conte pra gente o modelo e avisamos quando chegar.</span>
         </div>
-      )}
-
-      {mostrarSemelhantes && resultadosSemelhantes.length > 0 && (
-        <div>
-          <p className="text-gray-600 mb-4">
-            Não encontramos exatamente o que você buscou, mas talvez você goste destes:
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resultadosSemelhantes.map((carro) => (
-              <CarroCard key={carro.id} carro={carro} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {mostrarSemelhantes && resultadosSemelhantes.length === 0 && (
-        <p className="text-gray-600">
-          Nenhum carro encontrado para essa busca no momento.
-        </p>
-      )}
-    </main>
+        <a
+          href={linkWhatsApp("Olá! Estou procurando um carro que não encontrei no estoque do site.")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-13 min-h-[52px] px-6 flex items-center justify-center gap-2.5 rounded-xl bg-whatsapp hover:bg-whatsapp-hover text-white font-bold transition-colors shrink-0"
+        >
+          <MessageCircle size={18} aria-hidden="true" />
+          Falar no WhatsApp
+        </a>
+      </div>
+    </div>
   );
 }

@@ -26,7 +26,7 @@ export default function SeletorOpcoes({ label, opcoes, valorSelecionado, onSelec
 
   return (
     <div>
-      <label className="block text-sm text-gray-600 mb-2">{label}</label>
+      <label className="block text-sm font-semibold text-ink mb-3">{label}</label>
 
       <div className="flex flex-wrap gap-2">
         {opcoes.map((opcao) => {
@@ -37,8 +37,8 @@ export default function SeletorOpcoes({ label, opcoes, valorSelecionado, onSelec
               type="button"
               onClick={() => handleSelecionar(opcao)}
               className={
-                "px-4 py-2 rounded-lg border text-sm hover:border-gray-400 transition-colors " +
-                (selecionada ? "border-black border-2 font-medium" : "border-gray-200")
+                "h-11 px-4 rounded-xl border text-sm hover:border-gold/60 transition-colors " +
+                (selecionada ? "border-gold border-2 bg-gold/10 font-semibold text-ink" : "border-line bg-white")
               }
             >
               {opcao}
@@ -50,8 +50,8 @@ export default function SeletorOpcoes({ label, opcoes, valorSelecionado, onSelec
           type="button"
           onClick={handleClicarOutra}
           className={
-            "px-4 py-2 rounded-lg border text-sm hover:border-gray-400 transition-colors " +
-            (usandoOutra ? "border-black border-2 font-medium" : "border-gray-200")
+            "h-11 px-4 rounded-xl border text-sm hover:border-gold/60 transition-colors " +
+            (usandoOutra ? "border-gold border-2 bg-gold/10 font-semibold text-ink" : "border-line bg-white")
           }
         >
           Outra
@@ -64,7 +64,7 @@ export default function SeletorOpcoes({ label, opcoes, valorSelecionado, onSelec
           placeholder={"Digite: " + label.toLowerCase()}
           value={valorSelecionado}
           onChange={(e) => onSelecionar(e.target.value)}
-          className="w-full border rounded-lg px-4 py-2 mt-3"
+          className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 mt-3"
         />
       )}
     </div>
