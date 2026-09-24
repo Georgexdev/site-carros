@@ -100,30 +100,30 @@ export default function GerenciarBanners() {
 
     if (carregando) {
         return (
-            <main className="max-w-4xl mx-auto p-6">
-                <p className="text-gray-500">Carregando...</p>
-            </main>
+            <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8">
+                <p className="text-muted">Carregando...</p>
+            </div>
         );
     }
 
     return (
-        <main className="max-w-4xl mx-auto p-6">
-            <Link href="/admin" className="text-blue-600 hover:underline">
-                ← Voltar ao painel
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8">
+            <Link href="/admin" className="inline-flex items-center gap-1 text-sm font-semibold text-gold-text hover:underline">
+                ← Voltar aos veículos
             </Link>
 
             <div className="flex justify-between items-center mt-4 mb-6">
-                <h1 className="text-2xl font-bold">Gerenciar Banners</h1>
+                <h1 className="font-display text-3xl sm:text-4xl text-ink">Banners</h1>
                 <Link
                     href="/admin/banners/novo"
-                    className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 text-sm"
+                    className="h-11 px-5 inline-flex items-center rounded-xl bg-gold hover:bg-gold-light text-malu-black text-sm font-bold transition-colors"
                 >
-                    + Novo Banner
+                    + Novo banner
                 </Link>
             </div>
 
             {banners.length === 0 ? (
-                <p className="text-gray-500">Nenhum banner cadastrado ainda.</p>
+                <p className="text-muted">Nenhum banner cadastrado ainda.</p>
             ) : (
                 <DndContext
                     sensors={sensors}
@@ -147,6 +147,6 @@ export default function GerenciarBanners() {
                     </SortableContext>
                 </DndContext>
             )}
-        </main>
+        </div>
     );
 }

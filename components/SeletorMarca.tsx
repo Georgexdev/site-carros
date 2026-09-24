@@ -25,7 +25,7 @@ export default function SeletorMarca({ valorSelecionado, onSelecionar }: Props) 
 
   return (
     <div>
-      <label className="block text-sm text-gray-600 mb-2">Marca</label>
+      <label className="block text-sm font-semibold text-ink mb-3">Marca</label>
 
       <div className="flex gap-3 overflow-x-auto pb-3">
         {marcasDisponiveis.map(({ nome, Logo }) => {
@@ -36,14 +36,14 @@ export default function SeletorMarca({ valorSelecionado, onSelecionar }: Props) 
               type="button"
               onClick={() => handleSelecionarMarca(nome)}
               className={
-                "flex-shrink-0 flex flex-col items-center justify-center gap-1 border rounded-lg p-2 w-40 h-40 hover:border-gray-400 transition-colors " +
-                (selecionada ? "border-black border-2" : "border-gray-200")
+                "flex-shrink-0 flex flex-col items-center justify-center gap-1 border rounded-xl p-2 w-32 h-32 hover:border-gold/60 transition-colors " +
+                (selecionada ? "border-gold border-2 bg-white shadow-sm" : "border-line bg-white")
               }
             >
               <div className="w-20 h-20 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full">
                 <Logo size={110} />
               </div>
-              <span className="text-sm text-gray-600 text-center">{nome}</span>
+              <span className="text-sm text-ink text-center">{nome}</span>
             </button>
           );
         })}
@@ -52,12 +52,12 @@ export default function SeletorMarca({ valorSelecionado, onSelecionar }: Props) 
           type="button"
           onClick={handleClicarOutra}
           className={
-            "flex-shrink-0 flex flex-col items-center justify-center gap-2 border rounded-lg p-4 w-28 h-28 hover:border-gray-400 transition-colors " +
-            (usandoOutra ? "border-black border-2" : "border-gray-200")
+            "flex-shrink-0 flex flex-col items-center justify-center gap-2 border rounded-xl p-4 w-32 h-32 hover:border-gold/60 transition-colors " +
+            (usandoOutra ? "border-gold border-2 bg-white shadow-sm" : "border-line bg-white")
           }
         >
           <span className="text-3xl">+</span>
-          <span className="text-sm text-gray-600">Outra</span>
+          <span className="text-sm text-muted">Outra</span>
         </button>
       </div>
 
@@ -67,7 +67,7 @@ export default function SeletorMarca({ valorSelecionado, onSelecionar }: Props) 
           placeholder="Digite o nome da marca"
           value={valorSelecionado}
           onChange={(e) => onSelecionar(e.target.value)}
-          className="w-full border rounded-lg px-4 py-2 mt-3"
+          className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 mt-3"
         />
       )}
     </div>

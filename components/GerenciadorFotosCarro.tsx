@@ -134,12 +134,12 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
     }
 
     if (carregando) {
-        return <p className="text-gray-500 text-sm">Carregando fotos...</p>;
+        return <p className="text-muted text-sm">Carregando fotos...</p>;
     }
 
     return (
         <div>
-            <label className="block text-sm text-gray-600 mb-2">Fotos do Carro</label>
+            <label className="block text-sm font-semibold text-ink mb-3">Fotos do Carro</label>
 
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-3">
                 {fotos.map((foto) => (
@@ -147,12 +147,12 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                         <img
                             src={foto.url}
                             alt="Foto do carro"
-                            className="w-full h-24 object-cover rounded-lg"
+                            className="w-full h-24 object-cover rounded-xl"
                         />
                         <button
                             type="button"
                             onClick={() => setFotoEditando(foto)}
-                            className="absolute bottom-1 left-1 bg-black/60 text-white rounded-full p-1 hover:bg-blue-600"
+                            className="absolute bottom-1 left-1 bg-malu-black/70 text-gold-light rounded-full p-1.5 hover:bg-gold hover:text-malu-black"
                             title="Recortar foto"
                         >
                             <Crop size={14} />
@@ -160,7 +160,7 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                         <button
                             type="button"
                             onClick={() => handleExcluirFoto(foto)}
-                            className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-red-600"
+                            className="absolute top-1 right-1 bg-malu-black/70 text-white rounded-full p-1.5 hover:bg-[#B42318]"
                             title="Excluir foto"
                         >
                             <X size={14} />
@@ -168,7 +168,7 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                     </div>
                 ))}
 
-                <label className="flex items-center justify-center h-24 border-2 border-dashed rounded-lg cursor-pointer hover:border-gray-400 text-gray-400 text-sm text-center px-1">
+                <label className="flex items-center justify-center h-24 border-2 border-dashed border-line-strong rounded-xl cursor-pointer bg-[#FBFAF7] hover:border-gold text-muted text-sm font-semibold text-center px-1 transition-colors">
                     {enviando ? "Enviando..." : "+ Adicionar"}
                     <input
                         type="file"
@@ -181,9 +181,9 @@ export default function GerenciadorFotosCarro({ carroId }: Props) {
                 </label>
             </div>
 
-            {erro && <p className="text-red-600 text-sm mb-2">{erro}</p>}
+            {erro && <p className="text-[#B42318] text-sm font-medium mb-2">{erro}</p>}
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted">
                 A primeira foto adicionada é usada como capa nos cards do site. Use o ícone de recorte para ajustar o enquadramento de uma foto. Tamanho máximo: {TAMANHO_MAXIMO_MB}MB por imagem.
             </p>
 
