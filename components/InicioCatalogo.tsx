@@ -58,9 +58,9 @@ export default function InicioCatalogo() {
       case "maior_preco":
         return b.preco - a.preco;
       case "ano_recente":
-        return b.ano_modelo - a.ano_modelo;
+        return b.ano_modelo - a.ano_modelo || b.ano_fabricacao - a.ano_fabricacao;
       case "ano_antigo":
-        return a.ano_modelo - b.ano_modelo;
+        return a.ano_modelo - b.ano_modelo || a.ano_fabricacao - b.ano_fabricacao;
       case "menor_km":
         return a.km - b.km;
       case "maior_km":
