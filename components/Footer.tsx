@@ -28,7 +28,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-malu-black text-[#D8D0C0] border-t border-gold/40 mt-auto">
+    <footer data-esconde-whats-flutuante className="bg-malu-black text-[#D8D0C0] border-t border-gold/40 mt-auto">
       <div className="max-w-6xl mx-auto px-6 pt-16 pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.4fr] gap-10 lg:gap-12">
         <div className="flex flex-col gap-5">
           <Link href="/" aria-label={loja.nome + ", página inicial"} className="w-fit">
@@ -110,8 +110,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-gold/20">
-        {/* pb-24/pb-28: espaço para o botão flutuante do WhatsApp não cobrir o link dos Termos */}
-        <div className="max-w-6xl mx-auto px-6 pt-5 pb-24 sm:pb-28 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-soft text-center">
+        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-soft text-center">
           <span>
             © {new Date().getFullYear()} {loja.nome}
             {loja.cnpj && " · CNPJ " + loja.cnpj}

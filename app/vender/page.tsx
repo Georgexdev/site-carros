@@ -191,6 +191,7 @@ export default function VendaSeuCarro() {
 
                     <button
                         type="button"
+                        data-esconde-whats-flutuante
                         onClick={handleEnviar}
                         className="w-full h-14 flex items-center justify-center gap-2.5 bg-whatsapp hover:bg-whatsapp-hover text-white rounded-xl font-bold transition-colors"
                     >

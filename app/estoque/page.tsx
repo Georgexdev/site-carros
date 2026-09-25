@@ -162,6 +162,7 @@ export default function Estoque() {
           href={linkWhatsApp("Olá! Estou procurando um carro que não encontrei no estoque do site.")}
           target="_blank"
           rel="noopener noreferrer"
+          data-esconde-whats-flutuante
           className="h-13 min-h-[52px] px-6 flex items-center justify-center gap-2.5 rounded-xl bg-whatsapp hover:bg-whatsapp-hover text-white font-bold transition-colors shrink-0"
         >
           <MessageCircle size={18} aria-hidden="true" />

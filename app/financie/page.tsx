@@ -444,6 +444,7 @@ export default function Financie() {
 
                         <button
                             type="button"
+                            data-esconde-whats-flutuante
                             onClick={handleSolicitar}
                             className="w-full h-14 rounded-xl bg-gold hover:bg-gold-light text-malu-black font-bold transition-colors"
                         >
