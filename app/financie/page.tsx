@@ -8,6 +8,7 @@ import { Phone, User, Calendar, IdCard, Car as CarIcon, X, ShieldCheck } from "l
 import { bancosParceiros } from "@/data/bancos";
 import { useLoja } from "@/components/LojaProvider";
 import { celularValido, cpfValido, idadePelaData, dataBrasileira } from "@/lib/validacao";
+import { nomeDoCarro } from "@/lib/texto";
 
 type CampoFormulario = "veiculo" | "nome" | "celular" | "nascimento" | "cpf";
 
@@ -171,7 +172,7 @@ export default function Financie() {
         const mensagem =
             "Olá! Gostaria de solicitar uma análise de financiamento." +
             "\n\nVeículo de interesse: " +
-            veiculoSelecionado.marca + " " + veiculoSelecionado.modelo + " " + veiculoSelecionado.versao +
+            nomeDoCarro(veiculoSelecionado) +
             " (Ano " + veiculoSelecionado.ano_fabricacao + "/" + veiculoSelecionado.ano_modelo + ")" +
             "\n\nMeus dados:\nNome: " + nome.trim() +
             "\nCelular: " + celular.trim() +

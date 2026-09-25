@@ -12,6 +12,7 @@ import GradeCarrosCarregando from "@/components/GradeCarrosCarregando";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { useLoja } from "@/components/LojaProvider";
+import { limparTexto, nomeDoCarro } from "@/lib/texto";
 
 export default function Estoque() {
   const { linkWhatsApp } = useLoja();
@@ -67,10 +68,10 @@ export default function Estoque() {
     }
   });
 
-  const termo = busca.trim().toLowerCase();
+  const termo = limparTexto(busca).toLowerCase();
 
   const textoCompleto = (carro: Carro) =>
-    (carro.marca + " " + carro.modelo + " " + carro.versao).toLowerCase();
+    nomeDoCarro(carro).toLowerCase();
 
   const resultadosExatos = carrosOrdenados.filter((carro) =>
     textoCompleto(carro).includes(termo)

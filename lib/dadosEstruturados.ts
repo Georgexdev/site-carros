@@ -1,6 +1,7 @@
 import { DadosLoja } from "@/lib/loja";
 import { Carro, FotoCarro } from "@/types/car";
 import { SITE_URL } from "@/lib/site";
+import { limparTexto, nomeDoCarro } from "@/lib/texto";
 
 // Dados estruturados (Schema.org): um "cartão" invisível que explica ao Google
 // que o site é uma loja de carros e que cada página de carro é uma oferta com preço.
@@ -48,7 +49,7 @@ export function dadosDaLoja(loja: DadosLoja) {
 }
 
 export function dadosDoCarro(carro: Carro, fotos: FotoCarro[], nomeLoja: string) {
-  const nome = [carro.marca, carro.modelo, carro.versao].filter(Boolean).join(" ");
+  const nome = nomeDoCarro(carro);
   const url = SITE_URL + "/carro/" + carro.id;
 
   return {
@@ -57,8 +58,8 @@ export function dadosDoCarro(carro: Carro, fotos: FotoCarro[], nomeLoja: string)
     name: nome + " " + carro.ano_fabricacao + "/" + carro.ano_modelo,
     url,
     image: fotos.map((f) => f.url),
-    brand: { "@type": "Brand", name: carro.marca },
-    model: carro.modelo,
+    brand: { "@type": "Brand", name: limparTexto(carro.marca) },
+    model: limparTexto(carro.modelo),
     vehicleModelDate: String(carro.ano_modelo),
     productionDate: String(carro.ano_fabricacao),
     mileageFromOdometer: { "@type": "QuantitativeValue", value: carro.km, unitCode: "KMT" },
