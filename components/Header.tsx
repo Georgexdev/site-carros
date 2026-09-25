@@ -108,11 +108,6 @@ export default function Header() {
                 </nav>
 
                 <div className="hidden md:flex items-center gap-5 shrink-0 xl:w-72 justify-end">
-                    <a href={linkTelefone()} className="hidden xl:flex items-center gap-2 text-sm font-semibold hover:text-gold transition-colors">
-                        <Phone size={16} className="text-gold" aria-hidden="true" />
-                        {loja.telefoneExibicao}
-                    </a>
-
                     <a
                         href={linkWhatsApp()}
                         target="_blank"
