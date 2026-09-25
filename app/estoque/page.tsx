@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CarroCard from "@/components/CarroCard";
 import { supabase } from "@/lib/supabase";
 import { EMPRESA_ID } from "@/lib/empresa";
@@ -14,6 +14,8 @@ import { MessageCircle } from "lucide-react";
 import { useLoja } from "@/components/LojaProvider";
 import { limparTexto, nomeDoCarro } from "@/lib/texto";
 
+const ORDENACOES: TipoOrdenacao[] = ["relevancia", "menor_preco", "maior_preco", "ano_recente", "ano_antigo", "menor_km", "maior_km"];
+
 export default function Estoque() {
   const { linkWhatsApp } = useLoja();
   const [busca, setBusca] = useState("");
@@ -21,6 +23,18 @@ export default function Estoque() {
   const [ordenacao, setOrdenacao] = useState<TipoOrdenacao>("relevancia");
   const [carros, setCarros] = useState<Carro[]>([]);
   const [carregando, setCarregando] = useState(true);
+  const urlLida = useRef(false);
+
+  // Sempre que um filtro muda, atualiza o link. Assim dá para compartilhar ou voltar do carro sem perder a busca.
+  useEffect(() => {
+    if (!urlLida.current) return;
+    const parametros = new URLSearchParams();
+    if (busca.trim()) parametros.set("busca", busca.trim());
+    if (marcaFiltro) parametros.set("marca", marcaFiltro);
+    if (ordenacao !== "relevancia") parametros.set("ordem", ordenacao);
+    const consulta = parametros.toString();
+    window.history.replaceState(null, "", consulta ? "?" + consulta : window.location.pathname);
+  }, [busca, marcaFiltro, ordenacao]);
 
   useEffect(() => {
     async function buscarCarros() {
@@ -34,6 +48,14 @@ export default function Estoque() {
       } else if (data) {
         setCarros(data as Carro[]);
       }
+
+      // Aplica os filtros que vieram no link (ex.: /estoque?marca=Toyota&busca=corolla).
+      const parametros = new URLSearchParams(window.location.search);
+      const ordemDaUrl = parametros.get("ordem") as TipoOrdenacao | null;
+      setBusca(parametros.get("busca") || "");
+      setMarcaFiltro(parametros.get("marca") || "");
+      if (ordemDaUrl && ORDENACOES.includes(ordemDaUrl)) setOrdenacao(ordemDaUrl);
+      urlLida.current = true;
 
       setCarregando(false);
     }
