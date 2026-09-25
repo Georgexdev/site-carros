@@ -10,6 +10,8 @@ import BotaoInteresseVeiculo from "@/components/BotaoInteresseVeiculo";
 import { marcasDisponiveis } from "@/data/marcas";
 import { coresDisponiveis } from "@/data/opcoesCarro";
 import { Landmark, MessageCircle, Repeat } from "lucide-react";
+import { dadosDoCarro, paraScript } from "@/lib/dadosEstruturados";
+import { MARCA } from "@/lib/marca";
 
 type Props = {
   params: Promise<{
@@ -104,6 +106,10 @@ export default async function DetalhesCarro({ params }: Props) {
 
   return (
     <div className="max-w-6xl mx-auto px-6 pt-8 md:pt-12 pb-16 md:pb-24 flex flex-col gap-7">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: paraScript(dadosDoCarro(carroTipado, fotosTipadas, MARCA.nome)) }}
+      />
       <nav aria-label="Você está em" className="text-[13px] text-muted flex flex-wrap gap-2">
         <Link href="/" className="hover:text-gold-text">Início</Link>
         <span aria-hidden="true">/</span>
