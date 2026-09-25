@@ -12,6 +12,7 @@ import { coresDisponiveis } from "@/data/opcoesCarro";
 import { Landmark, MessageCircle, Repeat } from "lucide-react";
 import { dadosDoCarro, paraScript } from "@/lib/dadosEstruturados";
 import { MARCA } from "@/lib/marca";
+import { nomeDoCarro } from "@/lib/texto";
 
 type Props = {
   params: Promise<{
@@ -54,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!resultado) return { title: "Veículo não encontrado" };
 
   const { carro, fotos } = resultado;
-  const nome = [carro.marca, carro.modelo, carro.versao].filter(Boolean).join(" ");
+  const nome = nomeDoCarro(carro);
   const anos = carro.ano_fabricacao + "/" + carro.ano_modelo;
   const preco = carro.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
   const titulo = nome + " " + anos;

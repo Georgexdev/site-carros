@@ -145,7 +145,7 @@ export default function Header() {
             </div>
 
             {menuAberto && (
-                <div className="fixed inset-0 z-50 md:hidden">
+                <div data-esconde-whats-flutuante className="fixed inset-0 z-50 md:hidden">
                     <div
                         className="absolute inset-0 bg-black/60"
                         onClick={() => setMenuAberto(false)}

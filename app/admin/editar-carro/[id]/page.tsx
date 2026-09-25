@@ -11,6 +11,7 @@ import SeletorOpcoes from "@/components/SeletorOpcoes";
 import SeletorCor from "@/components/SeletorCor";
 import { coresDisponiveis, combustiveisDisponiveis, cambiosDisponiveis } from "@/data/opcoesCarro";
 import GerenciadorFotosCarro from "@/components/GerenciadorFotosCarro";
+import { limparTexto } from "@/lib/texto";
 
 export default function EditarCarro() {
   const router = useRouter();
@@ -112,9 +113,9 @@ export default function EditarCarro() {
     const { error } = await supabase
       .from("carros")
       .update({
-        marca,
-        modelo,
-        versao,
+        marca: limparTexto(marca),
+        modelo: limparTexto(modelo),
+        versao: limparTexto(versao),
         ano_fabricacao: Number(anoFabricacao),
         ano_modelo: Number(anoModelo),
         preco: Number(preco),

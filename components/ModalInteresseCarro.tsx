@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Carro } from "@/types/car";
 import { MessageCircle, Eye } from "lucide-react";
 import { useLoja } from "@/components/LojaProvider";
+import { nomeDoCarro } from "@/lib/texto";
 
 type Props = {
     carro: Carro;
@@ -22,7 +23,7 @@ export default function ModalInteresseCarro({ carro, onFechar }: Props) {
     function handleInformarInteresse() {
         const mensagem =
             "Olá! Tenho interesse no veículo " +
-            carro.marca + " " + carro.modelo + " " + carro.versao +
+            nomeDoCarro(carro) +
             " (Ano " + carro.ano_fabricacao + "/" + carro.ano_modelo + "). Podem me passar mais informações?";
 
         window.open(linkWhatsApp(mensagem), "_blank");

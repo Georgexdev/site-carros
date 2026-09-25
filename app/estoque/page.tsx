@@ -12,6 +12,7 @@ import GradeCarrosCarregando from "@/components/GradeCarrosCarregando";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { useLoja } from "@/components/LojaProvider";
+import { limparTexto, nomeDoCarro } from "@/lib/texto";
 
 export default function Estoque() {
   const { linkWhatsApp } = useLoja();
@@ -67,10 +68,10 @@ export default function Estoque() {
     }
   });
 
-  const termo = busca.trim().toLowerCase();
+  const termo = limparTexto(busca).toLowerCase();
 
   const textoCompleto = (carro: Carro) =>
-    (carro.marca + " " + carro.modelo + " " + carro.versao).toLowerCase();
+    nomeDoCarro(carro).toLowerCase();
 
   const resultadosExatos = carrosOrdenados.filter((carro) =>
     textoCompleto(carro).includes(termo)
@@ -162,6 +163,7 @@ export default function Estoque() {
           href={linkWhatsApp("Olá! Estou procurando um carro que não encontrei no estoque do site.")}
           target="_blank"
           rel="noopener noreferrer"
+          data-esconde-whats-flutuante
           className="h-13 min-h-[52px] px-6 flex items-center justify-center gap-2.5 rounded-xl bg-whatsapp hover:bg-whatsapp-hover text-white font-bold transition-colors shrink-0"
         >
           <MessageCircle size={18} aria-hidden="true" />

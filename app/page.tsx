@@ -15,6 +15,7 @@ import BarraBusca from "@/components/BarraBusca";
 import GradeCarrosCarregando from "@/components/GradeCarrosCarregando";
 import { TipoOrdenacao } from "@/components/SeletorOrdenacao";
 import { bancosParceiros } from "@/data/bancos";
+import { limparTexto, nomeDoCarro } from "@/lib/texto";
 
 export default function Home() {
   const [busca, setBusca] = useState("");
@@ -69,10 +70,10 @@ export default function Home() {
     }
   });
 
-  const termo = busca.trim().toLowerCase();
+  const termo = limparTexto(busca).toLowerCase();
 
   const textoCompleto = (carro: Carro) =>
-    (carro.marca + " " + carro.modelo + " " + carro.versao).toLowerCase();
+    nomeDoCarro(carro).toLowerCase();
 
   const resultadosExatos = carrosOrdenados.filter((carro) =>
     textoCompleto(carro).includes(termo)
