@@ -125,14 +125,7 @@ export default function Header() {
                     </a>
                 </div>
 
-                <div className="md:hidden flex items-center gap-2">
-                    <a
-                        href={linkTelefone()}
-                        aria-label="Ligar para a loja"
-                        className="w-11 h-11 rounded-full border border-gold/50 flex items-center justify-center"
-                    >
-                        <Phone size={18} className="text-gold" aria-hidden="true" />
-                    </a>
+                <div className="md:hidden flex items-center">
                     <button
                         type="button"
                         onClick={() => setMenuAberto(true)}
