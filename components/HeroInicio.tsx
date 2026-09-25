@@ -25,7 +25,7 @@ export default function HeroInicio() {
               href="/financie"
               className="h-14 px-7 flex items-center justify-center rounded-xl border border-gold text-gold-light hover:bg-gold/10 font-bold transition-colors"
             >
-              Simular financiamento
+              Quero financiar
             </Link>
           </div>
         </div>

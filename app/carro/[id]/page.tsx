@@ -169,7 +169,7 @@ export default async function DetalhesCarro({ params }: Props) {
                 href={"/financie?carro=" + carroTipado.id}
                 className="h-14 flex items-center justify-center rounded-xl bg-gold hover:bg-gold-light text-malu-black font-bold transition-colors"
               >
-                Simular financiamento
+                Financiar este carro
               </Link>
             </>
           )}
