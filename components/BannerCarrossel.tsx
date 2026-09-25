@@ -1,38 +1,20 @@
 "use client";
 
-import { useEffect, useState, useRef, type ReactNode } from "react";
+import { useState, useRef, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { supabase } from "@/lib/supabase";
-import { EMPRESA_ID } from "@/lib/empresa";
 import { Banner } from "@/types/car";
 
 type Props = {
+    // Banners ativos, já buscados no servidor (assim a página não pisca um bloco preto ao abrir).
+    banners: Banner[];
     // Conteúdo exibido quando não há nenhum banner ativo cadastrado.
     semBanners?: ReactNode;
 };
 
-export default function BannerCarrossel({ semBanners = null }: Props) {
-    const [banners, setBanners] = useState<Banner[]>([]);
-    const [carregado, setCarregado] = useState(false);
+export default function BannerCarrossel({ banners, semBanners = null }: Props) {
     const [indiceAtual, setIndiceAtual] = useState(0);
     const posicaoInicial = useRef(0);
     const posicaoFinal = useRef(0);
-
-    useEffect(() => {
-        async function buscarBanners() {
-            let consulta = supabase.from("banners").select("*").eq("ativo", true);
-            if (EMPRESA_ID) consulta = consulta.eq("empresa_id", EMPRESA_ID);
-
-            const { data } = await consulta.order("ordem", { ascending: true });
-
-            if (data) {
-                setBanners(data as Banner[]);
-            }
-            setCarregado(true);
-        }
-
-        buscarBanners();
-    }, []);
 
     function irParaAnterior() {
         setIndiceAtual((atual) => (atual === 0 ? banners.length - 1 : atual - 1));
@@ -57,10 +39,6 @@ export default function BannerCarrossel({ semBanners = null }: Props) {
         } else if (diferenca < -distanciaMinima) {
             irParaAnterior();
         }
-    }
-
-    if (!carregado) {
-        return <div className="w-full h-[420px] md:h-[560px] bg-malu-black" aria-hidden="true" />;
     }
 
     if (banners.length === 0) {
