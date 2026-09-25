@@ -12,6 +12,7 @@ import SeletorCor from "@/components/SeletorCor";
 import { coresDisponiveis, combustiveisDisponiveis, cambiosDisponiveis } from "@/data/opcoesCarro";
 import GerenciadorFotosCarro from "@/components/GerenciadorFotosCarro";
 import { limparTexto } from "@/lib/texto";
+import CamposExtrasCarro from "@/components/CamposExtrasCarro";
 
 export default function EditarCarro() {
   const router = useRouter();
@@ -35,6 +36,8 @@ export default function EditarCarro() {
   const [placa, setPlaca] = useState("");
   const [chassi, setChassi] = useState("");
   const [mostrarPlacaChassi, setMostrarPlacaChassi] = useState(false);
+  const [opcionais, setOpcionais] = useState<string[]>([]);
+  const [descricao, setDescricao] = useState("");
   const [destaqueHome, setDestaqueHome] = useState(false);
   const [totalDestaques, setTotalDestaques] = useState(0);
   const [erroDestaque, setErroDestaque] = useState("");
@@ -73,6 +76,8 @@ export default function EditarCarro() {
       setChassi(carro.chassi || "");
       setMostrarPlacaChassi(carro.mostrar_placa_chassi || false);
       setDestaqueHome(carro.destaque_home || false);
+      setOpcionais(carro.opcionais || []);
+      setDescricao(carro.descricao || "");
 
       const { count } = await supabase
         .from("carros")
@@ -127,6 +132,8 @@ export default function EditarCarro() {
         chassi,
         mostrar_placa_chassi: mostrarPlacaChassi,
         destaque_home: destaqueHome,
+        opcionais,
+        descricao: descricao.trim(),
       })
       .eq("id", id);
 
@@ -258,6 +265,13 @@ export default function EditarCarro() {
           opcoes={cambiosDisponiveis}
           valorSelecionado={cambio}
           onSelecionar={setCambio}
+        />
+
+        <CamposExtrasCarro
+          opcionais={opcionais}
+          onMudarOpcionais={setOpcionais}
+          descricao={descricao}
+          onMudarDescricao={setDescricao}
         />
 
         <div className="border-t border-line pt-6">

@@ -16,6 +16,8 @@ export type Carro = {
   chassi?: string;
   mostrar_placa_chassi: boolean;
   destaque_home: boolean;
+  opcionais?: string[] | null;
+  descricao?: string | null;
 };
 
 export type FotoCarro = {

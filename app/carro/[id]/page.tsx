@@ -9,7 +9,7 @@ import CarrosselFotos from "@/components/CarrosselFotos";
 import BotaoInteresseVeiculo from "@/components/BotaoInteresseVeiculo";
 import { marcasDisponiveis } from "@/data/marcas";
 import { coresDisponiveis } from "@/data/opcoesCarro";
-import { Landmark, MessageCircle, Repeat } from "lucide-react";
+import { Check, Landmark, MessageCircle, Repeat } from "lucide-react";
 import { dadosDoCarro, paraScript } from "@/lib/dadosEstruturados";
 import { MARCA } from "@/lib/marca";
 import { nomeDoCarro } from "@/lib/texto";
@@ -102,6 +102,9 @@ export default async function DetalhesCarro({ params }: Props) {
     { rotulo: "Cor", valor: carroTipado.cor },
     { rotulo: "Versão", valor: carroTipado.versao },
   ].filter((item) => item.valor && String(item.valor).trim() !== "");
+
+  const opcionais = (carroTipado.opcionais || []).filter((o) => o && o.trim() !== "");
+  const descricaoCarro = carroTipado.descricao?.trim() || "";
 
   const resumo = [anos, km, carroTipado.cambio].filter((t) => t && String(t).trim() !== "").join(" · ");
 
@@ -211,6 +214,29 @@ export default async function DetalhesCarro({ params }: Props) {
               </div>
             ))}
           </dl>
+
+          {opcionais.length > 0 && (
+            <>
+              <h2 className="font-display text-3xl text-ink mt-6">Opcionais</h2>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2.5">
+                {opcionais.map((item) => (
+                  <li key={item} className="flex items-center gap-2.5 text-[15px] text-ink">
+                    <span className="w-6 h-6 rounded-full bg-cream border border-gold/40 flex items-center justify-center shrink-0">
+                      <Check size={14} className="text-gold-text" aria-hidden="true" />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {descricaoCarro && (
+            <>
+              <h2 className="font-display text-3xl text-ink mt-6">Sobre este carro</h2>
+              <p className="text-[15px] md:text-base leading-relaxed text-muted whitespace-pre-line max-w-prose">{descricaoCarro}</p>
+            </>
+          )}
         </section>
       </div>
 
