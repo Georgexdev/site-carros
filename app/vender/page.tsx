@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Check, MessageCircle, Phone, User } from "lucide-react";
 import { useLoja } from "@/components/LojaProvider";
+import { celularValido } from "@/lib/validacao";
 
 const vantagens = [
     { titulo: "Use seu carro como entrada", texto: "Na troca, o valor do seu usado abate direto do próximo carro." },
@@ -39,9 +40,35 @@ export default function VendaSeuCarro() {
         setCelular(formatarCelular(valor));
     }
 
+    // Ano: só números, no máximo 4 dígitos.
+    function handleAnoChange(valor: string) {
+        setAno(valor.replace(/\D/g, "").slice(0, 4));
+    }
+
+    // Km: só números, com ponto a cada milhar (45000 → 45.000).
+    function handleKmChange(valor: string) {
+        const numeros = valor.replace(/\D/g, "").slice(0, 7);
+        setKm(numeros ? Number(numeros).toLocaleString("pt-BR") : "");
+    }
+
     function handleEnviar() {
-        if (!nome.trim() || !celular.trim() || !motivo) {
-            setErro("Preencha nome, celular e o motivo para continuar.");
+        const anoMaximo = new Date().getFullYear() + 1;
+        const problemas = [
+            !motivo ? "escolha se você quer trocar por outro carro ou apenas vender" : null,
+            ano && (ano.length !== 4 || Number(ano) < 1950 || Number(ano) > anoMaximo)
+                ? "confira o ano do veículo (entre 1950 e " + anoMaximo + ")"
+                : null,
+            !nome.trim() ? "informe seu nome" : null,
+            !celular.trim()
+                ? "informe seu celular com DDD"
+                : !celularValido(celular)
+                  ? "confira o celular: DDD + 9 dígitos, ex.: (71) 98429-6345"
+                  : null,
+        ].filter(Boolean) as string[];
+
+        if (problemas.length > 0) {
+            const texto = problemas.join("; ");
+            setErro(texto.charAt(0).toUpperCase() + texto.slice(1) + ".");
             return;
         }
 
@@ -54,7 +81,7 @@ export default function VendaSeuCarro() {
             marca.trim() ? "Marca: " + marca.trim() : null,
             modelo.trim() ? "Modelo: " + modelo.trim() : null,
             ano.trim() ? "Ano: " + ano.trim() : null,
-            km.trim() ? "KM: " + km.trim() : null,
+            km.trim() ? "KM: " + km.trim() + " km" : null,
         ].filter(Boolean);
 
         const mensagem =
@@ -141,11 +168,11 @@ export default function VendaSeuCarro() {
                             </div>
                             <div>
                                 <label htmlFor="vender-ano" className={rotulo}>Ano</label>
-                                <input id="vender-ano" type="text" inputMode="numeric" placeholder="Ex.: 2020" value={ano} onChange={(e) => setAno(e.target.value)} className={campo + " px-4"} />
+                                <input id="vender-ano" type="text" inputMode="numeric" placeholder="Ex.: 2020" maxLength={4} value={ano} onChange={(e) => handleAnoChange(e.target.value)} className={campo + " px-4"} />
                             </div>
                             <div>
                                 <label htmlFor="vender-km" className={rotulo}>Quilometragem</label>
-                                <input id="vender-km" type="text" inputMode="numeric" placeholder="Ex.: 45.000" value={km} onChange={(e) => setKm(e.target.value)} className={campo + " px-4"} />
+                                <input id="vender-km" type="text" inputMode="numeric" placeholder="Ex.: 45.000" value={km} onChange={(e) => handleKmChange(e.target.value)} className={campo + " px-4"} />
                             </div>
                         </div>
                     </div>
