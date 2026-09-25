@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import { MARCA } from "@/lib/marca";
+
+export const metadata: Metadata = {
+  title: "Termos de uso e privacidade",
+  description: "Termos de uso e política de privacidade do site da MALU Veículos e Financiamentos.",
+  alternates: { canonical: "/termos" },
+};
 
 export default function Termos() {
   return (

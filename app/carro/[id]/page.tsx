@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 import { EMPRESA_ID } from "@/lib/empresa";
 import { Carro, FotoCarro } from "@/types/car";
@@ -8,6 +10,8 @@ import BotaoInteresseVeiculo from "@/components/BotaoInteresseVeiculo";
 import { marcasDisponiveis } from "@/data/marcas";
 import { coresDisponiveis } from "@/data/opcoesCarro";
 import { Landmark, MessageCircle, Repeat } from "lucide-react";
+import { dadosDoCarro, paraScript } from "@/lib/dadosEstruturados";
+import { MARCA } from "@/lib/marca";
 
 type Props = {
   params: Promise<{
@@ -21,9 +25,8 @@ const diferenciais = [
   { Icone: MessageCircle, titulo: "Atendimento no WhatsApp", texto: "Tire dúvidas e agende sua visita direto com a equipe." },
 ];
 
-export default async function DetalhesCarro({ params }: Props) {
-  const { id } = await params;
-
+// "cache" evita buscar o mesmo carro duas vezes (uma para o título do Google, outra para a página).
+const buscarCarro = cache(async (id: string) => {
   const { data: carro, error } = await supabase
     .from("carros")
     .select("*")
@@ -32,11 +35,8 @@ export default async function DetalhesCarro({ params }: Props) {
 
   // Um carro de outra empresa não pode ser aberto neste site.
   if (error || !carro || (EMPRESA_ID && carro.empresa_id !== EMPRESA_ID)) {
-    notFound();
+    return null;
   }
-
-  const carroTipado = carro as Carro;
-  const vendido = carroTipado.status === "vendido";
 
   const { data: fotos } = await supabase
     .from("fotos_carros")
@@ -44,7 +44,48 @@ export default async function DetalhesCarro({ params }: Props) {
     .eq("carro_id", id)
     .order("ordem", { ascending: true });
 
-  const fotosTipadas = (fotos as FotoCarro[]) || [];
+  return { carro: carro as Carro, fotos: (fotos as FotoCarro[]) || [] };
+});
+
+// Título, descrição e imagem que aparecem no Google e ao compartilhar o link no WhatsApp.
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const resultado = await buscarCarro(id);
+  if (!resultado) return { title: "Veículo não encontrado" };
+
+  const { carro, fotos } = resultado;
+  const nome = [carro.marca, carro.modelo, carro.versao].filter(Boolean).join(" ");
+  const anos = carro.ano_fabricacao + "/" + carro.ano_modelo;
+  const preco = carro.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+  const titulo = nome + " " + anos;
+  const descricao =
+    nome + " " + anos + ", " + carro.km.toLocaleString("pt-BR") + " km, por " + preco +
+    ". À venda na MALU Veículos, em Salvador-BA. Financiamento facilitado e atendimento pelo WhatsApp.";
+
+  return {
+    title: titulo,
+    description: descricao,
+    alternates: { canonical: "/carro/" + carro.id },
+    openGraph: {
+      title: titulo + " | MALU Veículos",
+      description: descricao,
+      url: "/carro/" + carro.id,
+      images: fotos[0] ? [{ url: fotos[0].url }] : undefined,
+    },
+  };
+}
+
+export default async function DetalhesCarro({ params }: Props) {
+  const { id } = await params;
+
+  const resultado = await buscarCarro(id);
+  if (!resultado) {
+    notFound();
+  }
+
+  const carroTipado = resultado.carro;
+  const vendido = carroTipado.status === "vendido";
+  const fotosTipadas = resultado.fotos;
 
   const marcaEncontrada = marcasDisponiveis.find((m) => m.nome === carroTipado.marca);
   const corEncontrada = coresDisponiveis.find((c) => c.nome === carroTipado.cor);
@@ -65,6 +106,10 @@ export default async function DetalhesCarro({ params }: Props) {
 
   return (
     <div className="max-w-6xl mx-auto px-6 pt-8 md:pt-12 pb-16 md:pb-24 flex flex-col gap-7">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: paraScript(dadosDoCarro(carroTipado, fotosTipadas, MARCA.nome)) }}
+      />
       <nav aria-label="Você está em" className="text-[13px] text-muted flex flex-wrap gap-2">
         <Link href="/" className="hover:text-gold-text">Início</Link>
         <span aria-hidden="true">/</span>

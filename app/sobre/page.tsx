@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { buscarEmpresa } from "@/lib/empresa";
 import { COLUNAS_LOJA, montarDadosLoja } from "@/lib/loja";
 import { Clock, Landmark, MapPin, MessageCircle, ShieldCheck } from "lucide-react";
@@ -7,6 +8,13 @@ const valores = [
   { Icone: Landmark, titulo: "Condições facilitadas", texto: "Financiamento com bancos parceiros e seu usado na troca." },
   { Icone: MessageCircle, titulo: "Atendimento de verdade", texto: "Fale direto com nossa equipe pelo WhatsApp ou venha até a loja." },
 ];
+
+export const metadata: Metadata = {
+  title: "Sobre a loja",
+  description:
+    "Conheça a MALU Veículos e Financiamentos: loja de carros seminovos em Salvador-BA. Endereço, horário de atendimento e como chegar.",
+  alternates: { canonical: "/sobre" },
+};
 
 export default async function Sobre() {
   const empresa =

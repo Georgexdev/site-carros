@@ -9,10 +9,38 @@ import Footer from "@/components/Footer";
 import { buscarEmpresa } from "@/lib/empresa";
 import { COLUNAS_LOJA, montarDadosLoja } from "@/lib/loja";
 import LojaProvider from "@/components/LojaProvider";
+import { SITE_URL } from "@/lib/site";
+import { dadosDaLoja, paraScript } from "@/lib/dadosEstruturados";
 
 export const metadata: Metadata = {
-  title: "MALU Veículos e Financiamentos",
-  description: "Confira nosso estoque de veículos, simule seu financiamento e fale direto com nossa equipe pelo WhatsApp.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "MALU Veículos e Financiamentos | Carros seminovos em Salvador",
+    // Nas outras páginas: "Estoque | MALU Veículos"
+    template: "%s | MALU Veículos",
+  },
+  description:
+    "Carros seminovos em Salvador-BA com financiamento facilitado em 8 bancos parceiros. Veja o estoque, simule seu financiamento e fale com a MALU Veículos pelo WhatsApp.",
+  keywords: [
+    "carros seminovos Salvador",
+    "carros usados Salvador",
+    "loja de carros Salvador",
+    "financiamento de veículos Salvador",
+    "MALU Veículos",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: "MALU Veículos e Financiamentos",
+    title: "MALU Veículos e Financiamentos | Carros seminovos em Salvador",
+    description: "Veja o estoque, simule seu financiamento e fale com a gente pelo WhatsApp.",
+    url: "/",
+  },
+  // Código de verificação do Google Search Console (configure NEXT_PUBLIC_GOOGLE_VERIFICATION na Vercel).
+  verification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION }
+    : undefined,
 };
 
 // As páginas buscam os dados da loja no banco de novo a cada 60 segundos.
@@ -41,6 +69,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className="h-full antialiased" style={variaveisDeCor}>
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: paraScript(dadosDaLoja(loja)) }}
+        />
         <LojaProvider loja={loja}>
           <Header />
           <main className="flex-1">{children}</main>
