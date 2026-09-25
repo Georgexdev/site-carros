@@ -83,12 +83,12 @@ export default function Header() {
                     (transparente ? "bg-gradient-to-b from-black/60 to-transparent" : "bg-malu-black border-b border-gold/20")
                 }
             >
-                <Link href="/" aria-label={loja.nome + ", página inicial"} className="md:w-72">
-                    <span className="md:hidden"><LogoMalu tamanho="sm" comIcone={false} /></span>
-                    <span className="hidden md:block"><LogoMalu /></span>
+                <Link href="/" aria-label={loja.nome + ", página inicial"} className="shrink-0 xl:w-72">
+                    <span className="lg:hidden"><LogoMalu tamanho="sm" comIcone={false} /></span>
+                    <span className="hidden lg:block"><LogoMalu /></span>
                 </Link>
 
-                <nav aria-label="Principal" className="hidden md:flex items-center gap-8 lg:gap-10 text-sm font-semibold tracking-[0.1em] uppercase">
+                <nav aria-label="Principal" className="hidden md:flex flex-1 justify-center items-center gap-5 lg:gap-6 xl:gap-10 text-[13px] lg:text-sm font-semibold tracking-[0.06em] lg:tracking-[0.1em] uppercase">
                     {links.map((link) => {
                         const ativo = estaAtivo(link.href);
                         return (
@@ -97,7 +97,7 @@ export default function Header() {
                                 href={link.href}
                                 aria-current={ativo ? "page" : undefined}
                                 className={
-                                    "py-2.5 border-b-2 transition-colors " +
+                                    "py-2.5 border-b-2 whitespace-nowrap transition-colors " +
                                     (ativo ? "text-gold border-gold" : "border-transparent hover:text-gold")
                                 }
                             >
@@ -107,8 +107,8 @@ export default function Header() {
                     })}
                 </nav>
 
-                <div className="hidden md:flex items-center gap-5 md:w-72 justify-end">
-                    <a href={linkTelefone()} className="hidden lg:flex items-center gap-2 text-sm font-semibold hover:text-gold transition-colors">
+                <div className="hidden md:flex items-center gap-5 shrink-0 xl:w-72 justify-end">
+                    <a href={linkTelefone()} className="hidden xl:flex items-center gap-2 text-sm font-semibold hover:text-gold transition-colors">
                         <Phone size={16} className="text-gold" aria-hidden="true" />
                         {loja.telefoneExibicao}
                     </a>
@@ -117,10 +117,11 @@ export default function Header() {
                         href={linkWhatsApp()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 h-11 px-4 rounded-full bg-whatsapp hover:bg-whatsapp-hover text-white text-sm font-bold transition-colors"
+                        aria-label="Falar no WhatsApp"
+                        className="flex items-center justify-center gap-2 h-11 w-11 lg:w-auto lg:px-4 rounded-full bg-whatsapp hover:bg-whatsapp-hover text-white text-sm font-bold whitespace-nowrap transition-colors"
                     >
                         <MessageCircle size={18} aria-hidden="true" />
-                        WhatsApp
+                        <span className="hidden lg:inline">WhatsApp</span>
                     </a>
                 </div>
 
