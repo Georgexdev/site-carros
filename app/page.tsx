@@ -29,7 +29,8 @@ export default function Home() {
       let consulta = supabase.from("carros").select("*");
       if (EMPRESA_ID) consulta = consulta.eq("empresa_id", EMPRESA_ID);
 
-      const { data, error } = await consulta;
+      // Mais novos primeiro: é a ordem "Mais recentes" do seletor.
+      const { data, error } = await consulta.order("criado_em", { ascending: false });
 
       if (error) {
         console.error("Erro ao buscar carros:", error);
