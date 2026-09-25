@@ -110,7 +110,8 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-gold/20">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-soft text-center">
+        {/* pb-24/pb-28: espaço para o botão flutuante do WhatsApp não cobrir o link dos Termos */}
+        <div className="max-w-6xl mx-auto px-6 pt-5 pb-24 sm:pb-28 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-soft text-center">
           <span>
             © {new Date().getFullYear()} {loja.nome}
             {loja.cnpj && " · CNPJ " + loja.cnpj}
