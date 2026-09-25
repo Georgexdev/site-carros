@@ -18,10 +18,10 @@ export default function BarraBusca({ busca, onBuscar, ordenacao, onOrdenar }: Pr
         <span className="sr-only">Buscar veículo</span>
         <input
           type="search"
-          placeholder="Buscar por marca, modelo ou versão"
+          placeholder="Buscar marca ou modelo"
           value={busca}
           onChange={(e) => onBuscar(e.target.value)}
-          className="flex-1 bg-transparent text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none py-3"
+          className="flex-1 min-w-0 bg-transparent text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none py-3"
         />
       </label>
 
