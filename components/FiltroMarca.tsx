@@ -27,7 +27,13 @@ export default function FiltroMarca({ marcaSelecionada, onSelecionar, carros }: 
   const todasSelecionada = marcaSelecionada === "";
 
   return (
-    <div role="group" aria-label="Filtrar por marca" className="flex gap-3 overflow-x-auto pb-3 -mx-1 px-1">
+    // No celular, a fileira vai até a borda da tela (-mx-6 px-6): o último card aparece
+    // cortado, mostrando que dá para deslizar. A barra de rolagem fica escondida.
+    <div
+      role="group"
+      aria-label="Filtrar por marca"
+      className="flex gap-3 overflow-x-auto pb-2 -mx-6 px-6 sm:-mx-1 sm:px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
       <button
         type="button"
         onClick={() => onSelecionar("")}

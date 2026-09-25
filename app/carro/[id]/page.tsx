@@ -120,8 +120,10 @@ export default async function DetalhesCarro({ params }: Props) {
         </span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-8 lg:gap-10 items-start">
-        <div className="flex flex-col gap-8 min-w-0">
+      {/* Ordem no celular: fotos → preço e botões → ficha técnica.
+          No computador: fotos e ficha à esquerda, preço fixo à direita. */}
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_400px] gap-8 lg:gap-x-10 items-start">
+        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
           <div className="relative">
             <CarrosselFotos
               fotos={fotosTipadas}
@@ -134,30 +136,9 @@ export default async function DetalhesCarro({ params }: Props) {
               </span>
             )}
           </div>
-
-          <section className="flex flex-col gap-4">
-            <h2 className="font-display text-3xl text-ink">Ficha técnica</h2>
-            <dl className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {fichaTecnica.map((item) => (
-                <div key={item.rotulo} className="p-4 md:p-5 rounded-xl bg-white border border-line flex flex-col gap-1.5">
-                  <dt className="text-xs font-bold tracking-[0.18em] uppercase text-gold-text">{item.rotulo}</dt>
-                  <dd className="text-base md:text-[17px] font-semibold text-ink flex items-center gap-2">
-                    {item.rotulo === "Cor" && corEncontrada && (
-                      <span
-                        className="w-4 h-4 rounded-full border border-line-strong shrink-0"
-                        style={{ backgroundColor: corEncontrada.hex }}
-                        aria-hidden="true"
-                      />
-                    )}
-                    {item.valor}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
         </div>
 
-        <aside className="lg:sticky lg:top-6 p-6 md:p-8 rounded-2xl bg-white border border-line shadow-[0_8px_28px_rgba(28,26,23,0.07)] flex flex-col gap-5">
+        <aside className="lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-start lg:sticky lg:top-6 p-6 md:p-8 rounded-2xl bg-white border border-line shadow-[0_8px_28px_rgba(28,26,23,0.07)] flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               {marcaEncontrada && (
@@ -209,6 +190,27 @@ export default async function DetalhesCarro({ params }: Props) {
             Tem um carro para dar na troca? Avalie aqui
           </Link>
         </aside>
+
+        <section className="min-w-0 flex flex-col gap-4 lg:col-start-1 lg:row-start-2">
+          <h2 className="font-display text-3xl text-ink">Ficha técnica</h2>
+          <dl className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {fichaTecnica.map((item) => (
+              <div key={item.rotulo} className="p-4 md:p-5 rounded-xl bg-white border border-line flex flex-col gap-1.5">
+                <dt className="text-xs font-bold tracking-[0.18em] uppercase text-gold-text">{item.rotulo}</dt>
+                <dd className="text-base md:text-[17px] font-semibold text-ink flex items-center gap-2">
+                  {item.rotulo === "Cor" && corEncontrada && (
+                    <span
+                      className="w-4 h-4 rounded-full border border-line-strong shrink-0"
+                      style={{ backgroundColor: corEncontrada.hex }}
+                      aria-hidden="true"
+                    />
+                  )}
+                  {item.valor}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       </div>
 
       <ul className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
