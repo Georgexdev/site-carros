@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { validarCarro, PRECO_MINIMO, ANO_MINIMO } from "@/lib/validarCarro";
 import Link from "next/link";
 import SeletorMarca from "@/components/SeletorMarca";
 import SeletorOpcoes from "@/components/SeletorOpcoes";
@@ -32,6 +33,13 @@ export default function NovoCarro() {
     async function handleSalvar(e: React.FormEvent) {
         e.preventDefault();
         setErro("");
+
+        const problema = validarCarro({ marca, modelo, anoFabricacao, anoModelo, preco, km });
+        if (problema) {
+            setErro(problema);
+            return;
+        }
+
         setSalvando(true);
 
         const { data: sessao } = await supabase.auth.getSession();
@@ -117,6 +125,8 @@ export default function NovoCarro() {
                         <input
                             type="number"
                             value={anoFabricacao}
+                            min={ANO_MINIMO}
+                            placeholder="Ex.: 2022"
                             onChange={(e) => setAnoFabricacao(e.target.value)}
                             required
                             className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
@@ -128,6 +138,8 @@ export default function NovoCarro() {
                         <input
                             type="number"
                             value={anoModelo}
+                            min={ANO_MINIMO}
+                            placeholder="Ex.: 2023"
                             onChange={(e) => setAnoModelo(e.target.value)}
                             required
                             className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
@@ -141,6 +153,8 @@ export default function NovoCarro() {
                         <input
                             type="number"
                             value={preco}
+                            min={PRECO_MINIMO}
+                            placeholder="Ex.: 142500"
                             onChange={(e) => setPreco(e.target.value)}
                             required
                             className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
@@ -152,6 +166,8 @@ export default function NovoCarro() {
                         <input
                             type="number"
                             value={km}
+                            min={0}
+                            placeholder="Ex.: 25000"
                             onChange={(e) => setKm(e.target.value)}
                             required
                             className="w-full h-12 border border-line-strong rounded-xl bg-[#FBFAF7] px-4 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30"
