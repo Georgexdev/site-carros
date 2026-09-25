@@ -7,6 +7,9 @@ import { Carro } from "@/types/car";
 import { Phone, User, Calendar, IdCard, Car as CarIcon, X, ShieldCheck } from "lucide-react";
 import { bancosParceiros } from "@/data/bancos";
 import { useLoja } from "@/components/LojaProvider";
+import { celularValido, cpfValido, idadePelaData, dataBrasileira } from "@/lib/validacao";
+
+type CampoFormulario = "veiculo" | "nome" | "celular" | "nascimento" | "cpf";
 
 const passos = [
     { titulo: "Escolha o veículo", texto: "Selecione o carro do nosso estoque que você tem interesse em financiar." },
@@ -16,7 +19,9 @@ const passos = [
 
 const campo =
     "w-full h-13 min-h-[52px] border border-line-strong rounded-xl bg-[#FBFAF7] pl-11 pr-3 text-[15px] text-ink placeholder:text-[#8A8174] focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30";
+const campoComErro = " !border-[#B42318] focus:!ring-[#B42318]/20";
 const rotulo = "block text-sm font-semibold text-ink mb-2";
+const textoErro = "mt-1.5 text-[13px] font-medium text-[#B42318]";
 const iconeCampo = "absolute left-4 top-1/2 -translate-y-1/2 text-gold-text";
 const tituloGrupo = "text-xs font-bold tracking-[0.2em] uppercase text-gold-text mb-3";
 
@@ -33,7 +38,33 @@ export default function Financie() {
     const [celular, setCelular] = useState("");
     const [dataNascimento, setDataNascimento] = useState("");
     const [cpf, setCpf] = useState("");
-    const [erro, setErro] = useState("");
+    const [errosCampos, setErrosCampos] = useState<Partial<Record<CampoFormulario, string>>>({});
+
+    // Tira o aviso vermelho do campo assim que o cliente começa a corrigir.
+    function limparErro(campo: CampoFormulario) {
+        if (!errosCampos[campo]) return;
+        const restantes = { ...errosCampos };
+        delete restantes[campo];
+        setErrosCampos(restantes);
+    }
+
+    // Resumo mostrado acima do botão; diminui conforme o cliente corrige os campos.
+    const errosRestantes = Object.values(errosCampos);
+    const erro =
+        errosRestantes.length === 0
+            ? ""
+            : errosRestantes.length === 1
+              ? errosRestantes[0]
+              : "Confira os " + errosRestantes.length + " campos destacados em vermelho.";
+
+    function propsDeErro(nomeCampo: CampoFormulario) {
+        const mensagem = errosCampos[nomeCampo];
+        return {
+            "aria-invalid": mensagem ? true : undefined,
+            "aria-describedby": mensagem ? "erro-" + nomeCampo : undefined,
+            className: campo + (mensagem ? campoComErro : ""),
+        };
+    }
 
     useEffect(() => {
         async function buscarCarros() {
@@ -95,13 +126,47 @@ export default function Financie() {
         document.getElementById("formulario")?.scrollIntoView({ behavior: "smooth" });
     }
 
+    function validar() {
+        const erros: Partial<Record<CampoFormulario, string>> = {};
+
+        if (!veiculoSelecionado) erros.veiculo = "Escolha o carro que você quer financiar.";
+
+        if (!nome.trim()) erros.nome = "Informe seu nome.";
+        else if (nome.trim().length < 3) erros.nome = "Digite seu nome completo.";
+
+        if (!celular.trim()) erros.celular = "Informe seu celular com DDD.";
+        else if (!celularValido(celular)) erros.celular = "Celular inválido. Use o DDD + 9 dígitos, ex.: (71) 98429-6345.";
+
+        if (dataNascimento) {
+            const idade = idadePelaData(dataNascimento);
+            if (idade === null || idade < 0) erros.nascimento = "Data de nascimento inválida.";
+            else if (idade < 18) erros.nascimento = "O financiamento é só para maiores de 18 anos.";
+            else if (idade > 100) erros.nascimento = "Confira o ano de nascimento.";
+        }
+
+        if (cpf.trim() && !cpfValido(cpf)) erros.cpf = "CPF inválido. Confira os números.";
+
+        return erros;
+    }
+
     function handleSolicitar() {
-        if (!veiculoSelecionado || !nome.trim() || !celular.trim()) {
-            setErro("Selecione um veículo e preencha nome e celular para continuar.");
+        const erros = validar();
+        setErrosCampos(erros);
+
+        if (Object.keys(erros).length > 0) {
+            const primeiro = (["veiculo", "nome", "celular", "nascimento", "cpf"] as CampoFormulario[]).find((c) => erros[c]);
+            const idsCampos: Record<CampoFormulario, string> = {
+                veiculo: "botao-veiculo-financiamento",
+                nome: "nome-financiamento",
+                celular: "celular-financiamento",
+                nascimento: "nascimento-financiamento",
+                cpf: "cpf-financiamento",
+            };
+            if (primeiro) document.getElementById(idsCampos[primeiro])?.focus();
             return;
         }
 
-        setErro("");
+        if (!veiculoSelecionado) return;
 
         const mensagem =
             "Olá! Gostaria de solicitar uma análise de financiamento." +
@@ -110,7 +175,7 @@ export default function Financie() {
             " (Ano " + veiculoSelecionado.ano_fabricacao + "/" + veiculoSelecionado.ano_modelo + ")" +
             "\n\nMeus dados:\nNome: " + nome.trim() +
             "\nCelular: " + celular.trim() +
-            (dataNascimento.trim() ? "\nData de nascimento: " + dataNascimento.trim() : "") +
+            (dataNascimento ? "\nData de nascimento: " + dataBrasileira(dataNascimento) : "") +
             (cpf.trim() ? "\nCPF: " + cpf.trim() : "");
 
         window.open(linkWhatsApp(mensagem), "_blank");
@@ -213,13 +278,21 @@ export default function Financie() {
                                 </div>
                             ) : (
                                 <button
+                                    id="botao-veiculo-financiamento"
                                     type="button"
                                     onClick={() => setListaAberta(!listaAberta)}
-                                    className="w-full h-13 min-h-[52px] flex items-center gap-3 border border-line-strong bg-[#FBFAF7] rounded-xl px-4 text-[15px] text-muted hover:border-gold transition-colors"
+                                    aria-describedby={errosCampos.veiculo ? "erro-veiculo" : undefined}
+                                    className={
+                                        "w-full h-13 min-h-[52px] flex items-center gap-3 border bg-[#FBFAF7] rounded-xl px-4 text-[15px] text-muted hover:border-gold transition-colors " +
+                                        (errosCampos.veiculo ? "!border-[#B42318]" : "border-line-strong")
+                                    }
                                 >
                                     <CarIcon size={18} className="text-gold-text" aria-hidden="true" />
                                     Qual carro você quer financiar?
                                 </button>
+                            )}
+                            {errosCampos.veiculo && !veiculoSelecionado && (
+                                <p id="erro-veiculo" className={textoErro}>{errosCampos.veiculo}</p>
                             )}
 
                             {listaAberta && (
@@ -251,6 +324,7 @@ export default function Financie() {
                                                 key={carro.id}
                                                 onClick={() => {
                                                     setVeiculoSelecionado(carro);
+                                                    limparErro("veiculo");
                                                     setListaAberta(false);
                                                 }}
                                                 className="w-full flex items-center gap-3 p-3 hover:bg-cream text-left transition-colors"
@@ -297,11 +371,12 @@ export default function Financie() {
                                             autoComplete="name"
                                             placeholder="Como devemos te chamar"
                                             value={nome}
-                                            onChange={(e) => setNome(e.target.value)}
+                                            onChange={(e) => { setNome(e.target.value); limparErro("nome"); }}
                                             required
-                                            className={campo}
+                                            {...propsDeErro("nome")}
                                         />
                                     </div>
+                                    {errosCampos.nome && <p id="erro-nome" className={textoErro}>{errosCampos.nome}</p>}
                                 </div>
 
                                 <div>
@@ -317,11 +392,12 @@ export default function Financie() {
                                             autoComplete="tel-national"
                                             placeholder="(71) 9 0000-0000"
                                             value={celular}
-                                            onChange={(e) => setCelular(formatarCelular(e.target.value))}
+                                            onChange={(e) => { setCelular(formatarCelular(e.target.value)); limparErro("celular"); }}
                                             required
-                                            className={campo}
+                                            {...propsDeErro("celular")}
                                         />
                                     </div>
+                                    {errosCampos.celular && <p id="erro-celular" className={textoErro}>{errosCampos.celular}</p>}
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -335,10 +411,11 @@ export default function Financie() {
                                                 id="nascimento-financiamento"
                                                 type="date"
                                                 value={dataNascimento}
-                                                onChange={(e) => setDataNascimento(e.target.value)}
-                                                className={campo}
+                                                onChange={(e) => { setDataNascimento(e.target.value); limparErro("nascimento"); }}
+                                                {...propsDeErro("nascimento")}
                                             />
                                         </div>
+                                        {errosCampos.nascimento && <p id="erro-nascimento" className={textoErro}>{errosCampos.nascimento}</p>}
                                     </div>
 
                                     <div>
@@ -353,10 +430,11 @@ export default function Financie() {
                                                 inputMode="numeric"
                                                 placeholder="000.000.000-00"
                                                 value={cpf}
-                                                onChange={(e) => setCpf(formatarCpf(e.target.value))}
-                                                className={campo}
+                                                onChange={(e) => { setCpf(formatarCpf(e.target.value)); limparErro("cpf"); }}
+                                                {...propsDeErro("cpf")}
                                             />
                                         </div>
+                                        {errosCampos.cpf && <p id="erro-cpf" className={textoErro}>{errosCampos.cpf}</p>}
                                     </div>
                                 </div>
                             </div>
