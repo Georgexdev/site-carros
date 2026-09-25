@@ -88,6 +88,16 @@ export default function Estoque() {
 
   const totalDisponiveis = carros.filter((carro) => carro.status === "disponivel").length;
 
+  // O contador acompanha o que está na tela: busca e marca escolhida.
+  const filtroAtivo = termo !== "" || marcaFiltro !== "";
+  const carrosNaTela = termo === "" ? carrosOrdenados : mostrarSemelhantes ? resultadosSemelhantes : resultadosExatos;
+  const disponiveisNaTela = carrosNaTela.filter((carro) => carro.status === "disponivel").length;
+
+  function limparFiltros() {
+    setBusca("");
+    setMarcaFiltro("");
+  }
+
   const grade = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8";
 
   return (
@@ -100,9 +110,21 @@ export default function Estoque() {
 
       <div className="flex flex-col gap-2">
         <h1 className="font-display text-4xl md:text-[52px] leading-tight text-ink">Nosso estoque</h1>
-        {!carregando && (
-          <p className="text-muted">
+        {!carregando && !filtroAtivo && (
+          <p className="text-muted" aria-live="polite">
             {totalDisponiveis} veículo{totalDisponiveis !== 1 ? "s" : ""} disponíve{totalDisponiveis !== 1 ? "is" : "l"} no momento
+          </p>
+        )}
+        {!carregando && filtroAtivo && (
+          <p className="text-muted flex flex-wrap items-center gap-x-3 gap-y-1" aria-live="polite">
+            <span>
+              {mostrarSemelhantes ? "Nenhum resultado exato · " : ""}
+              <strong className="text-ink">{disponiveisNaTela}</strong> de {totalDisponiveis} veículo{totalDisponiveis !== 1 ? "s" : ""}
+              {marcaFiltro ? " · " + marcaFiltro : ""}
+            </span>
+            <button type="button" onClick={limparFiltros} className="text-sm font-semibold text-gold-text underline hover:text-ink">
+              Limpar filtros
+            </button>
           </p>
         )}
       </div>
