@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Car, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Car, ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
 import { FotoCarro } from "@/types/car";
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
 
 export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
   const [indiceAtual, setIndiceAtual] = useState(0);
+  const [telaCheia, setTelaCheia] = useState(false);
   const posicaoInicial = useRef(0);
   const posicaoFinal = useRef(0);
 
@@ -40,6 +41,26 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
     }
   }
 
+  // Tela cheia: teclado (Esc, ← e →) e trava a rolagem da página por trás.
+  useEffect(() => {
+    if (!telaCheia) return;
+    const total = fotos.length;
+
+    function handleTecla(e: KeyboardEvent) {
+      if (e.key === "Escape") setTelaCheia(false);
+      if (e.key === "ArrowLeft") setIndiceAtual((atual) => (atual === 0 ? total - 1 : atual - 1));
+      if (e.key === "ArrowRight") setIndiceAtual((atual) => (atual === total - 1 ? 0 : atual + 1));
+    }
+
+    const overflowAnterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleTecla);
+    return () => {
+      document.body.style.overflow = overflowAnterior;
+      window.removeEventListener("keydown", handleTecla);
+    };
+  }, [telaCheia, fotos.length]);
+
   if (fotos.length === 0) {
     return (
       <div className="h-72 md:h-[460px] rounded-2xl bg-malu-surface flex flex-col items-center justify-center gap-3">
@@ -60,19 +81,31 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <img
-          src={fotoAtual.url}
-          alt={altText + " – foto " + (indiceAtual + 1)}
-          className={"w-full h-full object-cover " + (vendido ? "grayscale opacity-70" : "")}
-        />
+        <button
+          type="button"
+          onClick={() => setTelaCheia(true)}
+          aria-label="Ampliar foto"
+          className="block w-full h-full cursor-zoom-in"
+        >
+          <img
+            src={fotoAtual.url}
+            alt={altText + " – foto " + (indiceAtual + 1)}
+            className={"w-full h-full object-cover " + (vendido ? "grayscale opacity-70" : "")}
+          />
+        </button>
+
+        <span className="pointer-events-none absolute left-4 bottom-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-malu-black/70 text-gold-light text-[13px] font-semibold">
+          <Expand size={14} aria-hidden="true" />
+          Ampliar
+        </span>
 
         {fotos.length > 1 && (
           <>
-            <button onClick={irParaAnterior} aria-label="Foto anterior" className={botaoSeta + " left-4"}>
+            <button type="button" onClick={irParaAnterior} aria-label="Foto anterior" className={botaoSeta + " left-4"}>
               <ChevronLeft size={22} aria-hidden="true" />
             </button>
 
-            <button onClick={irParaProxima} aria-label="Próxima foto" className={botaoSeta + " right-4"}>
+            <button type="button" onClick={irParaProxima} aria-label="Próxima foto" className={botaoSeta + " right-4"}>
               <ChevronRight size={22} aria-hidden="true" />
             </button>
 
@@ -88,6 +121,7 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
           {fotos.map((foto, index) => (
             <button
               key={foto.id}
+              type="button"
               onClick={() => setIndiceAtual(index)}
               aria-label={"Ver foto " + (index + 1)}
               aria-current={index === indiceAtual}
@@ -99,6 +133,51 @@ export default function CarrosselFotos({ fotos, vendido, altText }: Props) {
               <img src={foto.url} alt="" className="w-full h-full object-cover" />
             </button>
           ))}
+        </div>
+      )}
+
+      {telaCheia && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={altText + " – fotos em tela cheia"}
+          data-esconde-whats-flutuante
+          className="fixed inset-0 z-[60] bg-black flex flex-col"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div className="flex items-center justify-between px-4 py-3 text-gold-light">
+            <span className="text-sm font-semibold">
+              {indiceAtual + 1} / {fotos.length}
+            </span>
+            <button
+              type="button"
+              onClick={() => setTelaCheia(false)}
+              aria-label="Fechar tela cheia"
+              autoFocus
+              className="w-12 h-12 rounded-full border border-gold/50 flex items-center justify-center hover:bg-white/10"
+            >
+              <X size={24} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className="relative flex-1 min-h-0 flex items-center justify-center px-2 pb-6">
+            <img
+              src={fotoAtual.url}
+              alt={altText + " – foto " + (indiceAtual + 1)}
+              className="max-w-full max-h-full object-contain"
+            />
+            {fotos.length > 1 && (
+              <>
+                <button type="button" onClick={irParaAnterior} aria-label="Foto anterior" className={botaoSeta + " left-3 md:left-6"}>
+                  <ChevronLeft size={22} aria-hidden="true" />
+                </button>
+                <button type="button" onClick={irParaProxima} aria-label="Próxima foto" className={botaoSeta + " right-3 md:right-6"}>
+                  <ChevronRight size={22} aria-hidden="true" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
