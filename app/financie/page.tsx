@@ -150,6 +150,14 @@ export default function Financie() {
         return erros;
     }
 
+    // Confere o campo assim que o cliente sai dele (só se ele digitou algo),
+    // para o aviso aparecer na hora, sem precisar clicar em "Solicitar análise".
+    function conferirAoSair(campo: CampoFormulario, valor: string) {
+        if (!valor.trim()) return;
+        const mensagem = validar()[campo];
+        if (mensagem) setErrosCampos((atuais) => ({ ...atuais, [campo]: mensagem }));
+    }
+
     function handleSolicitar() {
         const erros = validar();
         setErrosCampos(erros);
@@ -394,6 +402,7 @@ export default function Financie() {
                                             placeholder="(71) 9 0000-0000"
                                             value={celular}
                                             onChange={(e) => { setCelular(formatarCelular(e.target.value)); limparErro("celular"); }}
+                                            onBlur={() => conferirAoSair("celular", celular)}
                                             required
                                             {...propsDeErro("celular")}
                                         />
@@ -413,6 +422,7 @@ export default function Financie() {
                                                 type="date"
                                                 value={dataNascimento}
                                                 onChange={(e) => { setDataNascimento(e.target.value); limparErro("nascimento"); }}
+                                                onBlur={() => conferirAoSair("nascimento", dataNascimento)}
                                                 {...propsDeErro("nascimento")}
                                             />
                                         </div>
@@ -432,6 +442,7 @@ export default function Financie() {
                                                 placeholder="000.000.000-00"
                                                 value={cpf}
                                                 onChange={(e) => { setCpf(formatarCpf(e.target.value)); limparErro("cpf"); }}
+                                                onBlur={() => conferirAoSair("cpf", cpf)}
                                                 {...propsDeErro("cpf")}
                                             />
                                         </div>
