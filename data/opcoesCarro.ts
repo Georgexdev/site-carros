@@ -18,3 +18,11 @@ export const combustiveisDisponiveis = [
 export const cambiosDisponiveis = [
   "Manual", "Automático", "Automático CVT", "Automatizado",
 ];
+// Itens mais comuns em anúncios de seminovos. A loja marca os que o carro tem.
+export const opcionaisDisponiveis = [
+  "Ar-condicionado", "Direção elétrica", "Vidros elétricos", "Travas elétricas", "Alarme",
+  "Central multimídia", "Android Auto / Apple CarPlay", "Câmera de ré", "Sensor de estacionamento",
+  "Piloto automático", "Bancos de couro", "Teto solar", "Rodas de liga leve", "Faróis de LED",
+  "Chave presencial", "Partida por botão", "Airbags laterais", "Controle de estabilidade",
+  "Único dono", "Manual e chave reserva", "Revisões em concessionária", "IPVA pago",
+];

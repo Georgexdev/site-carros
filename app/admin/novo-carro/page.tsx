@@ -10,6 +10,7 @@ import SeletorOpcoes from "@/components/SeletorOpcoes";
 import SeletorCor from "@/components/SeletorCor";
 import { coresDisponiveis, combustiveisDisponiveis, cambiosDisponiveis } from "@/data/opcoesCarro";
 import { limparTexto } from "@/lib/texto";
+import CamposExtrasCarro from "@/components/CamposExtrasCarro";
 
 
 export default function NovoCarro() {
@@ -30,6 +31,8 @@ export default function NovoCarro() {
     const [placa, setPlaca] = useState("");
     const [chassi, setChassi] = useState("");
     const [mostrarPlacaChassi, setMostrarPlacaChassi] = useState(false);
+    const [opcionais, setOpcionais] = useState<string[]>([]);
+    const [descricao, setDescricao] = useState("");
 
     async function handleSalvar(e: React.FormEvent) {
         e.preventDefault();
@@ -72,6 +75,8 @@ export default function NovoCarro() {
                 placa,
                 chassi,
                 mostrar_placa_chassi: mostrarPlacaChassi,
+                opcionais,
+                descricao: descricao.trim(),
                 status: "disponivel",
             })
             .select()
@@ -194,6 +199,13 @@ export default function NovoCarro() {
                     opcoes={cambiosDisponiveis}
                     valorSelecionado={cambio}
                     onSelecionar={setCambio}
+                />
+
+                <CamposExtrasCarro
+                    opcionais={opcionais}
+                    onMudarOpcionais={setOpcionais}
+                    descricao={descricao}
+                    onMudarDescricao={setDescricao}
                 />
 
                 <div className="border-t border-line pt-6">

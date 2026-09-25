@@ -21,7 +21,12 @@ export default async function Sobre() {
     (await buscarEmpresa("nome, sobre, " + COLUNAS_LOJA)) ?? (await buscarEmpresa("nome, sobre"));
   const loja = montarDadosLoja(empresa);
 
-  const textoSobre = empresa?.sobre?.trim() || "Em breve, mais informações sobre nossa empresa.";
+  // Enquanto a loja não escreve o próprio texto (painel → Dados da loja), mostra um texto pronto.
+  const textoPadrao =
+    loja.nome + " é uma loja de carros seminovos em " + loja.endereco.cidade + ". " +
+    "Trabalhamos com um estoque selecionado, financiamento com bancos parceiros e aceitamos o seu usado na troca.\n\n" +
+    "Aqui você fala direto com quem vende: tire suas dúvidas pelo WhatsApp ou venha conhecer a loja.";
+  const textoSobre = empresa?.sobre?.trim() || textoPadrao;
 
   return (
     <div>

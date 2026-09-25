@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CarroCard from "@/components/CarroCard";
 import { supabase } from "@/lib/supabase";
 import { EMPRESA_ID } from "@/lib/empresa";
@@ -14,6 +14,8 @@ import { MessageCircle } from "lucide-react";
 import { useLoja } from "@/components/LojaProvider";
 import { limparTexto, nomeDoCarro } from "@/lib/texto";
 
+const ORDENACOES: TipoOrdenacao[] = ["relevancia", "menor_preco", "maior_preco", "ano_recente", "ano_antigo", "menor_km", "maior_km"];
+
 export default function Estoque() {
   const { linkWhatsApp } = useLoja();
   const [busca, setBusca] = useState("");
@@ -21,19 +23,40 @@ export default function Estoque() {
   const [ordenacao, setOrdenacao] = useState<TipoOrdenacao>("relevancia");
   const [carros, setCarros] = useState<Carro[]>([]);
   const [carregando, setCarregando] = useState(true);
+  const urlLida = useRef(false);
+
+  // Sempre que um filtro muda, atualiza o link. Assim dá para compartilhar ou voltar do carro sem perder a busca.
+  useEffect(() => {
+    if (!urlLida.current) return;
+    const parametros = new URLSearchParams();
+    if (busca.trim()) parametros.set("busca", busca.trim());
+    if (marcaFiltro) parametros.set("marca", marcaFiltro);
+    if (ordenacao !== "relevancia") parametros.set("ordem", ordenacao);
+    const consulta = parametros.toString();
+    window.history.replaceState(null, "", consulta ? "?" + consulta : window.location.pathname);
+  }, [busca, marcaFiltro, ordenacao]);
 
   useEffect(() => {
     async function buscarCarros() {
       let consulta = supabase.from("carros").select("*");
       if (EMPRESA_ID) consulta = consulta.eq("empresa_id", EMPRESA_ID);
 
-      const { data, error } = await consulta;
+      // Mais novos primeiro: é a ordem "Mais recentes" do seletor.
+      const { data, error } = await consulta.order("criado_em", { ascending: false });
 
       if (error) {
         console.error("Erro ao buscar carros:", error);
       } else if (data) {
         setCarros(data as Carro[]);
       }
+
+      // Aplica os filtros que vieram no link (ex.: /estoque?marca=Toyota&busca=corolla).
+      const parametros = new URLSearchParams(window.location.search);
+      const ordemDaUrl = parametros.get("ordem") as TipoOrdenacao | null;
+      setBusca(parametros.get("busca") || "");
+      setMarcaFiltro(parametros.get("marca") || "");
+      if (ordemDaUrl && ORDENACOES.includes(ordemDaUrl)) setOrdenacao(ordemDaUrl);
+      urlLida.current = true;
 
       setCarregando(false);
     }
@@ -88,6 +111,16 @@ export default function Estoque() {
 
   const totalDisponiveis = carros.filter((carro) => carro.status === "disponivel").length;
 
+  // O contador acompanha o que está na tela: busca e marca escolhida.
+  const filtroAtivo = termo !== "" || marcaFiltro !== "";
+  const carrosNaTela = termo === "" ? carrosOrdenados : mostrarSemelhantes ? resultadosSemelhantes : resultadosExatos;
+  const disponiveisNaTela = carrosNaTela.filter((carro) => carro.status === "disponivel").length;
+
+  function limparFiltros() {
+    setBusca("");
+    setMarcaFiltro("");
+  }
+
   const grade = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8";
 
   return (
@@ -100,9 +133,21 @@ export default function Estoque() {
 
       <div className="flex flex-col gap-2">
         <h1 className="font-display text-4xl md:text-[52px] leading-tight text-ink">Nosso estoque</h1>
-        {!carregando && (
-          <p className="text-muted">
+        {!carregando && !filtroAtivo && (
+          <p className="text-muted" aria-live="polite">
             {totalDisponiveis} veículo{totalDisponiveis !== 1 ? "s" : ""} disponíve{totalDisponiveis !== 1 ? "is" : "l"} no momento
+          </p>
+        )}
+        {!carregando && filtroAtivo && (
+          <p className="text-muted flex flex-wrap items-center gap-x-3 gap-y-1" aria-live="polite">
+            <span>
+              {mostrarSemelhantes ? "Nenhum resultado exato · " : ""}
+              <strong className="text-ink">{disponiveisNaTela}</strong> de {totalDisponiveis} veículo{totalDisponiveis !== 1 ? "s" : ""}
+              {marcaFiltro ? " · " + marcaFiltro : ""}
+            </span>
+            <button type="button" onClick={limparFiltros} className="text-sm font-semibold text-gold-text underline hover:text-ink">
+              Limpar filtros
+            </button>
           </p>
         )}
       </div>
