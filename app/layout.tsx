@@ -10,7 +10,7 @@ import { buscarEmpresa } from "@/lib/empresa";
 import { COLUNAS_LOJA, montarDadosLoja } from "@/lib/loja";
 import LojaProvider from "@/components/LojaProvider";
 import { SITE_URL } from "@/lib/site";
-import { dadosDaLoja, paraScript } from "@/lib/dadosEstruturados";
+import { dadosDaLoja, dadosDoSite, paraScript } from "@/lib/dadosEstruturados";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -72,6 +72,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: paraScript(dadosDaLoja(loja)) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: paraScript(dadosDoSite(loja)) }}
         />
         <LojaProvider loja={loja}>
           <Header />
