@@ -36,6 +36,7 @@ export const metadata: Metadata = {
     title: "MALU Veículos e Financiamentos | Carros seminovos em Salvador",
     description: "Veja o estoque, simule seu financiamento e fale com a gente pelo WhatsApp.",
     url: "/",
+    images: [{ url: "/imagem-compartilhar", width: 1200, height: 630, alt: "MALU Veículos e Financiamentos" }],
   },
   // Código de verificação do Google Search Console (configure NEXT_PUBLIC_GOOGLE_VERIFICATION na Vercel).
   verification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION
