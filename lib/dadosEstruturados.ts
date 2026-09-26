@@ -15,6 +15,18 @@ function converterHorario(texto: string) {
   return inicio + "-" + fim;
 }
 
+// Diz ao Google o nome do site. Sem isso, como o endereço termina em vercel.app,
+// ele mostra "Vercel" em cima do resultado da busca.
+export function dadosDoSite(loja: DadosLoja) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "MALU Veículos",
+    alternateName: Array.from(new Set([loja.nome, "MALU Veículos e Financiamentos"])),
+    url: SITE_URL + "/",
+  };
+}
+
 export function dadosDaLoja(loja: DadosLoja) {
   const horarios: string[] = [];
   const semana = converterHorario(loja.horarios[0].horario);

@@ -10,7 +10,7 @@ import { buscarEmpresa } from "@/lib/empresa";
 import { COLUNAS_LOJA, montarDadosLoja } from "@/lib/loja";
 import LojaProvider from "@/components/LojaProvider";
 import { SITE_URL } from "@/lib/site";
-import { dadosDaLoja, paraScript } from "@/lib/dadosEstruturados";
+import { dadosDaLoja, dadosDoSite, paraScript } from "@/lib/dadosEstruturados";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -36,6 +36,7 @@ export const metadata: Metadata = {
     title: "MALU Veículos e Financiamentos | Carros seminovos em Salvador",
     description: "Veja o estoque, simule seu financiamento e fale com a gente pelo WhatsApp.",
     url: "/",
+    images: [{ url: "/imagem-compartilhar", width: 1200, height: 630, alt: "MALU Veículos e Financiamentos" }],
   },
   // Código de verificação do Google Search Console (configure NEXT_PUBLIC_GOOGLE_VERIFICATION na Vercel).
   verification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION
@@ -72,6 +73,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: paraScript(dadosDaLoja(loja)) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: paraScript(dadosDoSite(loja)) }}
         />
         <LojaProvider loja={loja}>
           <Header />

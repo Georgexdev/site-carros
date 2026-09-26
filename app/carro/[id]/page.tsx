@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: titulo + " | MALU Veículos",
       description: descricao,
       url: "/carro/" + carro.id,
-      images: fotos[0] ? [{ url: fotos[0].url }] : undefined,
+      images: [{ url: fotos[0] ? fotos[0].url : "/imagem-compartilhar" }],
     },
   };
 }
